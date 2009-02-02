@@ -1,0 +1,41 @@
+Jaipo
+
+
+
+INSTALLATION
+
+To install this module, run the following commands:
+
+	perl Makefile.PL
+	make
+	make test
+	make install
+
+SUPPORT AND DOCUMENTATION
+
+After installing, you can find documentation for this module with the
+perldoc command.
+
+    perldoc Jaipo
+
+You can also look for information at:
+
+    RT, CPAN's request tracker
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Jaipo
+
+    AnnoCPAN, Annotated CPAN documentation
+        http://annocpan.org/dist/Jaipo
+
+    CPAN Ratings
+        http://cpanratings.perl.org/d/Jaipo
+
+    Search CPAN
+        http://search.cpan.org/dist/Jaipo/
+
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2009
+
+This program is released under the following license: GPL
+

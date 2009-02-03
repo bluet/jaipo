@@ -1,7 +1,7 @@
 package Jaipo;
-
 use warnings;
 use strict;
+use feature qw(:5.10);
 
 my %service_providers;
 
@@ -108,7 +108,7 @@ sub _tabs {
 
 =head1 NAME
 
-Jaipo - JAIku (and other micro-blogging sites) POster
+Jaipo - Jaiku (and other micro-blogging sites) Client
 
 =head1 VERSION
 

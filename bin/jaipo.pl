@@ -23,10 +23,19 @@ use Net::Jaiku;
 #$API_KEY = "My-API-Key"	# plz check http://api.jaiku.com/ to get your API key
 
 
+#####
+# Read cli args
+#####
+
 $message = shift;
 $location = shift;
 $comment = shift;
 #print $message and exit;
+
+
+#####
+# Identify command
+#####
 
 # Guessing you you wanna do.
 if ($message =~ /^r$/){
@@ -42,10 +51,19 @@ if ($message =~ /^r$/){
 } else { $send_msg = 1 }
 
 
+#####
+# read User ID and API Key
+#####
+
 $ID ||= &id_key()->[0];
 $API_KEY ||= &id_key()->[1];
 
 #~ print "ID: $ID, KEY: $API_KEY\n";
+
+
+#####
+# Initialize Net::Jaiku
+#####
 
 print "\nInitialing connection.\n";
 my $jaiku = new Net::Jaiku(
@@ -54,20 +72,36 @@ my $jaiku = new Net::Jaiku(
 );
 
 
+#####
+# Prepare to call the right method
+#####
+
 # Do what you want.
+# Use case.
 if ($send_msg) {
 	print "\033[1mplz type your message (or not :p):\033[0m ";
 	$message ||= <STDIN>;
-
+	
+	### my $rv = send_msg($message, "jaiku");
+	#
 	print "\033[1mSending message...\033[0m\n";
 	my $rv = $jaiku->setPresence(
 		message => $message
 	);
+	#
+	###
+	
 	$rv? print "\033[1mMessage Post.\033[0m\n" : print "\033[1mMessage not posted, something wrong with your network or msg too long?\033[0m\n";
 } elsif ($loc) {
+	
+	### my $rv = set_location($message, "jaiku");
+	#
 	my $rv = $jaiku->setPresence(
 		location => $location
 	);
+	#
+	###
+	
 	$rv? print "\033[1mOkay, you moved to a new place.\033[0m\n" : print "\033[1mSet location failed, you're still at where you were...\033[0m\n";
 } elsif ($check) {
 	

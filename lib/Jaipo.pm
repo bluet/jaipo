@@ -3,6 +3,109 @@ package Jaipo;
 use warnings;
 use strict;
 
+my %service_providers;
+
+sub initialize {
+	my $jaiku = new Net::Jaiku(
+		username => $ID,
+		userkey  => $API_KEY
+	);
+}
+
+sub send_msg {
+	my $message = shift;
+	my $site = shift;
+	print "\033[1mSending message...\033[0m\n";
+	
+	my $rv;
+	my $has_site;
+	
+	if ($site =~ /jaiku/i) {
+		$rv = $jaiku->setPresence(
+			message => $message
+		);
+		$has_site++;
+	}
+	if ($site =~ /twitter/i) {
+		1;
+		$has_site++;
+	}
+	if ($site =~ /plurk/i) {
+		1;
+		$has_site++;
+	}
+	
+	warn "Unsupport Site!\n" if not $has_site;
+	return $rv;	# success if not undef
+}
+
+sub set_location {
+	my $location = shift;
+	my $site = shift;
+	
+	my $rv;
+	my $has_site;
+	
+	if ($site =~ /jaiku/i) {
+		my $rv = $jaiku->setPresence(
+			location => $location
+		);
+		$has_site++;
+	}
+	
+	warn "Unsupport Site!\n" if not $has_site;
+	return $rv;	# success if not undef
+}
+
+sub _log_last_id {
+	# write those id to a file, so that we can check later
+	if (not -e "$ENV{HOME}/.jaipo") {
+		print "\nThis is the \033[1mfirst time\033[0m you try me?\n";
+		mkdir("$ENV{HOME}/.jaipo") or die $!;
+	}
+	if (not -e "$ENV{HOME}/.jaipo/last-id.log") {
+		print "\033[1mThis might be kinda hurt\033[0m..........just kidding :p\n";
+	}
+	open LOG, ">$ENV{HOME}/.jaipo/last-id.log" or die $!;
+	#~ print LOG "$_\n" for @_;
+	#~ print "Current: $_[0]-$_[1]";
+	print LOG "$_[0]-$_[1]";
+	close LOG;
+}
+
+sub _compare_last_msg_id {
+	# compare the (PostID, CommentID)
+	my @old_id;
+	if (not -e "$ENV{HOME}/.jaipo" or not -e "$ENV{HOME}/.jaipo/last-id.log") {
+		print "\nYou \033[1mCan Not\033[0m check about if I have \033[1mAnything NEW For You\033[0m without \033[1mTouching Me First!!\033[0m\n";
+		print "So Now, Plz read me by using \033[1m \$ jaipo r\033[0m  before you wanna do anything : 3\n";
+		exit;
+	}
+	open LOG, "<$ENV{HOME}/.jaipo/last-id.log" or die $!;
+	@old_id = split/-/,$_ for <LOG>;
+	close LOG;
+	( $old_id[0] == $_[0] and $old_id[1] == $_[1] ) ? 0 : 1 ;
+}
+
+sub _user_id_key {
+	# check user name and API key
+	# can use XXX::ConfigFile module
+	my @user_login;
+	if (not -e "$ENV{HOME}/.jaipo" or not -e "$ENV{HOME}/.jaipo/user.login") {
+		print "no user.login config file\n";
+		exit;
+	}
+	open USER, "<$ENV{HOME}/.jaipo/user.login" or die $!;
+	while (<USER>) {chomp; push @user_login, $_};
+	close USER;
+	return \@user_login;
+}
+
+sub _tabs {
+	my $string = shift;
+	length $string < 8 ? return "\t\t\t" : length $string < 18 ? return "\t\t" : return "\t" ;;
+}
+
 =head1 NAME
 
 Jaipo - JAIku (and other micro-blogging sites) POster
@@ -16,7 +119,7 @@ Version 0.01
 our $VERSION = '0.01';
 
 
-=head1 SYNOPSIS
+=head1 DESCRIPTION
 
 Jaipo (宅噗)
 

@@ -3,6 +3,7 @@ use warnings;
 use strict;
 use feature qw(:5.10);
 
+=encoding utf8
 
 =head1 NAME
 
@@ -57,7 +58,7 @@ sub initialize {
 sub send_msg {
 	my $message = shift;
 	my $site = shift;
-	print "\033[1mSending message...\033[0m\n";
+	say "\033[1mSending message...\033[0m";
 	
 	my $rv;
 	my $has_site;
@@ -111,11 +112,11 @@ sub set_location {
 sub _log_last_id {
 	# write those id to a file, so that we can check later
 	if (not -e "$ENV{HOME}/.jaipo") {
-		print "\nThis is the \033[1mfirst time\033[0m you try me?\n";
+		say "\nThis is the \033[1mfirst time\033[0m you try me?";
 		mkdir("$ENV{HOME}/.jaipo") or die $!;
 	}
 	if (not -e "$ENV{HOME}/.jaipo/last-id.log") {
-		print "\033[1mThis might be kinda hurt\033[0m..........just kidding :p\n";
+		say "\033[1mThis might be kinda hurt\033[0m..........just kidding :p";
 	}
 	open LOG, ">$ENV{HOME}/.jaipo/last-id.log" or die $!;
 	#~ print LOG "$_\n" for @_;
@@ -132,8 +133,8 @@ sub _compare_last_msg_id {
 	# compare the (PostID, CommentID)
 	my @old_id;
 	if (not -e "$ENV{HOME}/.jaipo" or not -e "$ENV{HOME}/.jaipo/last-id.log") {
-		print "\nYou \033[1mCan Not\033[0m check about if I have \033[1mAnything NEW For You\033[0m without \033[1mTouching Me First!!\033[0m\n";
-		print "So Now, Plz read me by using \033[1m \$ jaipo r\033[0m  before you wanna do anything : 3\n";
+		say "\nYou \033[1mCan Not\033[0m check about if I have \033[1mAnything NEW For You\033[0m without \033[1mTouching Me First!!\033[0m";
+		say "So Now, Plz read me by using \033[1m \$ jaipo r\033[0m  before you wanna do anything : 3";
 		exit;
 	}
 	open LOG, "<$ENV{HOME}/.jaipo/last-id.log" or die $!;
@@ -151,7 +152,7 @@ sub _user_id_key {
 	# can use XXX::ConfigFile module
 	my @user_login;
 	if (not -e "$ENV{HOME}/.jaipo" or not -e "$ENV{HOME}/.jaipo/user.login") {
-		print "no user.login config file\n";
+		say "no user.login config file";
 		exit;
 	}
 	open USER, "<$ENV{HOME}/.jaipo/user.login" or die $!;

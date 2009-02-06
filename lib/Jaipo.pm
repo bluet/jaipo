@@ -3,6 +3,14 @@ use warnings;
 use strict;
 use feature qw(:5.10);
 
+use Data::Dumper;
+use Smart::Comments;
+use YAML::Syck;
+
+use WWW::Plurk;
+use Net::Jaiku;
+use Net::Twitter;
+
 =encoding utf8
 
 =head1 NAME
@@ -38,17 +46,35 @@ Now you can read feeds, send message, and set location with Jaipo.
 =cut
 
 
-my %service_providers;
-
 =head2 initialize 
 
 =cut
 
-sub initialize {
-	my $jaiku = new Net::Jaiku(
-		username => $ID,
-		userkey  => $API_KEY
-	);
+my %sp;	# Service Provider
+my %config;
+
+sub init {
+	
+	&_get_config_from_yaml();
+	
+	if ($config{"jaiku"}) {
+		$sp{"jaiku"} = new Net::Jaiku(
+			username	=> $config{"jaiku"}{"username"},
+			userkey 		=> $config{"jaiku"}{"userkey"},
+		);
+	}
+	if ($config{"twitter"}) {
+		$sp{"twitter"} = Net::Twitter->new(
+			username	=> $config{"twitter"}{"username"},
+			password		=> $config{"twitter"}{"password"},
+		);
+	}
+	if ($config{"plurk"}) {
+		$sp{"plurk"} = WWW::Plurk->new(
+			$config{"plurk"}{"username"},
+			$config{"plurk"}{"password"},
+		);
+	}
 }
 
 =head2 send_msg SITE
@@ -147,18 +173,53 @@ sub _compare_last_msg_id {
 
 =cut
 
-sub _user_id_key {
-	# check user name and API key
-	# can use XXX::ConfigFile module
-	my @user_login;
-	if (not -e "$ENV{HOME}/.jaipo" or not -e "$ENV{HOME}/.jaipo/user.login") {
-		say "no user.login config file";
-		exit;
+sub _get_config_from_yaml {
+	
+	if (not -e "$ENV{HOME}/.jaipo" or not -e "$ENV{HOME}/.jaipo/config") {
+		warn "no ~/.jaipo/config exist, first time teasing me? :p";
+		return "ERROR_E_CONFIG_FILE";
 	}
-	open USER, "<$ENV{HOME}/.jaipo/user.login" or die $!;
-	while (<USER>) {chomp; push @user_login, $_};
-	close USER;
-	return \@user_login;
+	
+	$yaml_fn =|| "~/.jaipo/config";
+	$config_hash_ref = LoadFile($yaml_fn) or warn "load yaml failed" && return "ERROR_L_YAML";
+	
+	%config = $config_hash_ref;
+	
+}
+
+sub _save_config_to_yaml {
+	#~ my $config_hash_ref = shift;
+	$yaml_fn =|| "~/.jaipo/config";
+	
+	if (not -e "$ENV{HOME}/.jaipo") {
+		warn "no ~/.jaipo/ exist, first time teasing me? :p";
+		return "ERROR_E_CONFIG_DIR";
+	}
+	
+	#~ DumpFile($yaml_fn, $config_hash_ref) or warn "write yaml failed" && return "ERROR_W_YAML";
+	DumpFile($yaml_fn, \%config) or warn "write yaml failed" && return "ERROR_W_YAML";
+}
+
+sub setup_jaiku {
+	my($username, $apikey) = @_;
+	$config{"jaiku"}{"username"}	= $username;
+	$config{"jaiku"}{"userkey"}	= $apikey;
+}
+
+sub setup_twitter {
+	my($username, $password) = @_;
+	$config{"twitter"}{"username"}	= $username;
+	$config{"twitter"}{"userkey"}	= $password;
+}
+
+sub setup_plurk {
+	my($username, $password) = @_;
+	$config{"plurk"}{"username"}	= $username;
+	$config{"plurk"}{"password"}	= $password;
+}
+
+sub save_config {
+	&_save_config_to_yaml();
 }
 
 =head2 _tabs 

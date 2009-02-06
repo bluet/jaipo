@@ -10,7 +10,7 @@ use WWW::Plurk;
 use Net::Jaiku;
 use Net::Twitter;
 use base qw/Class::Accessor::Fast/;
-__PACKAGE__->mk_accessors(qw/config/);
+__PACKAGE__->mk_accessors (qw/config/);
 
 =encoding utf8
 
@@ -25,7 +25,6 @@ Version 0.01
 =cut
 
 our $VERSION = '0.01';
-
 
 =head1 DESCRIPTION
 
@@ -46,33 +45,26 @@ Now you can read feeds, send message, and set location with Jaipo.
 
 =cut
 
-
 =head2 initialize 
 
 =cut
 
-my %sp;	# Service Provider
-my %config;  # XXX: use accessor
-
+my %sp;        # Service Provider
+my %config;    # XXX: use accessor
 
 sub new {
-    my $class = shift;
-    my %args = @_;
-    my $self = {} ;
+	my $class = shift;
+	my %args  = @_;
+	my $self  = {};
 
-    bless $self, $class;
-    return $self;
+	bless $self, $class;
+	return $self;
 }
 
 sub init {
-    my $self = shift;
-	
-    # &_get_config_from_yaml();
+	my $self = shift;
 
-    $config = Jaipo::Config->new;
-    $config->load;
-    $self->config( $config );
-
+	# &_get_config_from_yaml();
 
     # we initialize clientplugins here
     for my $cplugin ( keys $config->stash->{ServiceProviders}  ) {
@@ -80,28 +72,31 @@ sub init {
 		if( $cplugin =~ /^Jaipo::ServiceProvier/ ) {
 
 		}
-
-
-    }
+	}
 	
-	if ($config{"jaiku"}) {
-		$sp{"jaiku"} = new Net::Jaiku(
-			username	=> $config{"jaiku"}{"username"},
-			userkey 		=> $config{"jaiku"}{"userkey"},
+	my $has_site;
+	if ( $config{"jaiku"} ) {
+		$sp{"jaiku"} = new Net::Jaiku (
+			username => $config{"jaiku"}{"username"},
+			userkey  => $config{"jaiku"}{"userkey"},
 		);
+		$has_site++;
 	}
-	if ($config{"twitter"}) {
-		$sp{"twitter"} = Net::Twitter->new(
-			username	=> $config{"twitter"}{"username"},
-			password		=> $config{"twitter"}{"password"},
+	if ( $config{"twitter"} ) {
+		$sp{"twitter"} = Net::Twitter->new (
+			username => $config{"twitter"}{"username"},
+			password => $config{"twitter"}{"password"},
 		);
+		$has_site++;
 	}
-	if ($config{"plurk"}) {
-		$sp{"plurk"} = WWW::Plurk->new(
+	if ( $config{"plurk"} ) {
+		$sp{"plurk"} = WWW::Plurk->new (
 			$config{"plurk"}{"username"},
 			$config{"plurk"}{"password"},
 		);
+		$has_site++;
 	}
+	warn "No supported service provider initialled!\n" if not $has_site;
 }
 
 =head2 send_msg SITE
@@ -110,31 +105,29 @@ sub init {
 
 sub send_msg {
 	my $message = shift;
-	my $site = shift;
-	say "\033[1mSending message...\033[0m";
-	
+	my $site    = shift;
+
+	#~ say "\033[1mSending message...\033[0m";
+
 	my $rv;
 	my $has_site;
-	
-	if ($site =~ /jaiku/i) {
-		$rv = $jaiku->setPresence(
-			message => $message
-		);
-		$has_site++;
-	}
-	if ($site =~ /twitter/i) {
-		1;
-		$has_site++;
-	}
-	if ($site =~ /plurk/i) {
-		1;
-		$has_site++;
-	}
-	
-	warn "Unsupport Site!\n" if not $has_site;
-	return $rv;	# success if not undef
-}
 
+	if ( $site =~ /jaiku/i ) {
+		$rv = $sp{"jaiku"}->setPresence ( message => $message );
+		$has_site++;
+	}
+	if ( $site =~ /twitter/i ) {
+		1;
+		$has_site++;
+	}
+	if ( $site =~ /plurk/i ) {
+		1;
+		$has_site++;
+	}
+
+	warn "Unsupport Site!\n" if not $has_site;
+	return $rv;    # success if not undef
+}
 
 =head2 set_location SITE
 
@@ -142,20 +135,18 @@ sub send_msg {
 
 sub set_location {
 	my $location = shift;
-	my $site = shift;
-	
+	my $site     = shift;
+
 	my $rv;
 	my $has_site;
-	
-	if ($site =~ /jaiku/i) {
-		my $rv = $jaiku->setPresence(
-			location => $location
-		);
+
+	if ( $site =~ /jaiku/i ) {
+		my $rv = $jaiku->setPresence ( location => $location );
 		$has_site++;
 	}
-	
+
 	warn "Unsupport Site!\n" if not $has_site;
-	return $rv;	# success if not undef
+	return $rv;    # success if not undef
 }
 
 =head2 _log_last_id 
@@ -163,15 +154,17 @@ sub set_location {
 =cut
 
 sub _log_last_id {
+
 	# write those id to a file, so that we can check later
-	if (not -e "$ENV{HOME}/.jaipo") {
+	if ( not -e "$ENV{HOME}/.jaipo" ) {
 		say "\nThis is the \033[1mfirst time\033[0m you try me?";
-		mkdir("$ENV{HOME}/.jaipo") or die $!;
+		mkdir ("$ENV{HOME}/.jaipo") or die $!;
 	}
-	if (not -e "$ENV{HOME}/.jaipo/last-id.log") {
+	if ( not -e "$ENV{HOME}/.jaipo/last-id.log" ) {
 		say "\033[1mThis might be kinda hurt\033[0m..........just kidding :p";
 	}
 	open LOG, ">$ENV{HOME}/.jaipo/last-id.log" or die $!;
+
 	#~ print LOG "$_\n" for @_;
 	#~ print "Current: $_[0]-$_[1]";
 	print LOG "$_[0]-$_[1]";
@@ -183,17 +176,22 @@ sub _log_last_id {
 =cut
 
 sub _compare_last_msg_id {
+
 	# compare the (PostID, CommentID)
 	my @old_id;
-	if (not -e "$ENV{HOME}/.jaipo" or not -e "$ENV{HOME}/.jaipo/last-id.log") {
-		say "\nYou \033[1mCan Not\033[0m check about if I have \033[1mAnything NEW For You\033[0m without \033[1mTouching Me First!!\033[0m";
-		say "So Now, Plz read me by using \033[1m \$ jaipo r\033[0m  before you wanna do anything : 3";
+	if (   not -e "$ENV{HOME}/.jaipo"
+		or not -e "$ENV{HOME}/.jaipo/last-id.log" )
+	{
+		say
+			"\nYou \033[1mCan Not\033[0m check about if I have \033[1mAnything NEW For You\033[0m without \033[1mTouching Me First!!\033[0m";
+		say
+			"So Now, Plz read me by using \033[1m \$ jaipo r\033[0m  before you wanna do anything : 3";
 		exit;
 	}
 	open LOG, "<$ENV{HOME}/.jaipo/last-id.log" or die $!;
-	@old_id = split/-/,$_ for <LOG>;
+	@old_id = split /-/, $_ for <LOG>;
 	close LOG;
-	( $old_id[0] == $_[0] and $old_id[1] == $_[1] ) ? 0 : 1 ;
+	( $old_id[0] == $_[0] and $old_id[1] == $_[1] ) ? 0 : 1;
 }
 
 =head2 _user_id_key
@@ -201,52 +199,55 @@ sub _compare_last_msg_id {
 =cut
 
 sub _get_config_from_yaml {
-	
-	if (not -e "$ENV{HOME}/.jaipo" or not -e "$ENV{HOME}/.jaipo/config") {
+
+	if ( not -e "$ENV{HOME}/.jaipo" or not -e "$ENV{HOME}/.jaipo/config" ) {
 		warn "no ~/.jaipo/config exist, first time teasing me? :p";
 		return "ERROR_E_CONFIG_FILE";
 	}
-	
+
 	$yaml_fn ||= "~/.jaipo/config";
-	$config_hash_ref = LoadFile($yaml_fn) or warn "load yaml failed" && return "ERROR_L_YAML";
-	
+	$config_hash_ref = LoadFile ($yaml_fn)
+		or warn "load yaml failed" && return "ERROR_L_YAML";
+
 	%config = $config_hash_ref;
-	
+
 }
 
 sub _save_config_to_yaml {
+
 	#~ my $config_hash_ref = shift;
 	$yaml_fn ||= "~/.jaipo/config";
-	
-	if (not -e "$ENV{HOME}/.jaipo") {
+
+	if ( not -e "$ENV{HOME}/.jaipo" ) {
 		warn "no ~/.jaipo/ exist, first time teasing me? :p";
 		return "ERROR_E_CONFIG_DIR";
 	}
-	
-	#~ DumpFile($yaml_fn, $config_hash_ref) or warn "write yaml failed" && return "ERROR_W_YAML";
-	DumpFile($yaml_fn, \%config) or warn "write yaml failed" && return "ERROR_W_YAML";
+
+#~ DumpFile($yaml_fn, $config_hash_ref) or warn "write yaml failed" && return "ERROR_W_YAML";
+	DumpFile ( $yaml_fn, \%config )
+		or warn "write yaml failed" && return "ERROR_W_YAML";
 }
 
 sub setup_jaiku {
-	my($username, $apikey) = @_;
-	$config{"jaiku"}{"username"}	= $username;
-	$config{"jaiku"}{"userkey"}	= $apikey;
+	my ( $username, $apikey ) = @_;
+	$config{"jaiku"}{"username"} = $username;
+	$config{"jaiku"}{"userkey"}  = $apikey;
 }
 
 sub setup_twitter {
-	my($username, $password) = @_;
-	$config{"twitter"}{"username"}	= $username;
-	$config{"twitter"}{"userkey"}	= $password;
+	my ( $username, $password ) = @_;
+	$config{"twitter"}{"username"} = $username;
+	$config{"twitter"}{"userkey"}  = $password;
 }
 
 sub setup_plurk {
-	my($username, $password) = @_;
-	$config{"plurk"}{"username"}	= $username;
-	$config{"plurk"}{"password"}	= $password;
+	my ( $username, $password ) = @_;
+	$config{"plurk"}{"username"} = $username;
+	$config{"plurk"}{"password"} = $password;
 }
 
 sub save_config {
-	&_save_config_to_yaml();
+	&_save_config_to_yaml ();
 }
 
 =head2 _tabs 
@@ -255,10 +256,10 @@ sub save_config {
 
 sub _tabs {
 	my $string = shift;
-	length $string < 8 ? return "\t\t\t" : length $string < 18 ? return "\t\t" : return "\t" ;;
+	      length $string < 8  ? return "\t\t\t"
+		: length $string < 18 ? return "\t\t"
+		:                       return "\t";
 }
-
-
 
 =head1 AUTHOR
 
@@ -313,4 +314,4 @@ This program is released under the following license: GPL
 
 =cut
 
-1; # End of Jaipo
+1;    # End of Jaipo

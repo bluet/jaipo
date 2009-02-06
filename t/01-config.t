@@ -1,5 +1,5 @@
 #!perl
-use Test::More tests => 1;
+use Test::More tests => 6;
 
 BEGIN {
 	use_ok( 'Jaipo::Config' );

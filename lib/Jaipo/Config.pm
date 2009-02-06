@@ -61,7 +61,7 @@ application:
         - Plurk: { }
         - Jaiku: { }
     Plugins: {}
-user:
+user: {}
 
 YAML
 	return Load( $config );

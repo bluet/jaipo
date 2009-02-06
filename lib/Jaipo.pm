@@ -12,6 +12,9 @@ use Net::Twitter;
 use base qw/Class::Accessor::Fast/;
 __PACKAGE__->mk_accessors (qw/config/);
 
+use vars qw/$CONFIG $LOGGER $HANDLER $PUB_SUB @PLUGINS @SERVICES/;
+
+
 =encoding utf8
 
 =head1 NAME
@@ -61,42 +64,70 @@ sub new {
 	return $self;
 }
 
+sub config {
+    my $class = shift;
+    $CONFIG = shift if (@_);
+    $CONFIG ||= Jaipo::Config->new();
+    return $CONFIG;
+}
+
+sub services {
+    my $class = shift;
+    @SERVICES = @_ if @_;
+    return @SERVICES;
+}
+
 sub init {
 	my $self = shift;
 
 	# &_get_config_from_yaml();
 
-	# we initialize clientplugins here
-	for my $cplugin ( keys $config->stash->{ServiceProviders}  ) {
-		$class = '';
-		if( $cplugin =~ /^Jaipo::ServiceProvier/ ) {
+	# prereserve arguments for service plugin 
+	# my $args = {
+	# 
+	# };
 
-		}
-	}
+	# we initialize service plugin class here
+    # Set up plugins
+    my @services;
+    my @services_to_load = @{Jaipo->config->app('Services')};
+
+    for (my $i = 0; my $service = $services_to_load[$i]; $i++) {
+        # Prepare to learn the plugin class name
+        my ($service_name) = keys %{$service};
+        my $class;
+
+        # Is the plugin name a fully-qualified class name?
+        if ($serivce_name =~ /^Jaipo::Service::/) {
+            # app-specific plugins use fully qualified names, Jaipo service plugins may
+            $class = $service_name; 
+        }
+
+        # otherwise, assume it's a short name, qualify it
+        else {
+            $class = "Jaipo::Service::".$plugin_name;
+        }
+
+        # Load the service plugin options
+        my %options = ( %{ $service->{ $service_name } } );
+
+        # Load the service plugin code
+		# Jaipo::Util->require($class);
+		# Jaipo::ClassLoader->new(base => $class)->require;
+
+        # Initialize the plugin and mark the prerequisites for loading too
+		# my $plugin_obj = $class->new(%options);
+		# push @services, $plugin_obj;
+		# foreach my $name ($plugin_obj->prereq_plugins) {
+        #     next if grep { $_ eq $name } @plugins_to_load;
+        #     push @plugins_to_load, {$name => {}};
+        # }
+    }
+
+    # All plugins loaded, save them for later reference
+    Jaipo->services(@services);
 	
-	my $has_site;
-	if ( $config{"jaiku"} ) {
-		$sp{"jaiku"} = new Net::Jaiku (
-			username => $config{"jaiku"}{"username"},
-			userkey  => $config{"jaiku"}{"userkey"},
-		);
-		$has_site++;
-	}
-	if ( $config{"twitter"} ) {
-		$sp{"twitter"} = Net::Twitter->new (
-			username => $config{"twitter"}{"username"},
-			password => $config{"twitter"}{"password"},
-		);
-		$has_site++;
-	}
-	if ( $config{"plurk"} ) {
-		$sp{"plurk"} = WWW::Plurk->new (
-			$config{"plurk"}{"username"},
-			$config{"plurk"}{"password"},
-		);
-		$has_site++;
-	}
-	warn "No supported service provider initialled!\n" if not $has_site;
+	# warn "No supported service provider initialled!\n" if not $has_site;
 }
 
 =head2 send_msg SITE

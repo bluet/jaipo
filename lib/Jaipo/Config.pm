@@ -23,6 +23,14 @@ sub app_config_path {
 
 }
 
+sub app { return shift->_get( application => @_ ) }
+
+sub user { return shift->_get( user => @_ ) }
+
+# A teeny helper for framework and app
+sub _get { return $_[0]->stash->{ $_[1] }{ $_[2] } }
+
+
 sub load {
 	my $self = shift;
 
@@ -46,13 +54,13 @@ sub load_default_config {
 
 	# move this to a file later
 	my $config = <<YAML
-
-ServiceProviders:
-	Twitter: { }
-	Plurk: { }
-	Jaiku: { }
-
-Plugins: {}
+application:
+	Services:
+		Twitter: { }
+		Plurk: { }
+		Jaiku: { }
+	Plugins: {}
+user:
 	
 YAML
 

@@ -202,7 +202,7 @@ sub _get_config_from_yaml {
 		return "ERROR_E_CONFIG_FILE";
 	}
 	
-	$yaml_fn =|| "~/.jaipo/config";
+	$yaml_fn ||= "~/.jaipo/config";
 	$config_hash_ref = LoadFile($yaml_fn) or warn "load yaml failed" && return "ERROR_L_YAML";
 	
 	%config = $config_hash_ref;
@@ -211,7 +211,7 @@ sub _get_config_from_yaml {
 
 sub _save_config_to_yaml {
 	#~ my $config_hash_ref = shift;
-	$yaml_fn =|| "~/.jaipo/config";
+	$yaml_fn ||= "~/.jaipo/config";
 	
 	if (not -e "$ENV{HOME}/.jaipo") {
 		warn "no ~/.jaipo/ exist, first time teasing me? :p";

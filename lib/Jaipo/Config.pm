@@ -27,7 +27,7 @@ sub app { return shift->_get( application => @_ ) }
 
 sub user { return shift->_get( user => @_ ) }
 
-# A teeny helper for framework and app
+# A teeny helper
 sub _get { return $_[0]->stash->{ $_[1] }{ $_[2] } }
 
 

@@ -2,13 +2,7 @@ package Jaipo;
 use warnings;
 use strict;
 use feature qw(:5.10);
-
-use Smart::Comments;
 use Jaipo::Config;
-
-use WWW::Plurk;
-use Net::Jaiku;
-use Net::Twitter;
 use base qw/Class::Accessor::Fast/;
 __PACKAGE__->mk_accessors (qw/config/);
 
@@ -51,9 +45,6 @@ Now you can read feeds, send message, and set location with Jaipo.
 =head2 initialize 
 
 =cut
-
-my %sp;		   # Service Provider
-my %config;    # XXX: use accessor
 
 sub new {
 	my $class = shift;

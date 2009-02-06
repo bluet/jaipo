@@ -3,13 +3,14 @@ use warnings;
 use strict;
 use feature qw(:5.10);
 
-use Data::Dumper;
 use Smart::Comments;
-use YAML::Syck;
+use Jaipo::Config;
 
 use WWW::Plurk;
 use Net::Jaiku;
 use Net::Twitter;
+use base qw/Class::Accessor::Fast/;
+__PACKAGE__->mk_accessors(qw/config/);
 
 =encoding utf8
 
@@ -51,11 +52,22 @@ Now you can read feeds, send message, and set location with Jaipo.
 =cut
 
 my %sp;	# Service Provider
-my %config;
+my %config;  # XXX: use accessor
 
 sub init {
+    my $self = shift;
 	
-	&_get_config_from_yaml();
+    # &_get_config_from_yaml();
+
+    $config = Jaipo::Config->new;
+    $config->load;
+    $self->config( $config );
+
+    # we initialize clientplugins here
+    for my $cplugin ( keys $config->{stash}->{ClientPlugins}  ) {
+
+
+    }
 	
 	if ($config{"jaiku"}) {
 		$sp{"jaiku"} = new Net::Jaiku(

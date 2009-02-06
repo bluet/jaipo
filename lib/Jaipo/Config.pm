@@ -2,10 +2,10 @@ package Jaipo::Config;
 use warnings;
 use strict;
 use Hash::Merge;
+use YAML::Syck;
 Hash::Merge::set_behavior('RIGHT_PRECEDENT');
 
 use base qw/Class::Accessor::Fast/;
-
 __PACKAGE__->mk_accessors(qw/stash/);
 
 use vars qw/$CONFIG/;
@@ -22,6 +22,15 @@ sub load {
 
 
 sub load_default_config {
+
+  my $config =<<YAML
+
+ClientPlugins:
+    Twitter: { }
+    Plurk: { }
+    Jaiku: { }
+
+YAML
 
 }
 

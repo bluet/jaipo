@@ -73,8 +73,13 @@ sub init {
     $config->load;
     $self->config( $config );
 
+
     # we initialize clientplugins here
-    for my $cplugin ( keys $config->stash->{ClientPlugins}  ) {
+    for my $cplugin ( keys $config->stash->{ServiceProviders}  ) {
+		$class = '';
+		if( $cplugin =~ /^Jaipo::ServiceProvier/ ) {
+
+		}
 
 
     }

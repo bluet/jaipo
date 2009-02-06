@@ -45,12 +45,11 @@ sub load {
 
 }
 
-
 sub load_default_config {
   # move this to a file later
   my $config =<<YAML
 
-ClientPlugins:
+ServiceProviders:
     Twitter: { }
     Plurk: { }
     Jaiku: { }

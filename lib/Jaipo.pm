@@ -54,6 +54,16 @@ Now you can read feeds, send message, and set location with Jaipo.
 my %sp;	# Service Provider
 my %config;  # XXX: use accessor
 
+
+sub new {
+    my $class = shift;
+    my %args = @_;
+    my $self = {} ;
+
+    bless $self, $class;
+    return $self;
+}
+
 sub init {
     my $self = shift;
 	

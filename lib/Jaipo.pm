@@ -49,7 +49,7 @@ Now you can read feeds, send message, and set location with Jaipo.
 
 =cut
 
-my %sp;        # Service Provider
+my %sp;		   # Service Provider
 my %config;    # XXX: use accessor
 
 sub new {
@@ -66,8 +66,8 @@ sub init {
 
 	# &_get_config_from_yaml();
 
-    # we initialize clientplugins here
-    for my $cplugin ( keys $config->stash->{ServiceProviders}  ) {
+	# we initialize clientplugins here
+	for my $cplugin ( keys $config->stash->{ServiceProviders}  ) {
 		$class = '';
 		if( $cplugin =~ /^Jaipo::ServiceProvier/ ) {
 
@@ -105,7 +105,7 @@ sub init {
 
 sub send_msg {
 	my $message = shift;
-	my $site    = shift;
+	my $site	= shift;
 
 	#~ say "\033[1mSending message...\033[0m";
 
@@ -135,7 +135,7 @@ sub send_msg {
 
 sub set_location {
 	my $location = shift;
-	my $site     = shift;
+	my $site	 = shift;
 
 	my $rv;
 	my $has_site;
@@ -256,9 +256,9 @@ sub save_config {
 
 sub _tabs {
 	my $string = shift;
-	      length $string < 8  ? return "\t\t\t"
+		  length $string < 8  ? return "\t\t\t"
 		: length $string < 18 ? return "\t\t"
-		:                       return "\t";
+		:						return "\t";
 }
 
 =head1 AUTHOR
@@ -276,7 +276,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Jaipo
+	perldoc Jaipo
 
 
 You can also look for information at:
@@ -314,4 +314,4 @@ This program is released under the following license: GPL
 
 =cut
 
-1;    # End of Jaipo
+1;	  # End of Jaipo

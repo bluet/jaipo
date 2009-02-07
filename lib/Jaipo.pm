@@ -70,8 +70,6 @@ sub services {
 sub init {
 	my $self = shift;
 
-	# &_get_config_from_yaml();
-
 	# prereserve arguments for service plugin
 	# my $args = {
 	#
@@ -90,14 +88,13 @@ sub init {
 
 		# Is the plugin name a fully-qualified class name?
 		if ( $serivce_name =~ /^Jaipo::Service::/ ) {
-
-   # app-specific plugins use fully qualified names, Jaipo service plugins may
+			# app-specific plugins use fully qualified names, Jaipo service plugins may
 			$class = $service_name;
 		}
 
 		# otherwise, assume it's a short name, qualify it
 		else {
-			$class = "Jaipo::Service::" . $plugin_name;
+			$class = "Jaipo::Service::" . $service_name;
 		}
 
 		# Load the service plugin options
@@ -126,30 +123,16 @@ sub init {
 
 =cut
 
+# XXX: still need to implement
 sub send_msg {
 	my $message = shift;
-	my $site    = shift;
-
 	#~ say "\033[1mSending message...\033[0m";
-
-	my $rv;
-	my $has_site;
-
-	if ( $site =~ /jaiku/i ) {
-		$rv = $sp{"jaiku"}->setPresence ( message => $message );
-		$has_site++;
+	
+	# do pulling foreach services
+	my @services = Jaipo->services;
+	foreach $service ( @services ) {
+		$service->send( $message );  # need to implement send method for service plugins
 	}
-	if ( $site =~ /twitter/i ) {
-		1;
-		$has_site++;
-	}
-	if ( $site =~ /plurk/i ) {
-		1;
-		$has_site++;
-	}
-
-	warn "Unsupport Site!\n" if not $has_site;
-	return $rv;    # success if not undef
 }
 
 =head2 set_location SITE

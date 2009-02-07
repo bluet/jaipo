@@ -87,7 +87,7 @@ sub init {
 		my $class;
 
 		# Is the plugin name a fully-qualified class name?
-		if ( $serivce_name =~ /^Jaipo::Service::/ ) {
+		if ( $service_name =~ /^Jaipo::Service::/ ) {
 			# app-specific plugins use fully qualified names, Jaipo service plugins may
 			$class = $service_name;
 		}
@@ -130,7 +130,7 @@ sub send_msg {
 	
 	# do pulling foreach services
 	my @services = Jaipo->services;
-	foreach $service ( @services ) {
+	foreach my $service ( @services ) {
 		$service->send( $message );  # need to implement send method for service plugins
 	}
 }

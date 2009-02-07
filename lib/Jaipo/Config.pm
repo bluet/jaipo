@@ -31,6 +31,11 @@ sub user { return shift->_get( user => @_ ) }
 sub _get { return $_[0]->stash->{ $_[1] }{ $_[2] } }
 
 
+sub save {
+	my ( $self , $config ) = @_;
+
+}
+
 sub load {
 	my $self = shift;
 

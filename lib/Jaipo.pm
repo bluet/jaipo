@@ -14,7 +14,6 @@ __PACKAGE__->mk_accessors (qw/config/);
 
 use vars qw/$CONFIG $LOGGER $HANDLER $PUB_SUB @PLUGINS @SERVICES/;
 
-
 =encoding utf8
 
 =head1 NAME
@@ -52,7 +51,7 @@ Now you can read feeds, send message, and set location with Jaipo.
 
 =cut
 
-my %sp;		   # Service Provider
+my %sp;        # Service Provider
 my %config;    # XXX: use accessor
 
 sub new {
@@ -65,16 +64,16 @@ sub new {
 }
 
 sub config {
-    my $class = shift;
-    $CONFIG = shift if (@_);
-    $CONFIG ||= Jaipo::Config->new();
-    return $CONFIG;
+	my $class = shift;
+	$CONFIG = shift if (@_);
+	$CONFIG ||= Jaipo::Config->new ();
+	return $CONFIG;
 }
 
 sub services {
-    my $class = shift;
-    @SERVICES = @_ if @_;
-    return @SERVICES;
+	my $class = shift;
+	@SERVICES = @_ if @_;
+	return @SERVICES;
 }
 
 sub init {
@@ -82,51 +81,53 @@ sub init {
 
 	# &_get_config_from_yaml();
 
-	# prereserve arguments for service plugin 
+	# prereserve arguments for service plugin
 	# my $args = {
-	# 
+	#
 	# };
 
 	# we initialize service plugin class here
-    # Set up plugins
-    my @services;
-    my @services_to_load = @{Jaipo->config->app('Services')};
+	# Set up plugins
+	my @services;
+	my @services_to_load = @{ Jaipo->config->app ('Services') };
 
-    for (my $i = 0; my $service = $services_to_load[$i]; $i++) {
-        # Prepare to learn the plugin class name
-        my ($service_name) = keys %{$service};
-        my $class;
+	for ( my $i = 0; my $service = $services_to_load[$i]; $i++ ) {
 
-        # Is the plugin name a fully-qualified class name?
-        if ($serivce_name =~ /^Jaipo::Service::/) {
-            # app-specific plugins use fully qualified names, Jaipo service plugins may
-            $class = $service_name; 
-        }
+		# Prepare to learn the plugin class name
+		my ($service_name) = keys %{$service};
+		my $class;
 
-        # otherwise, assume it's a short name, qualify it
-        else {
-            $class = "Jaipo::Service::".$plugin_name;
-        }
+		# Is the plugin name a fully-qualified class name?
+		if ( $serivce_name =~ /^Jaipo::Service::/ ) {
 
-        # Load the service plugin options
-        my %options = ( %{ $service->{ $service_name } } );
+   # app-specific plugins use fully qualified names, Jaipo service plugins may
+			$class = $service_name;
+		}
 
-        # Load the service plugin code
+		# otherwise, assume it's a short name, qualify it
+		else {
+			$class = "Jaipo::Service::" . $plugin_name;
+		}
+
+		# Load the service plugin options
+		my %options = ( %{ $service->{$service_name} } );
+
+		# Load the service plugin code
 		# Jaipo::Util->require($class);
 		# Jaipo::ClassLoader->new(base => $class)->require;
 
-        # Initialize the plugin and mark the prerequisites for loading too
+		# Initialize the plugin and mark the prerequisites for loading too
 		# my $plugin_obj = $class->new(%options);
 		# push @services, $plugin_obj;
 		# foreach my $name ($plugin_obj->prereq_plugins) {
-        #     next if grep { $_ eq $name } @plugins_to_load;
-        #     push @plugins_to_load, {$name => {}};
-        # }
-    }
+		#     next if grep { $_ eq $name } @plugins_to_load;
+		#     push @plugins_to_load, {$name => {}};
+		# }
+	}
 
-    # All plugins loaded, save them for later reference
-    Jaipo->services(@services);
-	
+	# All plugins loaded, save them for later reference
+	Jaipo->services (@services);
+
 	# warn "No supported service provider initialled!\n" if not $has_site;
 }
 
@@ -136,7 +137,7 @@ sub init {
 
 sub send_msg {
 	my $message = shift;
-	my $site	= shift;
+	my $site    = shift;
 
 	#~ say "\033[1mSending message...\033[0m";
 
@@ -166,7 +167,7 @@ sub send_msg {
 
 sub set_location {
 	my $location = shift;
-	my $site	 = shift;
+	my $site     = shift;
 
 	my $rv;
 	my $has_site;
@@ -287,9 +288,9 @@ sub save_config {
 
 sub _tabs {
 	my $string = shift;
-		  length $string < 8  ? return "\t\t\t"
+	      length $string < 8  ? return "\t\t\t"
 		: length $string < 18 ? return "\t\t"
-		:						return "\t";
+		:                       return "\t";
 }
 
 =head1 AUTHOR
@@ -345,4 +346,4 @@ This program is released under the following license: GPL
 
 =cut
 
-1;	  # End of Jaipo
+1;    # End of Jaipo

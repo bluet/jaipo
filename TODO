@@ -1,0 +1,9 @@
+ - auto-messaging (keep karam ?)
+ - gui 
+ - opmsg
+ - console.pm
+
+plugins
+ - sqlite logger ( also provide search functino )
+ - post by feeds 
+ - post to irc

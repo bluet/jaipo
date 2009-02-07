@@ -27,7 +27,7 @@ sub app { return shift->_get( application => @_ ) }
 
 sub user { return shift->_get( user => @_ ) }
 
-# A teeny helper for framework and app
+# A teeny helper
 sub _get { return $_[0]->stash->{ $_[1] }{ $_[2] } }
 
 
@@ -39,7 +39,7 @@ sub load {
 	my $config;
 
 	if ( not -e "$ENV{HOME}/.jaipo.yml" ) {
-		$yaml = $self->load_default_config;
+		my $yaml = $self->load_default_config;
 		$config = YAML::Load ($yaml);
 		$self->stash ($config);
 	}
@@ -53,16 +53,18 @@ sub load {
 sub load_default_config {
 
 	# move this to a file later
-	my $config = <<YAML
+	my $config = <<YAML;
+---
 application:
-	Services:
-		Twitter: { }
-		Plurk: { }
-		Jaiku: { }
-	Plugins: {}
-user:
-	
+    Services:
+        - Twitter: { }
+        - Plurk: { }
+        - Jaiku: { }
+    Plugins: {}
+user: {}
+
 YAML
+	return Load( $config );
 
 }
 

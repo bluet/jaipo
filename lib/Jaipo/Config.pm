@@ -69,7 +69,7 @@ sub load_default_config {
 application:
     Services:
         - Twitter:
-            Username: Test
+            username: Test
     Plugins: {}
 user: {}
 

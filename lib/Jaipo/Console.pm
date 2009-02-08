@@ -26,12 +26,18 @@ sub _pre_init {
 
 # setup service
 sub setup_service {
-	my ( $self , $args ) = @_;
+	my ( $self , $args , $opt ) = @_;
 
-	use Data::Dumper::Simple;
-	warn Dumper( $args );
+	for my $column ( @{ $args->{require_args} } ) {
+		my ($column_name , $column_option )  = each %$column;
 
+		print "Init " , $args->{package_name} , ":\n";
+		print $column_option->{label} , ":" ;
+		my $val = <STDIN>;
+		chomp $val;
 
+		$opt->{$column_name} = $val;
+	}
 }
 
 

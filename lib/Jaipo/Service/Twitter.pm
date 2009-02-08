@@ -13,18 +13,29 @@ sub init {
 	unless( $opt->{username} and $opt->{password} ) {
 
 		# request to setup parameter
+		# XXX TODO: we need to simplify this, let it like jifty dbi schema  or
+		# something
 		$caller->setup_service ( {
 				package_name => __PACKAGE__,
-				require_args => {
-					username => { 
-						label => 'Username', 
-						description => '',
-						type => 'text' },
-					password => { 
-						label => 'Password', 
-						description => '',
-						type => 'text' },
-		} } , $opt );
+				require_args => [ {
+						username => {
+							label       => 'Username',
+							description => '',
+							type        => 'text'
+						}
+					},
+					{   password => {
+							label       => 'Password',
+							description => '',
+							type        => 'text'
+						} } ]
+			},
+			$opt
+		);
+
+		use Data::Dumper::Simple;
+		warn Dumper( $opt );
+
 	}
 
 	my $twitter = Net::Twitter->new( %$opt );

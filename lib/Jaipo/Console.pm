@@ -46,7 +46,19 @@ sub init {
 
 
 sub execute {
-	my ( $self, $cmd , $param ) = @_;
+	my $self = shift;
+	my $cmd = shift;
+
+	# do post if @_ is empty
+	unless( @_ ) {
+		$j_obj->action("post", $cmd );
+	}
+	# else we execute command
+	else {
+		my $param = shift;
+
+
+	}
 
 
 }

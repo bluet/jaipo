@@ -67,6 +67,7 @@ sub services {
 	return @SERVICES;
 }
 
+
 sub init {
 	my $self = shift;
 
@@ -79,6 +80,9 @@ sub init {
 	# Set up plugins
 	my @services;
 	my @services_to_load = @{ Jaipo->config->app ('Services') };
+
+	my @plugins;
+	my @plugins_to_load;
 
 	for ( my $i = 0; my $service = $services_to_load[$i]; $i++ ) {
 
@@ -101,23 +105,70 @@ sub init {
 		my %options = ( %{ $service->{$service_name} } );
 
 		# Load the service plugin code
-		# Jaipo::Util->require($class);
+        $self->_try_to_require( $class );
 		# Jaipo::ClassLoader->new(base => $class)->require;
 
 		# Initialize the plugin and mark the prerequisites for loading too
-		# my $plugin_obj = $class->new(%options);
-		# push @services, $plugin_obj;
-		# foreach my $name ($plugin_obj->prereq_plugins) {
-		#     next if grep { $_ eq $name } @plugins_to_load;
-		#     push @plugins_to_load, {$name => {}};
-		# }
+		my $plugin_obj = $class->new(%options);
+		push @services, $plugin_obj;
+		foreach my $name ($plugin_obj->prereq_plugins) {
+		    next if grep { $_ eq $name } @plugins_to_load;
+		    push @plugins_to_load, {$name => {}};
+		}
 	}
 
 	# All plugins loaded, save them for later reference
 	Jaipo->services (@services);
 
+	# XXX: need to implement plugin loader
+
 	# warn "No supported service provider initialled!\n" if not $has_site;
 }
+
+
+sub _require {
+    my $self = shift;
+    my %args = @_;
+    my $class = $args{module};
+
+
+    return 1 if $self->_already_required( $class );
+
+    my $file = $class;
+    $file .= '.pm' unless $file =~ /\.pm$/ ;
+    $file =~ s|::|/|g;
+
+    my $retval = eval  {CORE::require "$file"} ;
+    my $error = $@;
+    if (my $message = $error) { 
+        $message =~ s/ at .*?\n$//;
+        if ($args{'quiet'} and $message =~ /^Can't locate $file/) {
+            return 0;
+        }
+        elsif ( $error !~ /^Can't locate $file/) {
+            die $error;
+        } else {
+            #Jifty->log->error(sprintf("$message at %s line %d\n", (caller(1))[1,2]));
+            return 0;
+        }
+    }
+}
+
+sub _already_required {
+    my $self = shift;
+    my $class = shift;
+    my ( $path ) = ( $class =~ s|::|/|g );
+    $path .= '.pm';
+    return $INC{ $path } ? 1 : 0;
+}
+
+sub _try_to_require {
+    my $self = shift;
+    my $module = shift;
+    $self->_require( module => $module,  quiet => 0);
+}
+
+
 
 =head2 send_msg SITE
 
@@ -125,6 +176,7 @@ sub init {
 
 # XXX: still need to implement
 sub send_msg {
+	my $self = shift;
 	my $message = shift;
 	#~ say "\033[1mSending message...\033[0m";
 	

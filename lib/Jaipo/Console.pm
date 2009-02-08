@@ -38,18 +38,27 @@ sub execute {
 	my ( $self, $cmd , $param ) = @_;
 
 
-
 }
 
 
 sub run {
 	my $self = shift;
 
+	print <<'END';
+_________________________________________
+Jaipo Console
+
+version 0.1
+Type :? for help
+END
+
 	# read command from STDIN
-	while(1) {
+	while (1) {
+		print "jaipo> ";
 		my $cmd = <STDIN>;
 		chomp $cmd;
 
+		$self->execute ($cmd);
 
 	}
 }

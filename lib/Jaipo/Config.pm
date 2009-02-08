@@ -68,12 +68,14 @@ sub load_default_config {
 ---
 application:
     Services:
-        - Twitter: { }
+        - Twitter:
+            Username: Test
     Plugins: {}
 user: {}
 
 YAML
-	return Load( $config );
+	use YAML;
+	return YAML::Load( $config );
 
 }
 

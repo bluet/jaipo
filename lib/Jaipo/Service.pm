@@ -2,7 +2,7 @@ package Jaipo::Service;
 use warnings;
 use strict;
 use base qw/Class::Accessor::Fast/;
-
+__PACKAGE__->mk_accessors (qw/core options/);
 
 
 =head1 FUNCTIONS
@@ -13,7 +13,14 @@ use base qw/Class::Accessor::Fast/;
 
 sub new {
 	my $class = shift;
-	return bless {} , $class;
+	my %options = @_;
+
+	my $self = {};
+	bless $self , $class;
+
+	$self->options( \%options );
+
+	return $self;
 }
 
 =head2 init

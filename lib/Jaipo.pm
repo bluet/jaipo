@@ -83,6 +83,7 @@ sub services {
 
 sub init {
 	my $self = shift;
+	my $caller = shift;
 
 	# prereserve arguments for service plugin
 	# my $args = {
@@ -101,6 +102,7 @@ sub init {
 
 		# Prepare to learn the plugin class name
 		my ($service_name) = keys %{$service};
+
 		my $class;
 
 		# Is the plugin name a fully-qualified class name?
@@ -122,7 +124,8 @@ sub init {
 		# Jaipo::ClassLoader->new(base => $class)->require;
 
 		# Initialize the plugin and mark the prerequisites for loading too
-		my $plugin_obj = $class->new(%options);
+		my $plugin_obj = $class->new( %options );
+		$plugin_obj->init( $caller ) ;
 		push @services, $plugin_obj;
 		foreach my $name ($plugin_obj->prereq_plugins) {
 		    next if grep { $_ eq $name } @plugins_to_load;
@@ -143,7 +146,6 @@ sub _require {
     my $self = shift;
     my %args = @_;
     my $class = $args{module};
-
 
     return 1 if $self->_already_required( $class );
 
@@ -180,7 +182,6 @@ sub _try_to_require {
     my $module = shift;
     $self->_require( module => $module,  quiet => 0);
 }
-
 
 
 =head2 send_msg SITE

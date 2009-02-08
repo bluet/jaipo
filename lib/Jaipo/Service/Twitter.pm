@@ -16,8 +16,14 @@ sub init {
 		$caller->setup_service ( {
 				package_name => __PACKAGE__,
 				require_args => {
-					username => { label => 'Username', description => '' },
-					password => { label => 'Password', description => '' },
+					username => { 
+						label => 'Username', 
+						description => '',
+						type => 'text' },
+					password => { 
+						label => 'Password', 
+						description => '',
+						type => 'text' },
 		} } , $opt );
 	}
 

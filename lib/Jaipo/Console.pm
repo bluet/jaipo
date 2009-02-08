@@ -23,13 +23,24 @@ sub _pre_init {
 }
 
 
+
+# setup service
+sub setup_service {
+	my ( $self , $args ) = @_;
+
+	use Data::Dumper::Simple;
+	warn Dumper( $args );
+
+
+}
+
+
 sub init {
 	my $self = shift;
 
 	# init Jaipo here
 	$j_obj = Jaipo->new;
-
-
+	$j_obj->init( $self );
 
 }
 

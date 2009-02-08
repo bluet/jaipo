@@ -11,8 +11,16 @@ __PACKAGE__->mk_accessors (qw/stash/);
 use vars qw/$CONFIG/;
 
 sub new {
-	my $self = shift;
+	my $class = shift;
+	my %args = @_;
 
+	my $self = {};
+	bless $self , $class;
+	$self->stash( {} );
+
+	$self->load;
+
+	return $self;
 }
 
 sub app_config_path {
@@ -44,13 +52,11 @@ sub load {
 	my $config;
 
 	if ( not -e "$ENV{HOME}/.jaipo.yml" ) {
-		my $yaml = $self->load_default_config;
-		$config = YAML::Load ($yaml);
+		$config = $self->load_default_config;
 		$self->stash ($config);
 	}
 
 	# load user jaipo yaml config from file here
-
 	return $config;
 
 }
@@ -63,8 +69,6 @@ sub load_default_config {
 application:
     Services:
         - Twitter: { }
-        - Plurk: { }
-        - Jaiku: { }
     Plugins: {}
 user: {}
 

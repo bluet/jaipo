@@ -24,7 +24,7 @@ our $VERSION = '0.01';
 
 =head1 DESCRIPTION
 
-Jaipo (宅噗)
+Jaipo ( 宅噗 )
 
 This project was starting for Jaiku.com, but now going to support as-much-as-we-can micro-blogging sites.
 
@@ -36,12 +36,11 @@ Bcoz it's writen in perl, so it can run on any OS and any machine with perl. I g
 
 Now you can read feeds, send message, and set location with Jaipo.
 
-=head1 EXPORT
-
-
 =cut
 
-=head2 initialize 
+=head1 FUNCTIONS
+
+=head2 new
 
 =cut
 
@@ -54,6 +53,12 @@ sub new {
 	return $self;
 }
 
+=head2 config
+
+return L<Jaipo::Config>
+
+=cut
+
 sub config {
 	my $class = shift;
 	$CONFIG = shift if (@_);
@@ -61,12 +66,20 @@ sub config {
 	return $CONFIG;
 }
 
+=head2 services
+
+=cut
+
 sub services {
 	my $class = shift;
 	@SERVICES = @_ if @_;
 	return @SERVICES;
 }
 
+
+=head2 init 
+
+=cut
 
 sub init {
 	my $self = shift;

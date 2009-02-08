@@ -5,5 +5,13 @@ BEGIN {
     use_ok('Jaipo');
 }
 
+$jc = Jaipo::Console->new;
+
+ok( $jc );
+
+$jc->init;
+
+
+
 
 

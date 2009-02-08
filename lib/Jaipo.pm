@@ -191,6 +191,17 @@ sub action {
 		if( UNIVERSAL::can($service, $action) ) {
 			$service->$action( $param );
 		}
+
+		elsif( UNIVERSAL::can($service->core, $action) ) {
+			$service->core->$action( $param );
+		}
+
+		else {
+			# service plugin doesn't support this kind of action
+
+
+
+		}
 	}
 
 }

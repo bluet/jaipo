@@ -38,7 +38,20 @@ sub init {
 
 	}
 
+	# default options
+	$opt->{useragent} = 'Jaipo (Perl)';
+	$opt->{source}    = 'Jaipo (Perl)';
+	$opt->{clienturl} = '';
+	$opt->{clientver} = '';
+	$opt->{clientname} = '';
+
 	my $twitter = Net::Twitter->new( %$opt );
+
+	unless( $twitter ) {
+		# XXX: need to implement logger:  Jaipo->log->warn( );
+		print "twitter init failed\n";
+	}
+
 	$self->core( $twitter );
 }
 

@@ -1,0 +1,5 @@
+#!perl
+use Jaipo::Console;
+my $jc = Jaipo::Console->new;
+$jc->init;
+$jc->run;

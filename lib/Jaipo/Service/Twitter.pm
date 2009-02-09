@@ -32,18 +32,14 @@ sub init {
 			},
 			$opt
 		);
-
-		use Data::Dumper::Simple;
-		warn Dumper( $opt );
-
 	}
 
 	# default options
-	$opt->{useragent} = 'Jaipo (Perl)';
-	$opt->{source}    = 'Jaipo (Perl)';
-	$opt->{clienturl} = '';
-	$opt->{clientver} = '';
-	$opt->{clientname} = '';
+# 	$opt->{useragent} = 'Jaipo (Perl)';
+# 	$opt->{source}    = 'Jaipo (Perl)';
+# 	$opt->{clienturl} = '';
+# 	$opt->{clientver} = '';
+# 	$opt->{clientname} = '';
 
 	my $twitter = Net::Twitter->new( %$opt );
 
@@ -58,6 +54,11 @@ sub init {
 sub update {
 	my ( $self , $message ) = @_;
 	my $result = $self->core->update({ status => $message });
+
+}
+
+sub user_timeline {
+    my ( $self ) = @_;
 
 }
 

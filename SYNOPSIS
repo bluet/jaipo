@@ -1,0 +1,35 @@
+
+SYNOPSIS OF JAIPO CONSOLE
+
+$ jaipo console
+
+> r|replay  [key]  [message]
+# reply messages
+
+> t|timeline (unread items)
+Service | User | Message
+twitter    fji    say something 
+...
+...
+...
+
+> u|update [message]
+# update messages
+
+> l|location [location]
+# setup location
+
+> use Twitter
+# enable Twitter service plugin
+
+> use Plurk
+# enable Plurk service plugin
+
+> use RSS
+# enable RSS plugin
+
+> use IRC
+# enable IRC plugin
+
+
+

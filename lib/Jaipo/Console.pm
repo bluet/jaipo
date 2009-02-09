@@ -2,6 +2,7 @@ package Jaipo::Console;
 use warnings;
 use strict;
 use Jaipo;
+use feature qw(:5.10);
 
 my $j_obj;
 
@@ -55,18 +56,18 @@ sub init {
 sub execute {
 	my $self = shift;
 	my $cmd = shift;
+	my $param = @_;
 
-	# do post if @_ is empty
-	unless( @_ ) {
-		$j_obj->action("post", $cmd );
+	given ($cmd) {
+		when ('?') { }
+		when ('r') { }
+		when ('l') { }
+
+		default {
+			# do update status message if @_ is empty
+			$j_obj->action("update", join(' ',$cmd,$param) );
+		}
 	}
-	# else we execute command
-	else {
-		my $param = shift;
-
-
-	}
-
 
 }
 
@@ -79,7 +80,7 @@ _________________________________________
 Jaipo Console
 
 version 0.1
-Type :? for help
+Type ? for help
 END
 
 	# read command from STDIN
@@ -87,9 +88,8 @@ END
 		print "jaipo> ";
 		my $cmd = <STDIN>;
 		chomp $cmd;
-
-		$self->execute ($cmd);
-
+		my @args = split /\s+/ , $cmd;
+		$self->execute (@args);
 	}
 }
 

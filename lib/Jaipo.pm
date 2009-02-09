@@ -188,12 +188,9 @@ sub action {
 	my ( $self , $action , $param ) = @_;
 	my @services = Jaipo->services;
 	foreach my $service ( @services ) {
+
 		if( UNIVERSAL::can($service, $action) ) {
 			$service->$action( $param );
-		}
-
-		elsif( UNIVERSAL::can($service->core, $action) ) {
-			$service->core->$action( $param );
 		}
 
 		else {

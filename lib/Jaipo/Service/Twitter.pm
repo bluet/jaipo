@@ -55,5 +55,15 @@ sub init {
 	$self->core( $twitter );
 }
 
+sub update {
+	my ( $self , $message ) = @_;
+	my $result = $self->core->update({ status => $message });
+
+}
+
+sub reply {
+
+}
+
 
 1;

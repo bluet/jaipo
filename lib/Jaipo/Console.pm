@@ -4,7 +4,7 @@ use strict;
 use Jaipo;
 use feature qw(:5.10);
 
-my $j_obj;
+my $jobj;
 
 
 =head1 SYNOPSIS
@@ -13,24 +13,17 @@ to enter jaipo console:
 
     $ jaipo console
 
+    > use Twitter           # enable Twitter service plugin
+    > use Plurk             # enable Plurk service plugin
+    > use RSS               # enable RSS plugin
+    > use IRC               # enable IRC plugin
 
-enable Twitter service plugin
-    > use Twitter
+to read reply messages
 
-enable Plurk service plugin
-    > use Plurk
+    > r|reply
 
-enable RSS plugin
-    > use RSS
-
-enable IRC plugin
-    > use IRC
-
-to reply messages
-
-    > r|replay  [key]  [message]
-
-    > t|timeline (unread items)
+to read user timeline
+    > t|timeline 
 
     Service | User | Message
     twitter    fji    say something 
@@ -38,11 +31,33 @@ to reply messages
     ...
     ...
 
-update messages
-    > u|update [message]
+to read public timeline
+
+    > p|public
+
+to check user's profile
+
+    > w|who [user id]
+
 
 setup location
-    > l|location [location]
+    > :l|location [location]
+
+to reply to someone
+
+    > :r|reply user, hey! how are you
+
+to send direct message to someone. 
+
+    > :d|direct user , hey! what's up
+
+to send a message to a channel
+
+    > :c|channel channel , cpan upload!
+
+update messages
+    > :u|update [message]
+
 
 
 =cut
@@ -64,7 +79,6 @@ sub _pre_init {
 	my $self = shift;
 
 }
-
 
 
 # setup service
@@ -89,8 +103,19 @@ sub init {
 	my $self = shift;
 
 	# init Jaipo here
-	$j_obj = Jaipo->new;
-	$j_obj->init( $self );
+	$jobj = Jaipo->new;
+	$jobj->init( $self );
+
+}
+
+sub print_help {
+    my $self = shift;
+
+    print <<HELP ;
+
+
+
+HELP
 
 }
 
@@ -98,16 +123,17 @@ sub init {
 sub execute {
 	my $self = shift;
 	my $cmd = shift;
-	my $param = @_;
+	my $param = [ @_ ];
 
+    # XXX: add trigger 
 	given ($cmd) {
-		when ('?') { }
-		when ('r') { }
-		when ('l') { }
+		when ('?') { $self->print_help }
+
 
 		default {
+
 			# do update status message if @_ is empty
-			$j_obj->action("update", join(' ',$cmd,$param) );
+			$jobj->action ( "update", join ( ' ', $cmd, $param ) );
 		}
 	}
 

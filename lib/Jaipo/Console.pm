@@ -6,6 +6,48 @@ use feature qw(:5.10);
 
 my $j_obj;
 
+
+=head1 SYNOPSIS
+
+to enter jaipo console:
+
+    $ jaipo console
+
+
+enable Twitter service plugin
+    > use Twitter
+
+enable Plurk service plugin
+    > use Plurk
+
+enable RSS plugin
+    > use RSS
+
+enable IRC plugin
+    > use IRC
+
+to reply messages
+
+    > r|replay  [key]  [message]
+
+    > t|timeline (unread items)
+
+    Service | User | Message
+    twitter    fji    say something 
+    ...
+    ...
+    ...
+
+update messages
+    > u|update [message]
+
+setup location
+    > l|location [location]
+
+
+=cut
+
+
 sub new {
 	my $class = shift;
 	my %args = @_;

@@ -18,12 +18,8 @@ to enter jaipo console:
     > use RSS               # enable RSS plugin
     > use IRC               # enable IRC plugin
 
-to read reply messages
-
-    > r|reply
-
-to read user timeline
-    > t|timeline 
+to read all messeges
+    > r
 
     Service | User | Message
     twitter    fji    say something 
@@ -31,33 +27,37 @@ to read user timeline
     ...
     ...
 
+to read messages on Jaiku.com
+
+    > jaiku r
+
+to read someone's messages on Jaiku.com
+
+    > jaiku r UnitedNation
+
 to read public timeline
 
-    > p|public
+    > p
 
 to check user's profile
 
-    > w|who [user id]
+    > w|who IsYourDaddy
 
 
-setup location
-    > :l|location [location]
+setup location on Jaiku
+    > jaiku l ":我在墾丁，天氣情。"
 
-to reply to someone
+to reply to someone's post on plurk.com
 
-    > :r|reply user, hey! how are you
+    > plurk #2630 ":呆丸朱煮好棒"
 
-to send direct message to someone. 
+to send direct message to someone on twitter
 
-    > :d|direct user , hey! what's up
+    > twitter mama ":媽，我阿雄啦！"
 
-to send a message to a channel
+to send a message to a channel on Jaiku
 
-    > :c|channel channel , cpan upload!
-
-update messages
-    > :u|update [message]
-
+    > jaiku #TVshow ":媽，我上電視了！(揮手)"
 
 
 =cut

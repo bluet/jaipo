@@ -103,6 +103,7 @@ sub new {
 
 sub _pre_init {
 	my $self = shift;
+    binmode STDOUT,":utf8";
 
 }
 
@@ -172,17 +173,17 @@ sub parse {
 
         }
 
-        when ( m/^(r|read)\>/i ) {  
+        when ( m/^(r|read)/i ) {  
             $jobj->action ( "read_user_timeline", $line );
 
         }
 
-        when ( m/^(p|public)\>/i ) { 
+        when ( m/^(p|public)/i ) { 
             $jobj->action ( "read_public_timeline", $line );
 
         }
 
-        when ( m/^(g|global)\>/i ) { 
+        when ( m/^(g|global)/i ) { 
             $jobj->action ( "read_global_timeline", $line );
 
         }

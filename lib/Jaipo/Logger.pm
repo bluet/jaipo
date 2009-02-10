@@ -19,8 +19,15 @@ sub warn {
 }
 
 
-sub log {
+# auto format tweets message 
+sub pushtweets {
+    my $self = shift;
 
+
+}
+
+
+sub log {
 
 
 

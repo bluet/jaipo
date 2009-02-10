@@ -3,7 +3,7 @@ use warnings;
 use strict;
 use Net::Twitter;
 use base qw/Jaipo::Service Class::Accessor::Fast/;
-
+use utf8;
 
 sub init {
 	my $self   = shift;
@@ -63,7 +63,7 @@ sub read_user_timeline {
     my $lines = $self->core->user_timeline;  # XXX: give args to this method
 
     for ( @$lines ) {
-    #$_->{text};
+        print $_->{text} , "\n";
 
     }
 
@@ -76,7 +76,8 @@ sub read_public_timeline {
     my $lines = $self->core->friends_timeline;  # XXX: give args to this method
 
     for ( @$lines ) {
-    # $_->{text};
+        # XXX TODO: use jaipo logger
+        print $_->{text} , "\n";
 
     }
 
@@ -89,7 +90,7 @@ sub read_global_timeline {
     my $lines = $self->core->public_timeline;  # XXX: give args to this method
 
     for ( @$lines ) {
-    #$_->{text}
+        print $_->{text} , "\n";
 
     }
 

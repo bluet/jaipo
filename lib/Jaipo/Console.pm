@@ -35,11 +35,11 @@ to read all messeges
 
 to read messages on Jaiku.com
 
-    > :jaiku r
+    > :jaiku :r
 
 to read someone's messages on Jaiku.com
 
-    > :jaiku r UnitedNation
+    > :jaiku :r UnitedNation
 
 to read public timeline
 
@@ -67,6 +67,23 @@ to send a message to a channel on Jaiku
 create a regular expression filter for twitter timeline
 
     > filter /cor[a-z]*s/i  :twitter
+
+
+=head1 Command Reference
+
+=head2 Global Commands
+
+r
+p
+...
+
+=head2 Service Commands 
+
+:[service]  [message]
+
+:[service]  :[action] [arguments]
+
+=head2 
 
 
 =cut
@@ -122,27 +139,53 @@ sub print_help {
 
     print <<HELP ;
 
+r       to read all messages
 
+
+:[service]  [message]
+:[service]  :[action]  [arguments]
 
 HELP
 
 }
 
 
-sub execute {
+sub parse {
 	my $self = shift;
-	my $cmd = shift;
-	my $param = [ @_ ];
+	my $line = shift;
 
     # XXX: add trigger 
-	given ($cmd) {
-		when ('?') { $self->print_help }
+	given ($line) {
 
+        # built-in commands
+        when ( m/^(u|use)\s/i ) {
+            # init service plugins
+
+        }
+
+        when ( m/^(r|read)\s/i ) { 
+            $jobj->action ( "read_user_timeline", $line );
+
+        }
+
+        when ( m/^(p|public)\s/i ) { 
+            $jobj->action ( "read_public_timeline", $line );
+
+        }
+
+        when ( m/^(f|filter)\s/i ) { 
+            my ($cmd,$action,@params) = split /\s+/ , $line;
+
+        }
+
+		when ( '?' ) { 
+            $self->print_help 
+        }
 
 		default {
 
 			# do update status message if @_ is empty
-			$jobj->action ( "update", join ( ' ', $cmd, $param ) );
+            $jobj->action ( "send_msg", $line );
 		}
 	}
 
@@ -158,18 +201,17 @@ Jaipo Console
 
 version 0.1
 Type ? for help
+Type :[service] :? for service plugin help
 END
 
 	# read command from STDIN
 	while (1) {
 		print "jaipo> ";
-		my $cmd = <STDIN>;
-		chomp $cmd;
-		my @args = split /\s+/ , $cmd;
-		$self->execute (@args);
+		my $line = <STDIN>;
+		chomp $line;
+		$self->parse ( $line );
 	}
 }
-
 
 
 

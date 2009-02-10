@@ -57,10 +57,16 @@ sub send_msg {
 
 }
 
-sub user_timeline {
-    my ( $self ) = @_;
+sub read_user_timeline {
+    my $self = shift;
 
 }
+
+sub read_public_timeline {
+    my $self = shift;
+
+}
+
 
 
 

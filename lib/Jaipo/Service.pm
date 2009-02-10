@@ -64,6 +64,7 @@ sub prereq_plugins {
 
 
 =cut
+
 sub send_msg {
 
 }
@@ -74,7 +75,7 @@ sub set_location {
 }
 
 
-sub read_timeline {
+sub read_user_timeline {
 
 }
 

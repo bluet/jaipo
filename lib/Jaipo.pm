@@ -3,6 +3,7 @@ use warnings;
 use strict;
 use feature qw(:5.10);
 use Jaipo::Config;
+use Jaipo::Logger;
 use base qw/Class::Accessor::Fast/;
 __PACKAGE__->mk_accessors (qw/config/);
 

@@ -154,6 +154,9 @@ sub parse {
 	my $self = shift;
 	my $line = shift;
 
+    $line =~ s/^\s*//g;
+    $line =~ s/\s*$//g;
+
     # XXX: add trigger 
 	given ($line) {
 
@@ -169,21 +172,22 @@ sub parse {
 
         }
 
-        when ( m/^(r|read)\s/i ) {  
+        when ( m/^(r|read)\>/i ) {  
             $jobj->action ( "read_user_timeline", $line );
 
         }
 
-        when ( m/^(p|public)\s/i ) { 
+        when ( m/^(p|public)\>/i ) { 
             $jobj->action ( "read_public_timeline", $line );
 
         }
 
-        when ( m/^(g|global)\s/i ) { 
+        when ( m/^(g|global)\>/i ) { 
             $jobj->action ( "read_global_timeline", $line );
 
         }
 
+        # something like filter create /regexp/  :twitter:public
         when ( m/^(f|filter)\s/i ) { 
             my ($cmd,$action,@params) = split /\s+/ , $line;
 
@@ -194,6 +198,7 @@ sub parse {
         }
 
 		default {
+            warn 'default action';
 
 			# do update status message if @_ is empty
             $jobj->action ( "send_msg", $line );

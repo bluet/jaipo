@@ -63,7 +63,7 @@ sub read_user_timeline {
     my $lines = $self->core->user_timeline;  # XXX: give args to this method
 
     for ( @$lines ) {
-        $_->{text}
+    #$_->{text};
 
     }
 
@@ -76,7 +76,7 @@ sub read_public_timeline {
     my $lines = $self->core->friends_timeline;  # XXX: give args to this method
 
     for ( @$lines ) {
-        $_->{text}
+    # $_->{text};
 
     }
 
@@ -89,7 +89,7 @@ sub read_global_timeline {
     my $lines = $self->core->public_timeline;  # XXX: give args to this method
 
     for ( @$lines ) {
-        $_->{text}
+    #$_->{text}
 
     }
 

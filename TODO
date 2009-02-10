@@ -2,6 +2,7 @@
  - gui 
  - opmsg
  - console.pm
+ - Mac::iTunes binding
 
 plugins
  - sqlite logger ( also provide search functino )

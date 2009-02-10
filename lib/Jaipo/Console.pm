@@ -170,6 +170,9 @@ sub parse {
         # built-in commands
         when ( m/^(u|use)\s/i ) {
             # init service plugins
+            # XXX:
+            #my $name = 
+            $jobj->runtime_load_service;
 
         }
 

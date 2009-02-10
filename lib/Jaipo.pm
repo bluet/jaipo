@@ -126,6 +126,8 @@ sub init {
 		# Load the service plugin options
 		my %options = ( %{ $service->{$service_name} } );
 
+		next if( ! defined $options{OnLoad} ) ;
+
 		# Load the service plugin code
         $self->_try_to_require( $class );
 		# Jaipo::ClassLoader->new(base => $class)->require;
@@ -153,6 +155,9 @@ sub init {
 }
 
 
+=head2 _require
+
+=cut
 
 sub _require {
     my $self = shift;
@@ -181,6 +186,11 @@ sub _require {
     }
 }
 
+
+=head2 _already_required
+
+=cut
+
 sub _already_required {
     my $self = shift;
     my $class = shift;
@@ -189,6 +199,12 @@ sub _already_required {
     return $INC{ $path } ? 1 : 0;
 }
 
+
+
+=head2 _try_to_require 
+
+=cut
+
 sub _try_to_require {
     my $self = shift;
     my $module = shift;
@@ -196,7 +212,76 @@ sub _try_to_require {
 }
 
 
-=head2 dispatch SERVICE, MESSAGE
+
+=head2 find_plugin
+
+Find plugins by name.
+
+=cut
+
+sub find_plugin {
+    my $self = shift;
+    my $name = shift;
+
+    my @plugins = grep { $_->isa($name) } Jaipo->plugins;
+    return wantarray ? @plugins : $plugins[0];
+}
+
+
+=head2 find_plugin_config
+
+Returns a config hash
+
+=cut
+
+sub find_plugin_config {
+	my $self = shift;
+	my $name = shift;
+
+	my @services = @{ Jaipo->config->app ('Services') };
+
+	# @services = grep { $name eq shift keys $_ }, @services;
+
+	my @configs = ();
+	map { my ($p)=keys %$_; 
+			push @configs,values %$_ 
+			if $p =~ m/\Q$name/ } @services;
+	return wantarray ? @configs : $configs[0];
+}
+
+
+=head2 runtime_load_service 
+
+
+=cut
+
+sub runtime_load_service {
+	my $self = shift;
+
+
+# 	my $class = "Jaipo::Service::" . $service_name;
+# 	my %options = ( %{ $service->{$service_name} } );
+# 
+# 	# Load the service plugin options
+# 	my %options = ( %{ $service->{$service_name} } );
+# 
+# 	# Load the service plugin code
+# 	$self->_try_to_require( $class );
+# 	# Jaipo::ClassLoader->new(base => $class)->require;
+# 
+# 	my $plugin_obj = $class->new( %options );
+# 	$plugin_obj->init( $caller ) ;
+# 	push @services, $plugin_obj;
+# 	foreach my $name ($plugin_obj->prereq_plugins) {
+# 		next if grep { $_ eq $name } @plugins_to_load;
+# 		push @plugins_to_load, {$name => {}};
+# 	}
+
+}
+
+
+
+=head2 dispatch_to_service SERVICE, MESSAGE
 
 command start with C<:[service]> ( e.g. C<:twitter> or C<:plurk> ) something
 like that will call the servcie dispatch method,  service plugin will decide

@@ -153,6 +153,7 @@ sub init {
 }
 
 
+
 sub _require {
     my $self = shift;
     my %args = @_;
@@ -203,8 +204,9 @@ what to do with.
 
 =cut
 
-sub dispatch {
-    my ( $service , $message ) = @_;
+sub dispatch_to_service {
+    my ( $service , $line ) = @_;
+
 
 }
 

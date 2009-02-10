@@ -157,19 +157,30 @@ sub parse {
     # XXX: add trigger 
 	given ($line) {
 
+        when ( m/^:/ ) {
+            # dispatch to service
+            my ($service,$rest_line) = ( $line =~ m/^:(\w+)\s+(.*)/i );
+            $jobj->dispatch_to_service( $service , $rest_line );
+        }
+
         # built-in commands
         when ( m/^(u|use)\s/i ) {
             # init service plugins
 
         }
 
-        when ( m/^(r|read)\s/i ) { 
+        when ( m/^(r|read)\s/i ) {  
             $jobj->action ( "read_user_timeline", $line );
 
         }
 
         when ( m/^(p|public)\s/i ) { 
             $jobj->action ( "read_public_timeline", $line );
+
+        }
+
+        when ( m/^(g|global)\s/i ) { 
+            $jobj->action ( "read_global_timeline", $line );
 
         }
 

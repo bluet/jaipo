@@ -62,7 +62,6 @@ sub prereq_plugins {
 =head1 service methods
 
 
-
 =cut
 
 sub send_msg {
@@ -74,12 +73,18 @@ sub set_location {
 
 }
 
-
+# updates from user him self
 sub read_user_timeline {
 
 }
 
+# updates from users friends or follows
 sub read_public_timeline {
+
+}
+
+# global timeline ( out of space !! )
+sub read_global_timeline {
 
 
 }
@@ -90,6 +95,7 @@ sub create_filter {
 
 
 sub remove_filter {
+
 
 }
 

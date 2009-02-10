@@ -77,6 +77,13 @@ sub services {
 }
 
 
+sub logger {
+    my $class = shift;
+    $LOGGER = shift if ( @_ );
+    return $LOGGER;
+}
+
+
 =head2 init 
 
 =cut
@@ -137,6 +144,10 @@ sub init {
 	Jaipo->services (@services);
 
 	# XXX: need to implement plugin loader
+
+    # Logger turn on
+    Jaipo->logger( Jaipo::Logger->new );
+
 
 	# warn "No supported service provider initialled!\n" if not $has_site;
 }

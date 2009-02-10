@@ -63,8 +63,7 @@ sub read_user_timeline {
     my $lines = $self->core->user_timeline;  # XXX: give args to this method
 
     for ( @$lines ) {
-        print $_->{text} , "\n";
-
+        Jaipo->logger->info( "%s | %s | from %s " , $_->{user}->{name} , $_->{text} , $_->{source} );
     }
 
 }
@@ -77,8 +76,7 @@ sub read_public_timeline {
 
     for ( @$lines ) {
         # XXX TODO: use jaipo logger
-        print $_->{text} , "\n";
-
+        Jaipo->logger->info( "%s | %s | from %s " , $_->{user}->{name} , $_->{text} , $_->{source} );
     }
 
 }
@@ -90,7 +88,7 @@ sub read_global_timeline {
     my $lines = $self->core->public_timeline;  # XXX: give args to this method
 
     for ( @$lines ) {
-        print $_->{text} , "\n";
+        Jaipo->logger->info( "%+16s | %s | from %s " , $_->{user}->{name} , $_->{text} , $_->{source} );
 
     }
 

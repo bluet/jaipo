@@ -2,6 +2,7 @@ package Jaipo::Logger;
 use warnings;
 use strict;
 
+
 sub new {
     my $class = shift;
 
@@ -18,19 +19,14 @@ sub warn {
 
 }
 
-
-# auto format tweets message 
-sub pushtweets {
+sub info {
     my $self = shift;
+    my $line = shift;
 
+    my @args = @_;
 
-}
-
-
-sub log {
-
-
-
+    printf( $line , @args );
+    print "\n";
 }
 
 

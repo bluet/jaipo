@@ -84,7 +84,6 @@ sub logger {
     return $LOGGER;
 }
 
-
 =head2 init 
 
 =cut

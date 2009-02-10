@@ -2,14 +2,16 @@ package Jaipo::Console;
 use warnings;
 use strict;
 use Jaipo;
+use utf8;
 use feature qw(:5.10);
 
 my $jobj;
 
+=encoding utf8
 
 =head1 SYNOPSIS
 
-to enter jaipo console:
+to enter Jaipo console:
 
     $ jaipo console
 
@@ -18,7 +20,7 @@ to enter jaipo console:
     > use RSS               # enable RSS plugin
     > use IRC               # enable IRC plugin
 
-jaipo will automatically save your configuration, you only need to use 'use'
+Jaipo will automatically save your configuration, you only need to use 'use'
 at first time.
 
 to read all messeges
@@ -26,6 +28,7 @@ to read all messeges
 
     Service |   User   | Message
     twitter    c9s       oh hohoho !
+    plurk      xxx       剛喝完咖啡.
     ...
     ...
     ...
@@ -46,13 +49,12 @@ to check user's profile
 
     > w|who IsYourDaddy
 
-
 setup location on Jaiku
     > :jaiku l 我在墾丁，天氣情。
 
 to reply to someone's post on plurk.com
 
-    > :plurk #2630 :呆丸朱煮好棒
+    > :plurk #2630 呆丸朱煮好棒
 
 to send direct message to someone on twitter
 
@@ -62,7 +64,7 @@ to send a message to a channel on Jaiku
 
     > :jaiku #TVshow 媽，我上電視了！(揮手)
 
-create a filter for twitter timeline
+create a regular expression filter for twitter timeline
 
     > filter /cor[a-z]*s/i  :twitter
 

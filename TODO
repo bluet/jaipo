@@ -3,6 +3,7 @@
  - opmsg
  - console.pm
  - Mac::iTunes binding
+ - ShortUrl binding
 
 plugins
  - sqlite logger ( also provide search functino )

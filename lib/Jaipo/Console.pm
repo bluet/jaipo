@@ -48,11 +48,11 @@ to check user's profile
 
 
 setup location on Jaiku
-    > :jaiku l ":我在墾丁，天氣情。"
+    > :jaiku l 我在墾丁，天氣情。
 
 to reply to someone's post on plurk.com
 
-    > :plurk #2630 ":呆丸朱煮好棒"
+    > :plurk #2630 :呆丸朱煮好棒
 
 to send direct message to someone on twitter
 

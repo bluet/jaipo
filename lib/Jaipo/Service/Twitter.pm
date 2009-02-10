@@ -51,7 +51,7 @@ sub init {
 	$self->core( $twitter );
 }
 
-sub update {
+sub send_msg {
 	my ( $self , $message ) = @_;
 	my $result = $self->core->update({ status => $message });
 
@@ -62,9 +62,6 @@ sub user_timeline {
 
 }
 
-sub reply {
-
-}
 
 
 1;

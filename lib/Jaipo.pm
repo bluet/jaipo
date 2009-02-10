@@ -184,6 +184,23 @@ sub _try_to_require {
 }
 
 
+=head2 dispatch SERVICE, MESSAGE
+
+command start with C<:[service]> ( e.g. C<:twitter> or C<:plurk> ) something
+like that will call the servcie dispatch method,  service plugin will decide
+what to do with.
+
+=cut
+
+sub dispatch {
+    my ( $service , $message ) = @_;
+
+}
+
+=head2 action ACTION, PARAM
+
+=cut
+
 sub action {
 	my ( $self , $action , $param ) = @_;
 	my @services = Jaipo->services;
@@ -195,9 +212,6 @@ sub action {
 
 		else {
 			# service plugin doesn't support this kind of action
-
-
-
 		}
 	}
 

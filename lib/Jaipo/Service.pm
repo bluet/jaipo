@@ -45,6 +45,9 @@ sub new_request {
 }
 
 
+
+
+
 =head2 prereq
 
 Returns an array of plugin module names that this plugin depends on.
@@ -54,6 +57,43 @@ Returns an array of plugin module names that this plugin depends on.
 sub prereq_plugins {
 	return ();
 }
+
+
+=head1 service methods
+
+
+
+=cut
+sub send_msg {
+
+}
+
+
+sub set_location {
+
+}
+
+
+sub read_timeline {
+
+}
+
+sub read_public_timeline {
+
+
+}
+
+sub create_filter {
+
+}
+
+
+sub remove_filter {
+
+}
+
+
+
 
 1;
 

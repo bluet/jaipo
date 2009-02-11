@@ -34,7 +34,7 @@ sub init {
 		);
 	}
 
-	my $plurk = WWW::Plurk->new();
+	my $plurk = new WWW::Plurk;
 
 	unless( $plurk ) {
 		# XXX: need to implement logger:  Jaipo->log->warn( );

@@ -158,6 +158,8 @@ sub parse {
     $line =~ s/^\s*//g;
     $line =~ s/\s*$//g;
 
+	return unless $line;
+
     # XXX: add trigger 
 	given ($line) {
 
@@ -171,8 +173,10 @@ sub parse {
         when ( m/^(u|use)\s/i ) {
             # init service plugins
             # XXX:
-            #my $name = 
-            $jobj->runtime_load_service;
+            my ($name) = "$'";
+			$jobj->runtime_load_service( $self, $name );
+			# runtime_load_service $jobj , $self , $name;
+
 
         }
 

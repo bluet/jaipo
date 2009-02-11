@@ -257,25 +257,29 @@ sub find_plugin_config {
 
 sub runtime_load_service {
 	my $self = shift;
+	my $caller = shift;
+	my $service_name = shift;
 
+ 	my $class = "Jaipo::Service::" . ucfirst $service_name;
 
-# 	my $class = "Jaipo::Service::" . $service_name;
-# 	my %options = ( %{ $service->{$service_name} } );
-# 
-# 	# Load the service plugin options
-# 	my %options = ( %{ $service->{$service_name} } );
-# 
-# 	# Load the service plugin code
-# 	$self->_try_to_require( $class );
-# 	# Jaipo::ClassLoader->new(base => $class)->require;
-# 
-# 	my $plugin_obj = $class->new( %options );
-# 	$plugin_obj->init( $caller ) ;
-# 	push @services, $plugin_obj;
-# 	foreach my $name ($plugin_obj->prereq_plugins) {
-# 		next if grep { $_ eq $name } @plugins_to_load;
-# 		push @plugins_to_load, {$name => {}};
-# 	}
+	my $options = $self->find_plugin_config( $service_name );
+
+ 	# Load the service plugin code
+ 	$self->_try_to_require( $class );
+ 	# Jaipo::ClassLoader->new(base => $class)->require;
+ 
+ 	my $plugin_obj = $class->new( %$options );
+ 	$plugin_obj->init( $caller ) ;
+
+	my @services = Jaipo->services;
+
+ 	push @services, $plugin_obj;
+ 	foreach my $name ($plugin_obj->prereq_plugins) {
+	# next if grep { $_ eq $name } @plugins_to_load;
+	#push @plugins_to_load, {$name => {}};
+ 	}
+
+	Jaipo->services (@services);
 
 }
 

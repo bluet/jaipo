@@ -4,6 +4,7 @@
  - console.pm
  - Mac::iTunes binding
  - ShortUrl binding
+ - Image to ASCII Converter for showing user profile
 
 plugins
  - sqlite logger ( also provide search functino )

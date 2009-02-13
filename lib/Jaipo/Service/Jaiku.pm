@@ -66,10 +66,13 @@ sub read_user_timeline {
 	my ( $self , $user ) = @_;
 	$user ||= $self->options->{username};
 	
-	my $lines = $self->core->getUserFeed( user => $user );
+	my $feeds = $self->core->getUserFeed( user => $user );
 
-	for ( @$lines ) {
-		Jaipo->logger->info( "%s | %s | from %s " , $_->{user}->{name} , $_->{text} , $_->{source} );
+	for ( @{$feeds->stream} ) {
+		Jaipo->logger->info(
+			"%s | %s | from %s " ,
+			$_->user->nick , $_->comment_id ? $_->content : $_->{'title'} , $_->created_at_relative ." ". $_->url
+		);
 	}
 }
 
@@ -78,7 +81,7 @@ sub read_user_timeline {
 sub read_public_timeline {
 	my $self = shift;
 
-	my $lines = $self->core->getContactsFeed();
+	my $feeds = $self->core->getContactsFeed();
 	#~ Structure:
 		#~ title
 		#~ url
@@ -90,9 +93,17 @@ sub read_public_timeline {
 		#~ stream[n]->url
 		#~ stream[n]->id
 		#~ stream[n]->title
-	for ( @$lines ) {
+	
+	# FIXME:
+	# Jaiku has Thread, which's more powerful and complicated to twitter.
+	# Ref: jaipo.pl : # $read
+	# This simple logger can't fits it... :S
+	for ( @{$feeds->stream} ) {
 		# XXX TODO: use jaipo logger
-		Jaipo->logger->info( "%s | %s | from %s " , $_->{user}->{name} , $_->{text} , $_->{source} );
+		Jaipo->logger->info(
+			"%s | %s | from %s " ,
+			$_->user->nick , $_->comment_id ? $_->content : $_->{'title'} , $_->created_at_relative ." ". $_->url
+		);
 	}
 }
 
@@ -100,11 +111,13 @@ sub read_public_timeline {
 sub read_global_timeline {
 	my $self = shift;
 
-	my $lines = $self->core->getFeed();
+	my $feeds = $self->core->getFeed();
 
-	for ( @$lines ) {
-		Jaipo->logger->info( "%+16s | %s | from %s " , $_->{user}->{name} , $_->{text} , $_->{source} );
-
+	for ( @{$feeds->stream} ) {
+		Jaipo->logger->info(
+			"%s | %s | from %s " ,
+			$_->user->nick , $_->comment_id ? $_->content : $_->{'title'} , $_->created_at_relative ." ". $_->url
+		);
 	}
 
 }
@@ -114,10 +127,13 @@ sub read_channel_timeline {
 	my ( $self , $channel ) = @_;
 	return "ERROR_E_ARG_CHANNEL" if not $channel;	# E for Exist
 	
-	my $lines = $self->core->getChannelFeed( channel => $channel );
+	my $feeds = $self->core->getChannelFeed( channel => $channel );
 
-	for ( @$lines ) {
-		Jaipo->logger->info( "%s | %s | from %s " , $_->{user}->{name} , $_->{text} , $_->{source} );
+	for ( @{$feeds->stream} ) {
+		Jaipo->logger->info(
+			"%s | %s | from %s " ,
+			$_->user->nick , $_->comment_id ? $_->content : $_->{'title'} , $_->created_at_relative ." ". $_->url
+		);
 	}
 }
 
@@ -150,7 +166,10 @@ sub get_user_info {
 		#~ contacts[n]->nick
 		#~ contacts[n]->first_name
 		#~ contacts[n]->last_name
-	say Dumper $lines;
+	#~ say Dumper $lines;
+	for ( @$lines ) {
+		Jaipo->logger->info( "%s | %s | URL: %s " , $_->nick , $_->first_name ." ". $_->last_name , $_->url );
+	}
 }
 
 

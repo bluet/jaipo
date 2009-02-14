@@ -44,11 +44,7 @@ sub new_request {
 
 }
 
-
-
-
-
-=head2 prereq
+=head2 prereq_plugins
 
 Returns an array of plugin module names that this plugin depends on.
 
@@ -59,8 +55,9 @@ sub prereq_plugins {
 }
 
 
-=head1 service methods
+=head1 SERVICE METHODS
 
+=head2 send_msg
 
 =cut
 
@@ -68,31 +65,67 @@ sub send_msg {
 
 }
 
+=head2 set_location
+
+=cut
 
 sub set_location {
 
 }
 
-# updates from user him self
+=head2 read_user_timeline
+
+updates from user him self
+
+=cut
+
 sub read_user_timeline {
 
 }
 
-# updates from users friends or follows
+=head2 read_public_timeline
+
+updates from users friends or follows
+
+=cut
+
 sub read_public_timeline {
 
 }
 
-# global timeline ( out of space !! )
+=head2 read_global_timeline
+
+global timeline ( out of space !! )
+
+=cut
+
 sub read_global_timeline {
 
 
 }
 
+
+=head1 FILTER_METHODS
+
+=head2 create_filter
+
+=cut
+
 sub create_filter {
 
 }
 
+=head2 apply_filter
+
+=cut
+
+sub apply_filter {
+
+}
+
+=head2 remove_filter 
+
+=cut 
 
 sub remove_filter {
 

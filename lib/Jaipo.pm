@@ -281,6 +281,7 @@ sub runtime_load_service {
 
 	Jaipo->services (@services);
 
+	# XXX: call save configuration here
 }
 
 

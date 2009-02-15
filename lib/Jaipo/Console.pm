@@ -176,8 +176,6 @@ sub parse {
             my ($name) = "$'";
 			$jobj->runtime_load_service( $self, $name );
 			# runtime_load_service $jobj , $self , $name;
-
-
         }
 
         when ( m/^(r|read)/i ) {  

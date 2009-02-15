@@ -1,19 +1,36 @@
 Jaipo (宅噗)
 
+This project was starting for Jaiku.com, but now is going to support
+as-much-as-we-can micro-blogging sites.
 
-This project was starting for Jaiku.com, but now going to support as-much-as-we-can micro-blogging sites.
+"Jaiku" pronunced close to "宅窟" in Chinese, which means an area full of
+computer/internet users, and it really is one of the most popular sites
+recently. As jaiku is part of google and growing, there're still only few linux
+client.
 
-"Jaiku" pronunced close to "宅窟" in Chinese, which means an area full of computer/internet users, and it really is one of the most popular sites recently. As jaiku is part of google and growing, there're still only few linux client.
+Jaipo is a lightweight command line Jaiku Client base on RickMeasham's
+Net::Jaiku perl module.
 
-Jaipo is a lightweight command line Jaiku Client base on RickMeasham's Net::Jaiku perl module.
-
-Bcoz it's writen in perl, so it can run on any OS and any machine with perl. I got the first feedback that somebody use it on ARM embedded system at May 2008.
+Bcoz it's writen in perl, so it can run on any OS and any machine with perl. I
+got the first feedback that somebody use it on ARM embedded system at May 2008.
 
 Now you can read feeds, send message, and set location with Jaipo.
 
-
-This project was started by BlueT,
 OOized and Modulized with c9s'. (He did Really ALOT!)
+
+
+
+HISTORY 
+
+This project was started by BlueT, it was simply using Net::Jaiku to 
+post,review jaiku message by script.
+
+c9s loves using twitter/plurk. Inspired from Jaipo, he ask to develop 
+jaipo as module and let jaipo works with other services.  so we rewrite 
+it into a module.
+
+Jaipo now provides console interface, but will provide sophisticate
+gui in future.
 
 
 
@@ -34,6 +51,12 @@ perldoc command.
     perldoc Jaipo
 
 You can also look for information at:
+
+	Website
+		http://jaipo.org/
+
+	Blog
+		http://jaipo-pm.blogspot.com/
 
     RT, CPAN's request tracker
         http://rt.cpan.org/NoAuth/Bugs.html?Dist=Jaipo

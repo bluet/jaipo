@@ -118,6 +118,7 @@ sub load_default_config {
 	my $config = <<YAML;
 ---
 application:
+    Verbose: 1
     SavePassword: 0
     Services:
         - Twitter:

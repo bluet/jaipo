@@ -20,7 +20,8 @@ WriteMakefile(
         'WWW::Plurk' => 0,
         'Net::Jaiku' => 0,
         'Net::Twitter' => 0,
-        'Class::Accessor::Fast' => 0
+        'Class::Accessor::Fast' => 0,
+		'Text::Table' => 0
     },
     EXE_FILES => [<bin/*>] ,
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },

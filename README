@@ -1,6 +1,6 @@
 Jaipo (宅噗)
 
-This project was starting for Jaiku.com, but now is going to support
+This project started for Jaiku.com, but now is going to support
 as-much-as-we-can micro-blogging sites.
 
 "Jaiku" pronunced close to "宅窟" in Chinese, which means an area full of
@@ -8,31 +8,29 @@ computer/internet users, and it really is one of the most popular sites
 recently. As jaiku is part of google and growing, there're still only few linux
 client.
 
-Jaipo is a lightweight command line Jaiku Client base on RickMeasham's
-Net::Jaiku perl module.
+Jaipo was a lightweight command line Jaiku client , which is based on
+RickMeasham's Net::Jaiku module.
 
-Bcoz it's writen in perl, so it can run on any OS and any machine with perl. I
-got the first feedback that somebody use it on ARM embedded system at May 2008.
+it's writen in perl, so it can run on any platform that you can get perl on it.
+we got the first feedback that somebody use it on ARM embedded system at May 2008.
 
 Now you can read feeds, send message, and set location with Jaipo.
 
 OOized and Modulized with c9s'. (He did Really ALOT!)
 
 
-
 HISTORY 
 
-This project was started by BlueT, it was simply using Net::Jaiku to 
-post,review jaiku message by script.
+This project was started by BlueT, which simply used Net::Jaiku to 
+post,review Jaiku message by script.
 
-c9s loves using twitter/plurk. Inspired from Jaipo, he ask to develop 
-jaipo as module and let jaipo works with other services.  so we rewrite 
-it into a module.
+c9s loves using twitter/plurk. so he ask bluet to develop jaipo as a module
+together and let jaipo works for other services like Jaiku, Plurk.. etc.  so we
+rewrite it into a module. and let the jaipo console interface looks like cpan
+interface.  
 
-Jaipo now provides console interface, but will provide sophisticate
-gui in future.
-
-
+Jaipo now provides console interface, but more sophisticate
+gui with clutter or gtk in the future.
 
 INSTALLATION
 

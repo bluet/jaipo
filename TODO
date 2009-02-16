@@ -1,4 +1,6 @@
  - need to strip html tags
+ - setup message column width for text::table
+ - data::page for showing text::table
  - auto-messaging (keep karam ?)
  - gui 
  - opmsg

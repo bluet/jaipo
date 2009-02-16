@@ -8,16 +8,10 @@ computer/internet users, and it really is one of the most popular sites
 recently. As jaiku is part of google and growing, there're still only few linux
 client.
 
-Jaipo was a lightweight command line Jaiku client , which is based on
-RickMeasham's Net::Jaiku module.
-
 it's writen in perl, so it can run on any platform that you can get perl on it.
 we got the first feedback that somebody use it on ARM embedded system at May 2008.
 
 Now you can read feeds, send message, and set location with Jaipo.
-
-OOized and Modulized with c9s'. (He did Really ALOT!)
-
 
 HISTORY 
 
@@ -31,6 +25,15 @@ interface.
 
 Jaipo now provides console interface, but more sophisticate
 gui with clutter or gtk in the future.
+
+GETTING STARTED WITH Jaipo Console
+
+	jaipo console
+
+	jaipo> use Twitter
+
+	jaipo> use twitter   # this works too
+
 
 INSTALLATION
 

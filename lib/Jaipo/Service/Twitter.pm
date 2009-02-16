@@ -94,7 +94,9 @@ sub layout_message {
 
 sub send_msg {
 	my ( $self , $message ) = @_;
+	print "Sending ..." if( Jaipo->config->app('Verbose') );
 	my $result = $self->core->update({ status => $message });
+	print "Done ..." if( Jaipo->config->app('Verbose') );
 }
 
 # updates from user himself

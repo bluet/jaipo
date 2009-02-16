@@ -122,6 +122,7 @@ application:
     SavePassword: 0
     Services:
         - Twitter:
+            enable: 1
             username: Test
     Plugins: {}
 user: {}

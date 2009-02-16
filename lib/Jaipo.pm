@@ -127,7 +127,10 @@ sub init {
 		# Load the service plugin options
 		my %options = ( %{ $service->{$service_name} } );
 
-		next if( ! defined $options{OnLoad} ) ;
+		if( ! defined $options{enable} )  {
+			print 'Jaipo: ' . $service_name . " is disabled\n";
+			next;
+		}
 
 		# Load the service plugin code
         $self->_try_to_require( $class );
@@ -150,7 +153,6 @@ sub init {
 
     # Logger turn on
     Jaipo->logger( Jaipo::Logger->new );
-
 
 	# warn "No supported service provider initialled!\n" if not $has_site;
 }

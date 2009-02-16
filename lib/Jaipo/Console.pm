@@ -128,10 +128,12 @@ sub setup_service {
 
 sub init {
 	my $self = shift;
+	$self->print_welcome;
 
 	# init Jaipo here
 	$jobj = Jaipo->new;
 	$jobj->init( $self );
+
 
 }
 
@@ -150,6 +152,18 @@ HELP
 
 }
 
+sub print_welcome {
+	print <<'END';
+_________________________________________
+Jaipo Console
+
+version 0.1
+Type ? for help
+Type :[service] :? for service plugin help
+
+END
+
+}
 
 sub parse {
 	my $self = shift;
@@ -214,17 +228,10 @@ sub parse {
 }
 
 
+
 sub run {
 	my $self = shift;
 
-	print <<'END';
-_________________________________________
-Jaipo Console
-
-version 0.1
-Type ? for help
-Type :[service] :? for service plugin help
-END
 
 	# read command from STDIN
 	while (1) {

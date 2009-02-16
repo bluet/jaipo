@@ -109,6 +109,7 @@ sub init {
 
 		# Prepare to learn the plugin class name
 		my ($service_name) = keys %{$service};
+		say "Jaipo: Loading " . $service_name;
 
 		my $class;
 

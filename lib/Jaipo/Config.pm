@@ -26,7 +26,7 @@ sub new {
 sub app_config_path {
 	my $self = shift;
 
-	# get application config path
+	# XXX: get application config path for different platform
 	# windows , unix	or ...
 	return $ENV{HOME} . '/.jaipo.yml';
 }
@@ -45,6 +45,43 @@ sub save {
 	open CONFIG_FH , ">" , $config_filepath;
 	print CONFIG_FH Dump( $self->stash );
 	close CONFIG_FH;
+}
+
+
+sub set_service_option {
+	my $self = shift;
+	my $sp_name = shift;
+	my $opt = shift;
+
+	my $new_config = $self->stash;
+	my @sps = @{ $self->app('Services') };
+	for( my $i=0; $i < scalar @sps ; $i++ ) {
+		my $c_spname = join q{},keys %{ $sps[$i] } ;
+		$new_config->{application}{Services}->[$i]->{ $c_spname } = $opt
+			if( $c_spname eq $sp_name );
+	}
+	$self->stash( $new_config );
+}
+
+=head2 find_service_option
+
+Returns a config hash
+
+=cut
+
+sub find_service_option {
+	my $self = shift;
+	my $name = shift;
+
+	my @services = @{ $self->app ('Services') };
+
+	# @services = grep { $name eq shift keys $_ }, @services;
+
+	my @configs = ();
+	map { my ($p)=keys %$_; 
+			push @configs,values %$_ 
+			if $p =~ m/\Q$name/ } @services;
+	return wantarray ? @configs : $configs[0];
 }
 
 =head2 load

@@ -1,5 +1,5 @@
 #!perl
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 BEGIN {
 	use_ok( 'Jaipo::Config' );
@@ -19,4 +19,8 @@ ok( $hash->{application} );
 ok( $hash->{application}->{Services} );
 is( ref $hash->{application}->{Services} , 'ARRAY' );
 
-# is( ref $hash->{application}->{Plugins} , 'ARRAY' );
+$config->stash( $hash );
+
+$config->set_service_option('Twitter', { username => 'ok' });
+my $opt = $config->find_service_option('Twitter');
+is( $opt->{username} , 'ok' );

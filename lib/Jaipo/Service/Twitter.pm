@@ -34,6 +34,8 @@ sub init {
 		);
 	}
 
+	Jaipo->config->set_service_option( 'Twitter' , $opt );
+
 	# default options
 # 	$opt->{useragent} = 'Jaipo (Perl)';
 # 	$opt->{source}    = 'Jaipo (Perl)';

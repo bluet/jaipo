@@ -228,26 +228,6 @@ sub find_plugin {
 }
 
 
-=head2 find_plugin_config
-
-Returns a config hash
-
-=cut
-
-sub find_plugin_config {
-	my $self = shift;
-	my $name = shift;
-
-	my @services = @{ Jaipo->config->app ('Services') };
-
-	# @services = grep { $name eq shift keys $_ }, @services;
-
-	my @configs = ();
-	map { my ($p)=keys %$_; 
-			push @configs,values %$_ 
-			if $p =~ m/\Q$name/ } @services;
-	return wantarray ? @configs : $configs[0];
-}
 
 
 =head2 runtime_load_service 
@@ -262,7 +242,7 @@ sub runtime_load_service {
 
  	my $class = "Jaipo::Service::" . ucfirst $service_name;
 
-	my $options = $self->find_plugin_config( $service_name );
+	my $options = Jaipo->config->find_service_option( $service_name );
 
  	# Load the service plugin code
  	$self->_try_to_require( $class );
@@ -281,9 +261,9 @@ sub runtime_load_service {
 
 	Jaipo->services (@services);
 
-	# XXX: call save configuration here
-
-
+	# call save configuration here
+	# XXX: this may overwrites other plugins afterload options
+	Jaipo->config->save;
 }
 
 

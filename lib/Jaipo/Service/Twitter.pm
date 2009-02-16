@@ -53,6 +53,25 @@ sub init {
 	$self->core( $twitter );
 }
 
+
+=head2 PRIVATE FUNCTIONS
+
+=cut
+
+
+sub get_table {
+	my $self = shift;
+	my @cols = @_;
+	use Text::Table;
+	my $tb = Text::Table->new( @cols );
+	return $tb;
+}
+
+
+=head2 SERVICE OVERRIDE FUNCTIONS
+
+=cut
+
 sub send_msg {
 	my ( $self , $message ) = @_;
 	my $result = $self->core->update({ status => $message });
@@ -64,10 +83,18 @@ sub read_user_timeline {
     my $self = shift;
     my $lines = $self->core->user_timeline;  # XXX: give args to this method
 
-    for ( @$lines ) {
-        Jaipo->logger->info( "%s | %s | from %s " , $_->{user}->{name} , $_->{text} , $_->{source} );
-    }
+	use Lingua::ZH::Wrap 'wrap';
 
+	local $Lingua::ZH::Wrap::columns = 30;
+	local $Lingua::ZH::Wrap::overflow = 1;
+
+	# force Message column to be 60 chars width or more.
+
+	my $tb = $self->get_table( qw|User Message Source| );
+    for ( @$lines ) {
+		$tb->add( $_->{user}->{name} , wrap( $_->{text} ) , $_->{source} );
+    }
+	Jaipo->logger->info( "" . $tb->table );
 }
 
 # updates from user's friends or channel
@@ -76,10 +103,11 @@ sub read_public_timeline {
 
     my $lines = $self->core->friends_timeline;  # XXX: give args to this method
 
+	my $tb = $self->get_table( qw|User Message Source| );
     for ( @$lines ) {
-        # XXX TODO: use jaipo logger
-        Jaipo->logger->info( "%s | %s | from %s " , $_->{user}->{name} , $_->{text} , $_->{source} );
+		$tb->add( $_->{user}->{name} , $_->{text} , $_->{source} );
     }
+	Jaipo->logger->info( $tb->table );
 
 }
 
@@ -89,11 +117,11 @@ sub read_global_timeline {
 
     my $lines = $self->core->public_timeline;  # XXX: give args to this method
 
+	my $tb = $self->get_table( qw|User Message Source| );
     for ( @$lines ) {
-        Jaipo->logger->info( "%+16s | %s | from %s " , $_->{user}->{name} , $_->{text} , $_->{source} );
-
+		$tb->add( $_->{user}->{name} , $_->{text} , $_->{source} );
     }
-
+	Jaipo->logger->info( $tb->table );
 }
 
 

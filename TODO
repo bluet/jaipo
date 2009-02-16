@@ -6,6 +6,7 @@
  - Mac::iTunes binding
  - ShortUrl binding
  - Image to ASCII Converter for showing user profile
+ - use Cache module to remember what we've read
 
 plugins
  - sqlite logger ( also provide search functino )

@@ -13,7 +13,7 @@ sub init {
 	unless( $opt->{username} and $opt->{password} ) {
 
 		# request to setup parameter
-		# XXX TODO: we need to simplify this, let it like jifty dbi schema  or
+		# XXX TODO: simplify this, let it like jifty dbi schema  or
 		# something
 		$caller->setup_service ( {
 				package_name => __PACKAGE__,

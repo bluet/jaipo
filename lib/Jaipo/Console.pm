@@ -183,6 +183,16 @@ sub parse {
             $jobj->dispatch_to_service( $service , $rest_line );
         }
 
+        when ( m/^e\s+conf$/i ) { 
+			my $editor = $ENV{EDITOR} || 'nano' ;
+			my $file = Jaipo->config->app_config_path;
+
+			print "Launching editor .. $editor\n";
+			qx{$editor $file};
+
+        }
+
+
         # built-in commands
         when ( m/^(u|use)\s/i ) {
             # init service plugins
@@ -206,6 +216,7 @@ sub parse {
             $jobj->action ( "read_global_timeline", $line );
 
         }
+
 
         # something like filter create /regexp/  :twitter:public
         when ( m/^(f|filter)\s/i ) { 

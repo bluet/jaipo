@@ -100,7 +100,7 @@ sub init {
 	# we initialize service plugin class here
 	# Set up plugins
 	my @services;
-	my @services_to_load = @{ Jaipo->config->app ('Services') };
+	my @services_to_load = @{ Jaipo->config->app('Services') };
 
 	my @plugins;
 	my @plugins_to_load;
@@ -180,7 +180,7 @@ sub _require {
         elsif ( $error !~ /^Can't locate $file/) {
             die $error;
         } else {
-            #Jifty->log->error(sprintf("$message at %s line %d\n", (caller(1))[1,2]));
+            #log->error(sprintf("$message at %s line %d\n", (caller(1))[1,2]));
             return 0;
         }
     }
@@ -282,6 +282,8 @@ sub runtime_load_service {
 	Jaipo->services (@services);
 
 	# XXX: call save configuration here
+
+
 }
 
 

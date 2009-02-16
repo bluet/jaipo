@@ -28,7 +28,7 @@ sub app_config_path {
 
 	# get application config path
 	# windows , unix	or ...
-
+	return $ENV{HOME} . '/.jaipo.yml';
 }
 
 sub app { return shift->_get( application => @_ ) }
@@ -40,20 +40,34 @@ sub _get { return $_[0]->stash->{ $_[1] }{ $_[2] } }
 
 
 sub save {
-	my ( $self , $config ) = @_;
-
+	my  $self  = shift;
+	my  $config_filepath = shift || $self->app_config_path;
+	open CONFIG_FH , ">" , $config_filepath;
+	print CONFIG_FH Dump( $self->stash );
+	close CONFIG_FH;
 }
+
+=head2 load
+
+=cut
 
 sub load {
 	my $self = shift;
+	my $config_filepath = shift || $self->app_config_path;
 
 	# if we can not find yml config file
 	# load from default function , then write back to config file
 	my $config;
 
-	if ( not -e "$ENV{HOME}/.jaipo.yml" ) {
+	if ( -e $config_filepath ) {  # XXX: check config version
+		$config = LoadFile( $config_filepath );
+		$self->stash ($config);
+	} 
+	else {
 		$config = $self->load_default_config;
 		$self->stash ($config);
+		# write back
+		$self->save( $config_filepath );
 	}
 
 	# load user jaipo yaml config from file here
@@ -67,6 +81,7 @@ sub load_default_config {
 	my $config = <<YAML;
 ---
 application:
+    SavePassword: 0
     Services:
         - Twitter:
             username: Test
@@ -74,8 +89,7 @@ application:
 user: {}
 
 YAML
-	use YAML;
-	return YAML::Load( $config );
+	return Load( $config );
 
 }
 

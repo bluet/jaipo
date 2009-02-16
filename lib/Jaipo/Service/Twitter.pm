@@ -39,11 +39,11 @@ sub init {
 	Jaipo->config->set_service_option( 'Twitter' , $opt );
 
 	# default options
-# 	$opt->{useragent} = 'Jaipo (Perl)';
-# 	$opt->{source}    = 'Jaipo (Perl)';
-# 	$opt->{clienturl} = '';
-# 	$opt->{clientver} = '';
-# 	$opt->{clientname} = '';
+ 	$opt->{useragent} = 'Jaipo.pm';
+ 	$opt->{source}    = 'Jaipo.pm';
+ 	$opt->{clienturl} = 'http://jaipo.org/';
+ 	$opt->{clientver} = '0.001';
+ 	$opt->{clientname} = 'Jaipo.pm';
 
 	my $twitter = Net::Twitter->new( %$opt );
 

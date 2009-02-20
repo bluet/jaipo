@@ -1,5 +1,18 @@
 #!perl
-use Jaipo::Console;
-my $jc = Jaipo::Console->new;
-$jc->init;
-$jc->run;
+my $cmd = shift;
+if( $cmd eq 'console' ) {
+  use Jaipo::Console;
+  my $jc = Jaipo::Console->new;
+  $jc->init;
+  $jc->run;
+} 
+
+else {
+  print <<HELP
+
+  Usage:
+  
+  perl -Ilib bin/jaipo console
+
+HELP
+}

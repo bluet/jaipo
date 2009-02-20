@@ -128,7 +128,7 @@ sub init {
 		my %options = ( %{ $service->{$service_name} } );
 
 		if( ! defined $options{enable} )  {
-            Jaipo->log->info('%s is disabled' , $service_name );
+            Jaipo->logger->info('%s is disabled' , $service_name );
 			next;
 		}
 
@@ -160,7 +160,7 @@ sub init {
 
     # when initialize jaipo, there are some new settings that we need to save.
     Jaipo->config->save;
-    Jaipo->log->info('Configuration saved.' );
+    Jaipo->logger->info('Configuration saved.' );
 }
 
 

@@ -14,3 +14,4 @@ plugins
  - sqlite logger ( also provide search functino )
  - post by feeds 
  - post to irc
+ - Net::Hiveminder

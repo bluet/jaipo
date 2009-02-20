@@ -42,6 +42,10 @@ sub _get { return $_[0]->stash->{ $_[1] }{ $_[2] } }
 sub save {
 	my  $self  = shift;
 	my  $config_filepath = shift || $self->app_config_path;
+
+    use Data::Dumper::Simple;
+    warn Dumper( $self->stash );
+
 	open CONFIG_FH , ">" , $config_filepath;
 	print CONFIG_FH Dump( $self->stash );
 	close CONFIG_FH;

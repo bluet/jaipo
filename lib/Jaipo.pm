@@ -128,7 +128,7 @@ sub init {
 		my %options = ( %{ $service->{$service_name} } );
 
 		if( ! defined $options{enable} )  {
-			print 'Jaipo: ' . $service_name . " is disabled\n";
+            Jaipo->log->info('%s is disabled' , $service_name );
 			next;
 		}
 
@@ -144,7 +144,9 @@ sub init {
 		    next if grep { $_ eq $name } @plugins_to_load;
 		    push @plugins_to_load, {$name => {}};
 		}
+
 	}
+
 
 	# All plugins loaded, save them for later reference
 	Jaipo->services (@services);
@@ -155,6 +157,10 @@ sub init {
     Jaipo->logger( Jaipo::Logger->new );
 
 	# warn "No supported service provider initialled!\n" if not $has_site;
+
+    # when initialize jaipo, there are some new settings that we need to save.
+    Jaipo->config->save;
+    Jaipo->log->info('Configuration saved.' );
 }
 
 
@@ -250,7 +256,7 @@ sub runtime_load_service {
  	# Load the service plugin code
  	$self->_try_to_require( $class );
  	# Jaipo::ClassLoader->new(base => $class)->require;
- 
+
  	my $plugin_obj = $class->new( %$options );
  	$plugin_obj->init( $caller ) ;
 

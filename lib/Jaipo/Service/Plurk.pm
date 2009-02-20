@@ -34,6 +34,8 @@ sub init {
 		);
 	}
 
+	Jaipo->config->set_service_option( 'Plurk' , $opt );
+
 	my $plurk = new WWW::Plurk;
 
 	unless( $plurk ) {
@@ -50,12 +52,15 @@ sub init {
 sub send_msg {
 	my ( $self , $message ) = @_;
 	my $result = $self->core->add_plurk( content => $message );
-
 }
 
 # updates from user himself
 sub read_user_timeline {
     my $self = shift;
+    my @plurks = $self->plurks;
+
+
+
 }
 
 # updates from user's friends or channel

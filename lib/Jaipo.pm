@@ -77,11 +77,10 @@ sub services {
 	return @SERVICES;
 }
 
-
 sub logger {
-    my $class = shift;
-    $LOGGER = shift if ( @_ );
-    return $LOGGER;
+	my $class = shift;
+	$LOGGER = shift if (@_);
+	return $LOGGER;
 }
 
 =head2 init 
@@ -89,11 +88,11 @@ sub logger {
 =cut
 
 sub init {
-	my $self = shift;
+	my $self   = shift;
 	my $caller = shift;
 
-    # Logger turn on
-    Jaipo->logger( Jaipo::Logger->new );
+	# Logger turn on
+	Jaipo->logger ( Jaipo::Logger->new );
 
 	# prereserve arguments for service plugin
 	# my $args = {
@@ -103,11 +102,10 @@ sub init {
 	# we initialize service plugin class here
 	# Set up plugins
 	my @services;
-	my @services_to_load = @{ Jaipo->config->app('Services') };
+	my @services_to_load = @{ Jaipo->config->app ('Services') };
 
 	my @plugins;
 	my @plugins_to_load;
-
 
 	for ( my $i = 0; my $service = $services_to_load[$i]; $i++ ) {
 
@@ -119,7 +117,8 @@ sub init {
 
 		# Is the plugin name a fully-qualified class name?
 		if ( $service_name =~ /^Jaipo::Service::/ ) {
-            # app-specific plugins use fully qualified names, Jaipo service plugins may
+
+   # app-specific plugins use fully qualified names, Jaipo service plugins may
 			$class = $service_name;
 		}
 
@@ -158,25 +157,22 @@ sub init {
 
 	# XXX: need to implement plugin loader
 
-
 	# warn "No supported service provider initialled!\n" if not $has_site;
 
-    # when initialize jaipo, there are some new settings that we need to save.
-    Jaipo->config->save;
-    Jaipo->logger->info('Configuration saved.' );
+	# when initialize jaipo, there are some new settings that we need to save.
+	Jaipo->config->save;
+	Jaipo->logger->info ('Configuration saved.');
 }
-
 
 =head2 list_loaded_triggers
 
 =cut
 
-
 sub list_loaded_triggers {
-    my @services = Jaipo->services;
-    for my $s ( @services ) {
-        print $s->trigger_name , " => " , ref($s) , "\n";
-    }
+	my @services = Jaipo->services;
+	for my $s (@services) {
+		print $s->trigger_name, " => ", ref ($s), "\n";
+	}
 }
 
 =head2 list_triggers
@@ -184,89 +180,80 @@ sub list_loaded_triggers {
 =cut
 
 sub list_triggers {
-    my @service_configs = @{ Jaipo->config->app('Services') };
-    for my $s ( @service_configs ) {
-        my @v = values %$s;
-        print $v[0]->{trigger_name} , " => " , join(q||,keys(%$s)) , "\n";
-    }
+	my @service_configs = @{ Jaipo->config->app ('Services') };
+	for my $s (@service_configs) {
+		my @v = values %$s;
+		print $v[0]->{trigger_name}, " => ", join ( q||, keys (%$s) ), "\n";
+	}
 }
-
-
 
 =head2 find_service_by_trigger 
 
 =cut
 
 sub find_service_by_trigger {
-	my ( $self, $tg , $services ) = @_;
-    $services ||= [ Jaipo->services ];
+	my ( $self, $tg, $services ) = @_;
+	$services ||= [ Jaipo->services ];
 	for my $s (@$services) {
 		my $s_tg = $s->trigger_name;
 		return $s if $s->trigger_name eq $tg;
 	}
 }
 
-
-
-
-
 =head2 _require
 
 =cut
 
 sub _require {
-    my $self = shift;
-    my %args = @_;
-    my $class = $args{module};
+	my $self  = shift;
+	my %args  = @_;
+	my $class = $args{module};
 
-    return 1 if $self->_already_required( $class );
+	return 1 if $self->_already_required ($class);
 
-    my $file = $class;
-    $file .= '.pm' unless $file =~ /\.pm$/ ;
-    $file =~ s|::|/|g;
+	my $file = $class;
+	$file .= '.pm' unless $file =~ /\.pm$/;
+	$file =~ s|::|/|g;
 
-    my $retval = eval  {CORE::require "$file"} ;
-    my $error = $@;
-    if (my $message = $error) { 
-        $message =~ s/ at .*?\n$//;
-        if ($args{'quiet'} and $message =~ /^Can't locate $file/) {
-            return 0;
-        }
-        elsif ( $error !~ /^Can't locate $file/) {
-            die $error;
-        } else {
-            #log->error(sprintf("$message at %s line %d\n", (caller(1))[1,2]));
-            return 0;
-        }
-    }
+	my $retval = eval { CORE::require "$file" };
+	my $error = $@;
+	if ( my $message = $error ) {
+		$message =~ s/ at .*?\n$//;
+		if ( $args{'quiet'} and $message =~ /^Can't locate $file/ ) {
+			return 0;
+		}
+		elsif ( $error !~ /^Can't locate $file/ ) {
+			die $error;
+		}
+		else {
+
+		   #log->error(sprintf("$message at %s line %d\n", (caller(1))[1,2]));
+			return 0;
+		}
+	}
 }
-
 
 =head2 _already_required
 
 =cut
 
 sub _already_required {
-    my $self = shift;
-    my $class = shift;
-    my ( $path ) = ( $class =~ s|::|/|g );
-    $path .= '.pm';
-    return $INC{ $path } ? 1 : 0;
+	my $self  = shift;
+	my $class = shift;
+	my ($path) = ( $class =~ s|::|/|g );
+	$path .= '.pm';
+	return $INC{$path} ? 1 : 0;
 }
-
-
 
 =head2 _try_to_require 
 
 =cut
 
 sub _try_to_require {
-    my $self = shift;
-    my $module = shift;
-    $self->_require( module => $module,  quiet => 0);
+	my $self   = shift;
+	my $module = shift;
+	$self->_require ( module => $module, quiet => 0 );
 }
-
-
 
 =head2 find_plugin CLASS_NAME
 
@@ -275,12 +262,11 @@ Find plugins by class name, which is full-qualified class name.
 =cut
 
 sub find_plugin {
-    my $self = shift;
-    my $name = shift;
-    my @plugins = grep { $_->isa($name) } Jaipo->plugins;
-    return wantarray ? @plugins : $plugins[0];
+	my $self    = shift;
+	my $name    = shift;
+	my @plugins = grep { $_->isa ($name) } Jaipo->plugins;
+	return wantarray ? @plugins : $plugins[0];
 }
-
 
 =head2 set_plugin_trigger PLUGIN_OBJECT CLASS
 
@@ -288,32 +274,33 @@ sub find_plugin {
 
 # this may used by runtime_load_service
 sub set_plugin_trigger {
-	my ( $self, $plugin_obj, $options , $class , $services ) = @_;
+	my ( $self, $plugin_obj, $options, $class, $services ) = @_;
 
 	# give a trigger to plugin obj , take a look.  :p
-    my $trigger_name;
-    if( defined $options->{trigger_name} ) {
-        $trigger_name = $options->{trigger_name};
-    }
+	my $trigger_name;
+	if ( defined $options->{trigger_name} ) {
+		$trigger_name = $options->{trigger_name};
+	}
 
-    else {
-        ($trigger_name) = ( $class =~ m/(?<=Service::)(\w+)$/ );
-        $trigger_name = lc $trigger_name;  # lower case
-    }
+	else {
+		($trigger_name) = ( $class =~ m/(?<=Service::)(\w+)$/ );
+		$trigger_name = lc $trigger_name;    # lower case
+	}
 
-    # repeat service trigger name
-    while ( my $s = $self->find_service_by_trigger( $trigger_name , $services ) ) {
-        # give an another trigger name for it or ask user
-        # TODO: provide a config option to let user set jaipo to ask 
-        $trigger_name .= '_' ;
-    }
+	# repeat service trigger name
+	while ( my $s
+		= $self->find_service_by_trigger ( $trigger_name, $services ) )
+	{
+
+		# give an another trigger name for it or ask user
+		# TODO: provide a config option to let user set jaipo to ask
+		$trigger_name .= '_';
+	}
 
 	# set trigger name
 	$plugin_obj->trigger_name ($trigger_name);
-    print "set trigger: ", $trigger_name , ' for ' , $class , "\n" ;
+	print "set trigger: ", $trigger_name, ' for ', $class, "\n";
 }
-
-
 
 =head2 runtime_load_service  CALLER  SERVICE_NAME [TRIGGER_NAME]
 
@@ -337,7 +324,8 @@ sub runtime_load_service {
 	my $class = "Jaipo::Service::" . ucfirst $service_name;
 
 	my $options = {};
-	my @sp_options = Jaipo->config->find_service_option_by_trigger ($trigger_name);
+	my @sp_options
+		= Jaipo->config->find_service_option_by_trigger ($trigger_name);
 
 	# can not find option , set default trigger name and sp_id
 	if ( !@sp_options ) {
@@ -350,18 +338,19 @@ sub runtime_load_service {
 		$options = $sp_options[0];
 	}
 
-    # XXX:
-    # actually won't happen, config loader will canonicalize the config
-    # service plugin will get it's default trigger namd from service name.
-    else {
-        # find by service name
-        #       elsif ( scalar @sp_options > 1 ) {
-        #           # find service by trigger name
-        #           for my $s (@sp_options) {
-        #               $options = $s if ( $s->{trigger_name} eq $trigger_name );
-        #           }
-        #       }
-    }
+	# XXX:
+	# actually won't happen, config loader will canonicalize the config
+	# service plugin will get it's default trigger namd from service name.
+	else {
+
+	 # find by service name
+	 #       elsif ( scalar @sp_options > 1 ) {
+	 #           # find service by trigger name
+	 #           for my $s (@sp_options) {
+	 #               $options = $s if ( $s->{trigger_name} eq $trigger_name );
+	 #           }
+	 #       }
+	}
 
 	# Load the service plugin code
 	$self->_try_to_require ($class);
@@ -388,8 +377,6 @@ sub runtime_load_service {
 	Jaipo->config->save;
 }
 
-
-
 =head2 dispatch_to_service SERVICE_TRIGGER , MESSAGE
 
 command start with C<:[service]> ( e.g. C<:twitter> or C<:plurk> ) something
@@ -399,8 +386,8 @@ what to do with.
 =cut
 
 sub dispatch_to_service {
-    my ( $self ,  $service_tg , $line ) = @_;
-    my $s = $self->_find_service_by_trigger( $service_tg );
+	my ( $self, $service_tg, $line ) = @_;
+	my $s = $self->_find_service_by_trigger ($service_tg);
 
 }
 
@@ -409,25 +396,21 @@ sub dispatch_to_service {
 =cut
 
 sub action {
-	my ( $self , $action , $param ) = @_;
+	my ( $self, $action, $param ) = @_;
 	my @services = Jaipo->services;
-	foreach my $service ( @services ) {
+	foreach my $service (@services) {
 
-		if( UNIVERSAL::can($service, $action) ) {
-			$service->$action( $param );
+		if ( UNIVERSAL::can ( $service, $action ) ) {
+			$service->$action ($param);
 		}
 
 		else {
+
 			# service plugin doesn't support this kind of action
 		}
 	}
 
 }
-
-
-
-
-
 
 =head2 set_location SITE
 
@@ -435,7 +418,7 @@ sub action {
 
 # need to make sure if service provides set_location function
 sub set_location {
-	my $self = shift;
+	my $self     = shift;
 	my $location = shift;
 	my $site     = shift;
 
@@ -451,8 +434,8 @@ sub set_location {
 	return $rv;    # success if not undef
 }
 
-
 # TODO: use Cache instead of this
+
 =head2 _log_last_id 
 
 =cut
@@ -503,8 +486,6 @@ sub _compare_last_msg_id {
 =head2 _user_id_key
 
 =cut
-
-
 
 =head2 _tabs 
 

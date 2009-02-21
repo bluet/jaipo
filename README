@@ -30,9 +30,18 @@ GETTING STARTED WITH Jaipo Console
 
 	jaipo console
 
+    jaipo> use              # list service triggers
+    twitter_c9s => Twitter
+    twitter_other => Twitter
+
 	jaipo> use Twitter
 
 	jaipo> use twitter   # this works too
+
+    jaipo> use twitter twitter_c9s  # use service and specify the trigger name
+
+    jaipo> :twitter_c9s :r     # read message
+
 
 
 INSTALLATION

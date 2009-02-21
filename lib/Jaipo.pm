@@ -312,6 +312,7 @@ sub action {
 }
 
 
+# XXX: move to service
 =head2 send_msg SITE
 
 =cut

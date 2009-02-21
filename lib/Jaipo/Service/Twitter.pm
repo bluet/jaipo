@@ -39,8 +39,8 @@ sub init {
 	Jaipo->config->set_service_option( 'Twitter' , $opt );
 
 	# default options
- 	$opt->{useragent} = 'Jaipo.pm';
- 	$opt->{source}    = 'Jaipo.pm';
+ 	$opt->{useragent} = 'jaipopm';
+ 	$opt->{source}    = 'jaipopm';
  	$opt->{clienturl} = 'http://jaipo.org/';
  	$opt->{clientver} = '0.001';
  	$opt->{clientname} = 'Jaipo.pm';
@@ -94,9 +94,9 @@ sub layout_message {
 
 sub send_msg {
 	my ( $self , $message ) = @_;
-	print "Sending ..." if( Jaipo->config->app('Verbose') );
+	print "Sending..." if( Jaipo->config->app('Verbose') );
 	my $result = $self->core->update({ status => $message });
-	print "Done ..." if( Jaipo->config->app('Verbose') );
+	print "Done\n"    if( Jaipo->config->app('Verbose') );
 }
 
 # updates from user himself

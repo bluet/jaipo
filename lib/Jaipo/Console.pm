@@ -7,6 +7,7 @@ use feature qw(:5.10);
 
 my $jobj;
 
+$|=1;
 =encoding utf8
 
 =head1 SYNOPSIS
@@ -228,8 +229,8 @@ sub parse {
             $self->print_help 
         }
 
+        # default action is send message
 		default {
-            warn 'default action';
 
 			# do update status message if @_ is empty
             $jobj->action ( "send_msg", $line );
@@ -245,6 +246,7 @@ sub run {
 
 
 	# read command from STDIN
+    binmode STDIN,":utf8";
 	while (1) {
 		print "jaipo> ";
 		my $line = <STDIN>;

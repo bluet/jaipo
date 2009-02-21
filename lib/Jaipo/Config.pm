@@ -68,13 +68,13 @@ sub set_service_option {
 	$self->stash( $new_config );
 }
 
-=head2 find_service_option
+=head2 find_service_option_by_name
 
 Returns a config hash
 
 =cut
 
-sub find_service_option {
+sub find_service_option_by_name {
 	my $self = shift;
 	my $name = shift;
 	my @services = @{ $self->app ('Services') };
@@ -87,6 +87,31 @@ sub find_service_option {
 			if $p =~ m/\Q$name/ } @services;
 	return wantarray ? @configs : $configs[0];
 }
+
+
+=head2 find_service_option_by_trigger
+
+Returns a config hash
+
+=cut
+
+sub find_service_option_by_trigger {
+	my $self = shift;
+	my $trigger = shift;
+	my @services = @{ $self->app ('Services') };
+
+	# @services = grep { $name eq shift keys $_ }, @services;
+
+	my @configs = ();
+	map { 
+      my ($v)=values %$_;
+			push @configs,$v 
+              if $v->{trigger_name} eq $trigger;
+                  } @services;
+	return wantarray ? @configs : $configs[0];
+}
+
+
 
 =head2 load
 

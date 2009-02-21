@@ -329,17 +329,15 @@ default trigger name ( service name in lowcase )
 
 =cut
 
+# XXX: need to re-check logic
 sub runtime_load_service {
 	my ( $self, $caller, $service_name, $trigger_name ) = @_;
 
 	$trigger_name ||= lc $service_name;
 	my $class = "Jaipo::Service::" . ucfirst $service_name;
 
-	# TODO:
-	# for two or more same service name, we should check sp_id
-	# my $options = Jaipo->config->find_service_option( $service_name );
 	my $options = {};
-	my @sp_options = Jaipo->config->find_service_option ($service_name);
+	my @sp_options = Jaipo->config->find_service_option_by_trigger ($trigger_name);
 
 	# can not find option , set default trigger name and sp_id
 	if ( !@sp_options ) {
@@ -352,13 +350,18 @@ sub runtime_load_service {
 		$options = $sp_options[0];
 	}
 
-	elsif ( scalar @sp_options > 1 ) {
-
-		# find service by trigger name
-		for my $s (@sp_options) {
-			$options = $s if ( $s->{trigger_name} eq $trigger_name );
-		}
-	}
+    # XXX:
+    # actually won't happen, config loader will canonicalize the config
+    # service plugin will get it's default trigger namd from service name.
+    else {
+        # find by service name
+        #       elsif ( scalar @sp_options > 1 ) {
+        #           # find service by trigger name
+        #           for my $s (@sp_options) {
+        #               $options = $s if ( $s->{trigger_name} eq $trigger_name );
+        #           }
+        #       }
+    }
 
 	# Load the service plugin code
 	$self->_try_to_require ($class);

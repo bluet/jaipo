@@ -16,16 +16,16 @@ to enter Jaipo console:
 
     $ jaipo console
 
-    > use Twitter           # enable Twitter service plugin
-    > use Plurk             # enable Plurk service plugin
-    > use RSS               # enable RSS plugin
-    > use IRC               # enable IRC plugin
+    > :use Twitter           # enable Twitter service plugin
+    > :use Plurk             # enable Plurk service plugin
+    > :use RSS               # enable RSS plugin
+    > :use IRC               # enable IRC plugin
 
 Jaipo will automatically save your configuration, you only need to use 'use'
 at first time.
 
 to read all messeges
-    > r
+    > :r
 
     Service |   User   | Message
     twitter    c9s       oh hohoho !
@@ -44,11 +44,11 @@ to read someone's messages on Jaiku.com
 
 to read public timeline
 
-    > p
+    > :p
 
 to check user's profile
 
-    > w|who IsYourDaddy
+    > :w|who IsYourDaddy
 
 setup location on Jaiku
     > :jaiku l 我在墾丁，天氣情。
@@ -67,7 +67,7 @@ to send a message to a channel on Jaiku
 
 create a regular expression filter for twitter timeline
 
-    > filter /cor[a-z]*s/i  :twitter
+    > :filter /cor[a-z]*s/i  :twitter
 
 
 =head1 Command Reference
@@ -166,31 +166,14 @@ END
 
 }
 
-sub parse {
-	my $self = shift;
-	my $line = shift;
 
-    $line =~ s/^\s*//g;
-    $line =~ s/\s*$//g;
+sub process_built_in_commands {
+    my ($self ,$line ) = @_;
 
-	return unless $line;
+    $line =~ s/^://;
 
     # XXX: add trigger 
 	given ($line) {
-
-        when ( m/^:/ ) {
-            # dispatch to service
-            my ($service_tg,$rest_line) = ( $line =~ m/^:(\w+)\s*(.*)/i );
-            # $jobj->dispatch_to_service( $service_tg , $rest_line );
-
-            # find a servcie plugin by trigger 
-
-            # parse line 
-            # if find sub command , execute the sub command
-            # if not, we should posting text to service
-
-        }
-
 
         # eval code
         # such like:   eval $jobj->_list_trigger;
@@ -228,20 +211,23 @@ sub parse {
         # built-in commands
         # TODO:
         #
-        # use twitter twitter
-		when (m/^(u|use)\s*(.??)(?:\s*(.*))?;?$/i) {
+		when (m/^(?:u|use)\s*/i) {
+            $line =~ s/;$//;
+            my @ops = split /\s+/,$line;
+            shift @ops; # shift out use command
+            my ( $service_name , $trigger_name ) = @ops;
 
 			# init service plugins
 			# TODO:
 			# check if user specify trigger name
-			if ( !$2 ) {
+			if ( !$service_name ) {
 				$jobj->list_triggers;
 			}
             else {
-                my $name = ucfirst $2;
-                my $trigger_name = $3 || lc $name;
-                print "Trying to load $name\n";
-                $jobj->runtime_load_service ( $self, $name, $trigger_name );
+                $service_name = ucfirst $service_name;
+                $trigger_name ||= lc $service_name;
+                print "Trying to load $service_name => $trigger_name\n";
+                $jobj->runtime_load_service ( $self, $service_name, $trigger_name );
                 print "Done\n";
             }
 		}
@@ -273,13 +259,42 @@ sub parse {
             $self->print_help 
         }
 
-        # default action is send message
+        # try to find the trigger , if match then do it
+        # or show up command not found
 		default {
 
-			# do update status message if @_ is empty
-            $jobj->action ( "send_msg", $line );
+            # dispatch to service
+            my ($service_tg,$rest_line) = ( $line =~ m/^(\w+)\s*(.*)/i );
+            # $jobj->dispatch_to_service( $service_tg , $rest_line );
+
+            # find a servcie plugin by trigger 
+
+            # parse line 
+            # if find sub command , execute the sub command
+            # if not, we should posting text to service
+
 		}
 	}
+
+
+}
+
+sub parse {
+	my $self = shift;
+	my $line = shift;
+
+    $line =~ s/^\s*//g;
+    $line =~ s/\s*$//g;
+
+	return unless $line;
+
+    if( $line =~ m/^:/ ) {
+        $self->process_built_in_commands( $line );
+    }
+    else {
+        # do update status message if @_ is empty
+        $jobj->action ( "send_msg", $line );
+    }
 
 }
 

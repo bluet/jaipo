@@ -22,5 +22,5 @@ is( ref $hash->{application}->{Services} , 'ARRAY' );
 $config->stash( $hash );
 
 $config->set_service_option('Twitter', { username => 'ok' });
-my $opt = $config->find_service_option('Twitter');
+my $opt = $config->find_service_option_by_name('Twitter');
 is( $opt->{username} , 'ok' );

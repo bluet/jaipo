@@ -140,15 +140,7 @@ sub init {
 		my $plugin_obj = $class->new( %options );
 		$plugin_obj->init( $caller ) ;
 
-        # give a trigger to plugin obj , take a look.  :p
-        my ($trigger_name) = ( $class =~ m/(?<=Service::)(\w+)$/ );
-        $trigger_name = lc $trigger_name;
-
-        # TODO: check if same trigger specified.
-
-        # set trigger name
-        $plugin_obj->trigger_name( $trigger_name );
-
+        $self->set_plugin_trigger( $plugin_obj , $class , \@services );
 
 		push @services, $plugin_obj;
 		foreach my $name ($plugin_obj->prereq_plugins) {
@@ -157,7 +149,6 @@ sub init {
 		}
 
 	}
-
 
 	# All plugins loaded, save them for later reference
 	Jaipo->services (@services);
@@ -185,12 +176,12 @@ sub _find_trigger_by_service {
 
 
 
-=head2 _list_trigger 
+=head2 list_trigger 
 
 =cut
 
 
-sub _list_trigger {
+sub list_trigger {
     my @services = Jaipo->services;
     for my $s ( @services ) {
         print $s->trigger_name , " => " , ref($s) , "\n";
@@ -198,14 +189,14 @@ sub _list_trigger {
 }
 
 
-=head2 _find_service_by_trigger 
+=head2 find_service_by_trigger 
 
 =cut
 
-sub _find_service_by_trigger {
-	my ( $self, $tg ) = @_;
-	my @services = Jaipo->services;
-	foreach my $s (@services) {
+sub find_service_by_trigger {
+	my ( $self, $tg , $services ) = @_;
+    $services ||= [ Jaipo->services ];
+	for my $s (@$services) {
 		my $s_tg = $s->trigger_name;
 		return $s if $s->trigger_name eq $tg;
 	}
@@ -273,21 +264,42 @@ sub _try_to_require {
 
 
 
-=head2 find_plugin
+=head2 find_plugin CLASS_NAME
 
-Find plugins by name.
+Find plugins by class name, which is full-qualified class name.
 
 =cut
 
 sub find_plugin {
     my $self = shift;
     my $name = shift;
-
     my @plugins = grep { $_->isa($name) } Jaipo->plugins;
     return wantarray ? @plugins : $plugins[0];
 }
 
 
+=head2 set_plugin_trigger PLUGIN_OBJECT CLASS
+
+=cut
+
+sub set_plugin_trigger {
+	my ( $self, $plugin_obj, $class , $services ) = @_;
+
+	# give a trigger to plugin obj , take a look.  :p
+	my ($trigger_name) = ( $class =~ m/(?<=Service::)(\w+)$/ );
+	$trigger_name = lc $trigger_name;  # lower case
+
+    # repeat service trigger name
+    while ( my $s = $self->find_service_by_trigger( $trigger_name , $services ) ) {
+        # give an another trigger name for it or ask user
+        # TODO: provide a config option to let user set jaipo to ask 
+        $trigger_name .= '_' ;
+    }
+
+	# set trigger name
+	$plugin_obj->trigger_name ($trigger_name);
+    print "set trigger: ", $trigger_name , ' for ' , $class , "\n" ;
+}
 
 
 =head2 runtime_load_service 
@@ -310,6 +322,8 @@ sub runtime_load_service {
 
  	my $plugin_obj = $class->new( %$options );
  	$plugin_obj->init( $caller ) ;
+
+    $self->set_plugin_trigger( $plugin_obj , $class );
 
 	my @services = Jaipo->services;
 

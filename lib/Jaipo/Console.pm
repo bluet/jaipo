@@ -51,7 +51,7 @@ to check user's profile
     > :w|who IsYourDaddy
 
 setup location on Jaiku
-    > :jaiku l 我在墾丁，天氣情。
+    > :jaiku :l 我在墾丁，天氣情。
 
 to reply to someone's post on plurk.com
 
@@ -59,7 +59,7 @@ to reply to someone's post on plurk.com
 
 to send direct message to someone on twitter
 
-    > :twitter d mama 媽，我阿雄啦！
+    > :twitter :d mama 媽，我阿雄啦！
 
 to send a message to a channel on Jaiku
 

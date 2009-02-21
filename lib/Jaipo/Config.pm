@@ -193,8 +193,6 @@ application:
     Services:
         - Twitter:
             enable: 1
-        - Twitter:
-            enable: 1
     Plugins: {}
 user: {}
 

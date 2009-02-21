@@ -428,23 +428,6 @@ sub action {
 
 
 
-# XXX: move to service
-=head2 send_msg SITE
-
-=cut
-
-# XXX: still need to implement
-sub send_msg {
-	my $self = shift;
-	my $message = shift;
-	#~ say "\033[1mSending message...\033[0m";
-	
-	# do pulling foreach services
-	my @services = Jaipo->services;
-	foreach my $service ( @services ) {
-		$service->send( $message );  # need to implement send method for service plugins
-	}
-}
 
 =head2 set_location SITE
 

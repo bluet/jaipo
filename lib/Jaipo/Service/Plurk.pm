@@ -5,6 +5,9 @@ use WWW::Plurk;
 use base qw/Jaipo::Service Class::Accessor::Fast/;
 use utf8;
 
+# XXX:
+# www-plurk module can not work!! hate!!
+
 sub init {
 	my $self   = shift;
 	my $caller = shift;
@@ -51,16 +54,19 @@ sub init {
 
 sub send_msg {
 	my ( $self , $message ) = @_;
+    print "Sending to Plurk...";
 	my $result = $self->core->add_plurk( content => $message );
+    print "Done\n";
 }
 
 # updates from user himself
 sub read_user_timeline {
     my $self = shift;
     my @plurks = $self->plurks;
-
-
-
+    for ( @plurks ) {
+      # XXX: make this work with text::table::zh
+      printf "%s %s %s",$_->{uid}, $_->{date_from}, $_->{date_offset};
+    }
 }
 
 # updates from user's friends or channel

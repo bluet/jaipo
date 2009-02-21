@@ -37,15 +37,16 @@ sub init {
 	}
 
 	Jaipo->config->set_service_option( 'Twitter' , $opt );
+    my %twitter_opt = %{ $opt };
 
 	# default options
- 	$opt->{useragent} = 'jaipopm';
- 	$opt->{source}    = 'jaipopm';
- 	$opt->{clienturl} = 'http://jaipo.org/';
- 	$opt->{clientver} = '0.001';
- 	$opt->{clientname} = 'Jaipo.pm';
+ 	$twitter_opt{useragent} = 'jaipopm';
+ 	$twitter_opt{source}    = 'jaipopm';
+ 	$twitter_opt{clienturl} = 'http://jaipo.org/';
+ 	$twitter_opt{clientver} = '0.001';
+ 	$twitter_opt{clientname} = 'Jaipo.pm';
 
-	my $twitter = Net::Twitter->new( %$opt );
+	my $twitter = Net::Twitter->new( %twitter_opt );
 
 	unless( $twitter ) {
 		# XXX: need to implement logger:  Jaipo->log->warn( );

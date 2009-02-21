@@ -4,9 +4,10 @@ use strict;
 use Hash::Merge;
 use YAML::Syck;
 Hash::Merge::set_behavior ('RIGHT_PRECEDENT');
+use Number::RecordLocator;
 
 use base qw/Class::Accessor::Fast/;
-__PACKAGE__->mk_accessors (qw/stash/);
+__PACKAGE__->mk_accessors (qw/stash last_sp_cnt/);
 
 use vars qw/$CONFIG/;
 
@@ -17,9 +18,8 @@ sub new {
 	my $self = {};
 	bless $self , $class;
 	$self->stash( {} );
-
+    $self->last_sp_cnt ( 500000 + int( rand 100 ) );
 	$self->load;
-
 	return $self;
 }
 
@@ -56,10 +56,14 @@ sub set_service_option {
 
 	my $new_config = $self->stash;
 	my @sps = @{ $self->app('Services') };
-	for( my $i=0; $i < scalar @sps ; $i++ ) {
+	for( my $i=0; my $sp = $sps[ $i ] ; $i++ ) {
 		my $c_spname = join q{},keys %{ $sps[$i] } ;
-		$new_config->{application}{Services}->[$i]->{ $c_spname } = $opt
-			if( $c_spname eq $sp_name );
+
+        if( $c_spname eq $sp_name 
+                      and $sp->{ $c_spname }->{sp_id} eq $opt->{sp_id} ) 
+        {
+            $new_config->{application}{Services}->[$i]->{ $c_spname } = $opt
+        }
 	}
 	$self->stash( $new_config );
 }
@@ -73,7 +77,6 @@ Returns a config hash
 sub find_service_option {
 	my $self = shift;
 	my $name = shift;
-
 	my @services = @{ $self->app ('Services') };
 
 	# @services = grep { $name eq shift keys $_ }, @services;
@@ -108,9 +111,50 @@ sub load {
 		$self->save( $config_filepath );
 	}
 
+    # Canicalization
+    $self->set_sp_id;
+    $self->set_default_trigger_name;
+
 	# load user jaipo yaml config from file here
 	return $config;
+}
 
+sub set_default_trigger_name {
+    my $self = shift;
+	my $new_config = $self->stash;
+	my @sps = @{ $self->app('Services') };
+
+    # set default trigger name for each service plugin that has no trigger name
+    my %triggers;
+	for( my $i=0; my $sp = $sps[$i] ; $i++ ) {
+		my $c_spname = join q{},keys %{ $sp } ;
+
+        my $tn = lc $c_spname;
+        $tn .= '_' while( exists $triggers{ $tn } );
+
+		$new_config->{application}{Services}->[$i]->{ $c_spname }->{trigger_name} ||= $tn;
+        $triggers{ $new_config->{application}{Services}->[$i]->{ $c_spname }->{trigger_name} } = 1;
+	}
+
+	$self->stash( $new_config );
+}
+
+sub set_sp_id {
+    my $self = shift;
+    my $sp_cnt =  $self->last_sp_cnt;
+	my $new_config = $self->stash;
+	my @sps = @{ $self->app('Services') };
+    my $num_rec = Number::RecordLocator->new;
+	for( my $i=0; $i < scalar @sps ; $i++ ) {
+		my $c_spname = join q{},keys %{ $sps[$i] } ;
+
+		if( ! defined $new_config->{application}{Services}->[$i]->{ $c_spname }->{sp_id} ) {
+            my $sp_id = $num_rec->encode( $sp_cnt ++ );
+            $new_config->{application}{Services}->[$i]->{ $c_spname }->{sp_id} = $sp_id;
+            $self->last_sp_cnt( $sp_cnt );
+        }
+	}
+	$self->stash( $new_config );
 }
 
 sub load_default_config {
@@ -124,7 +168,8 @@ application:
     Services:
         - Twitter:
             enable: 1
-            username: Test
+        - Twitter:
+            enable: 1
     Plugins: {}
 user: {}
 

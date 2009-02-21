@@ -92,6 +92,9 @@ sub init {
 	my $self = shift;
 	my $caller = shift;
 
+    # Logger turn on
+    Jaipo->logger( Jaipo::Logger->new );
+
 	# prereserve arguments for service plugin
 	# my $args = {
 	#
@@ -104,6 +107,7 @@ sub init {
 
 	my @plugins;
 	my @plugins_to_load;
+
 
 	for ( my $i = 0; my $service = $services_to_load[$i]; $i++ ) {
 
@@ -127,7 +131,7 @@ sub init {
 		# Load the service plugin options
 		my %options = ( %{ $service->{$service_name} } );
 
-		if( ! defined $options{enable} )  {
+		if( ! $options{enable} )  {
             Jaipo->logger->info('%s is disabled' , $service_name );
 			next;
 		}
@@ -139,8 +143,6 @@ sub init {
 		# Initialize the plugin and mark the prerequisites for loading too
 		my $plugin_obj = $class->new( %options );
 		$plugin_obj->init( $caller ) ;
-
-        $self->set_plugin_trigger( $plugin_obj , $class , \@services );
 
 		push @services, $plugin_obj;
 		foreach my $name ($plugin_obj->prereq_plugins) {
@@ -155,8 +157,6 @@ sub init {
 
 	# XXX: need to implement plugin loader
 
-    # Logger turn on
-    Jaipo->logger( Jaipo::Logger->new );
 
 	# warn "No supported service provider initialled!\n" if not $has_site;
 
@@ -165,28 +165,31 @@ sub init {
     Jaipo->logger->info('Configuration saved.' );
 }
 
-=head2 _find_trigger_by_service
 
-=cut
-
-sub _find_trigger_by_service {
-	my ( $self, $service ) = @_;
-
-}
-
-
-
-=head2 list_trigger 
+=head2 list_loaded_triggers
 
 =cut
 
 
-sub list_trigger {
+sub list_loaded_triggers {
     my @services = Jaipo->services;
     for my $s ( @services ) {
         print $s->trigger_name , " => " , ref($s) , "\n";
     }
 }
+
+=head2 list_triggers
+
+=cut
+
+sub list_triggers {
+    my @service_configs = @{ Jaipo->config->app('Services') };
+    for my $s ( @service_configs ) {
+        my @v = values %$s;
+        print $v[0]->{trigger_name} , " => " , join(q||,keys(%$s)) , "\n";
+    }
+}
+
 
 
 =head2 find_service_by_trigger 
@@ -282,12 +285,20 @@ sub find_plugin {
 
 =cut
 
+# this may used by runtime_load_service
 sub set_plugin_trigger {
-	my ( $self, $plugin_obj, $class , $services ) = @_;
+	my ( $self, $plugin_obj, $options , $class , $services ) = @_;
 
 	# give a trigger to plugin obj , take a look.  :p
-	my ($trigger_name) = ( $class =~ m/(?<=Service::)(\w+)$/ );
-	$trigger_name = lc $trigger_name;  # lower case
+    my $trigger_name;
+    if( defined $options->{trigger_name} ) {
+        $trigger_name = $options->{trigger_name};
+    }
+
+    else {
+        ($trigger_name) = ( $class =~ m/(?<=Service::)(\w+)$/ );
+        $trigger_name = lc $trigger_name;  # lower case
+    }
 
     # repeat service trigger name
     while ( my $s = $self->find_service_by_trigger( $trigger_name , $services ) ) {
@@ -301,7 +312,6 @@ sub set_plugin_trigger {
     print "set trigger: ", $trigger_name , ' for ' , $class , "\n" ;
 }
 
-
 =head2 runtime_load_service 
 
 
@@ -311,10 +321,33 @@ sub runtime_load_service {
 	my $self = shift;
 	my $caller = shift;
 	my $service_name = shift;
+    my $trigger_name = shift;
 
  	my $class = "Jaipo::Service::" . ucfirst $service_name;
 
-	my $options = Jaipo->config->find_service_option( $service_name );
+    # TODO:
+    # for two or more same service name, we should check sp_id
+    # my $options = Jaipo->config->find_service_option( $service_name );
+    my $options = {};
+	my @sp_options = Jaipo->config->find_service_option( $service_name );
+
+    # can not find option , set default trigger name and sp_id
+    if( ! @sp_options ) {
+        $options->{trigger_name} = $trigger_name || lc $service_name ;
+        my $num_rec = Number::RecordLocator->new;
+        $options->{sp_id} = $num_rec->encode( Jaipo->config->last_sp_cnt );
+    }
+
+    elsif( scalar @sp_options == 1 ) {
+        $options = $sp_options[0];
+    }
+
+    elsif ( scalar @sp_options > 1 ) {
+        # find service by trigger name
+        for my $s ( @sp_options ) {
+            $options = $s if ( $s->{trigger_name} eq $trigger_name );
+        }
+    }
 
  	# Load the service plugin code
  	$self->_try_to_require( $class );
@@ -326,13 +359,11 @@ sub runtime_load_service {
     $self->set_plugin_trigger( $plugin_obj , $class );
 
 	my @services = Jaipo->services;
-
  	push @services, $plugin_obj;
  	foreach my $name ($plugin_obj->prereq_plugins) {
         # next if grep { $_ eq $name } @plugins_to_load;
         #push @plugins_to_load, {$name => {}};
  	}
-
 	Jaipo->services (@services);
 
 	# call save configuration here
@@ -378,6 +409,9 @@ sub action {
 }
 
 
+
+
+
 # XXX: move to service
 =head2 send_msg SITE
 
@@ -418,6 +452,8 @@ sub set_location {
 	return $rv;    # success if not undef
 }
 
+
+# TODO: use Cache instead of this
 =head2 _log_last_id 
 
 =cut

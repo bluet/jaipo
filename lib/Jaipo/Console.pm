@@ -181,7 +181,14 @@ sub parse {
         when ( m/^:/ ) {
             # dispatch to service
             my ($service_tg,$rest_line) = ( $line =~ m/^:(\w+)\s*(.*)/i );
-            $jobj->dispatch_to_service( $service_tg , $rest_line );
+            # $jobj->dispatch_to_service( $service_tg , $rest_line );
+
+            # find a servcie plugin by trigger 
+
+            # parse line 
+            # if find sub command , execute the sub command
+            # if not, we should posting text to service
+
         }
 
 
@@ -219,13 +226,17 @@ sub parse {
 
 
         # built-in commands
-        when ( m/^(u|use)\s+(.+?);?$/i ) {
+        # TODO:
+        #
+        # use twitter twitter
+        when ( m/^(u|use)\s+(.+?)(?:\s(.*))?;?$/i ) {
             # init service plugins
             # TODO: 
             # check if user specify trigger name
-            my ($name) = ucfirst $2;
+            my $name = ucfirst $2;
+            my $trigger_name = $3 || lc $name;
             print "Trying to load $name\n";
-			$jobj->runtime_load_service( $self, $name );
+			$jobj->runtime_load_service( $self, $name , $trigger_name );
             print "Done\n";
 			# runtime_load_service $jobj , $self , $name;
         }

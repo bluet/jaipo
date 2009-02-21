@@ -2,7 +2,7 @@ package Jaipo::Service;
 use warnings;
 use strict;
 use base qw/Class::Accessor::Fast/;
-__PACKAGE__->mk_accessors (qw/core options trigger_name/);
+__PACKAGE__->mk_accessors (qw/core options trigger_name sp_id/);
 
 
 =head1 FUNCTIONS
@@ -18,6 +18,8 @@ sub new {
 	my $self = {};
 	bless $self , $class;
 
+    $self->trigger_name( $options{trigger_name} );
+    $self->sp_id( $options{sp_id} );
 	$self->options( \%options );
 
 	return $self;

@@ -184,12 +184,27 @@ sub parse {
             $jobj->dispatch_to_service( $service , $rest_line );
         }
 
-        when ( m/^e\s+conf$/i ) { 
+        when ( m/^conf\s+edit$/i ) { 
 			my $editor = $ENV{EDITOR} || 'nano' ;
 			my $file = Jaipo->config->app_config_path;
 
 			print "Launching editor .. $editor\n";
 			qx{$editor $file};
+
+        }
+
+        when ( m/^conf\s+save$/i ) {
+            # TODO
+            # save configuration 
+
+        }
+
+        when ( m/^conf\s+load$/i ) {
+            # TODO
+            # load configuration
+            # when user modify configuration by self, user can reload
+            # configuration
+
 
         }
 

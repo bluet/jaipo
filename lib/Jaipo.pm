@@ -329,14 +329,15 @@ sub runtime_load_service {
 
  	push @services, $plugin_obj;
  	foreach my $name ($plugin_obj->prereq_plugins) {
-	# next if grep { $_ eq $name } @plugins_to_load;
-	#push @plugins_to_load, {$name => {}};
+        # next if grep { $_ eq $name } @plugins_to_load;
+        #push @plugins_to_load, {$name => {}};
  	}
 
 	Jaipo->services (@services);
 
 	# call save configuration here
-	# XXX: this may overwrites other plugins afterload options
+	# TODO: this may overwrites other plugins afterload options
+    # make sure that user did config jaipo , or we don't need to rewrite config
 	Jaipo->config->save;
 }
 

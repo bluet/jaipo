@@ -229,17 +229,22 @@ sub parse {
         # TODO:
         #
         # use twitter twitter
-        when ( m/^(u|use)\s+(.+?)(?:\s(.*))?;?$/i ) {
-            # init service plugins
-            # TODO: 
-            # check if user specify trigger name
-            my $name = ucfirst $2;
-            my $trigger_name = $3 || lc $name;
-            print "Trying to load $name\n";
-			$jobj->runtime_load_service( $self, $name , $trigger_name );
-            print "Done\n";
-			# runtime_load_service $jobj , $self , $name;
-        }
+		when (m/^(u|use)\s*(.??)(?:\s*(.*))?;?$/i) {
+
+			# init service plugins
+			# TODO:
+			# check if user specify trigger name
+			if ( !$2 ) {
+				$jobj->list_triggers;
+			}
+            else {
+                my $name = ucfirst $2;
+                my $trigger_name = $3 || lc $name;
+                print "Trying to load $name\n";
+                $jobj->runtime_load_service ( $self, $name, $trigger_name );
+                print "Done\n";
+            }
+		}
 
 
         when ( m/^(r|read)/i ) {  

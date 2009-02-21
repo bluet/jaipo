@@ -119,7 +119,7 @@ sub init {
 
 		# Is the plugin name a fully-qualified class name?
 		if ( $service_name =~ /^Jaipo::Service::/ ) {
-			# app-specific plugins use fully qualified names, Jaipo service plugins may
+            # app-specific plugins use fully qualified names, Jaipo service plugins may
 			$class = $service_name;
 		}
 
@@ -131,23 +131,24 @@ sub init {
 		# Load the service plugin options
 		my %options = ( %{ $service->{$service_name} } );
 
-		if( ! $options{enable} )  {
-            Jaipo->logger->info('%s is disabled' , $service_name );
+		if ( !$options{enable} ) {
+			Jaipo->logger->info ( '%s is disabled', $service_name );
 			next;
 		}
 
 		# Load the service plugin code
-        $self->_try_to_require( $class );
+		$self->_try_to_require ($class);
+
 		# Jaipo::ClassLoader->new(base => $class)->require;
 
 		# Initialize the plugin and mark the prerequisites for loading too
-		my $plugin_obj = $class->new( %options );
-		$plugin_obj->init( $caller ) ;
+		my $plugin_obj = $class->new (%options);
+		$plugin_obj->init ($caller);
 
 		push @services, $plugin_obj;
-		foreach my $name ($plugin_obj->prereq_plugins) {
-		    next if grep { $_ eq $name } @plugins_to_load;
-		    push @plugins_to_load, {$name => {}};
+		foreach my $name ( $plugin_obj->prereq_plugins ) {
+			next if grep { $_ eq $name } @plugins_to_load;
+			push @plugins_to_load, { $name => {} };
 		}
 
 	}
@@ -329,55 +330,58 @@ default trigger name ( service name in lowcase )
 =cut
 
 sub runtime_load_service {
-    my ( $self, $caller , $service_name , $trigger_name ) = @_;
+	my ( $self, $caller, $service_name, $trigger_name ) = @_;
 
-    $trigger_name ||= lc $service_name;
- 	my $class = "Jaipo::Service::" . ucfirst $service_name;
+	$trigger_name ||= lc $service_name;
+	my $class = "Jaipo::Service::" . ucfirst $service_name;
 
-    # TODO:
-    # for two or more same service name, we should check sp_id
-    # my $options = Jaipo->config->find_service_option( $service_name );
-    my $options = {};
-	my @sp_options = Jaipo->config->find_service_option( $service_name );
+	# TODO:
+	# for two or more same service name, we should check sp_id
+	# my $options = Jaipo->config->find_service_option( $service_name );
+	my $options = {};
+	my @sp_options = Jaipo->config->find_service_option ($service_name);
 
-    # can not find option , set default trigger name and sp_id
-    if( ! @sp_options ) {
-        $options->{trigger_name} = $trigger_name;
-        my $num_rec = Number::RecordLocator->new;
-        $options->{sp_id} = $num_rec->encode( Jaipo->config->last_sp_cnt );
-    }
+	# can not find option , set default trigger name and sp_id
+	if ( !@sp_options ) {
+		$options->{trigger_name} = $trigger_name;
+		my $num_rec = Number::RecordLocator->new;
+		$options->{sp_id} = $num_rec->encode ( Jaipo->config->last_sp_cnt );
+	}
 
-    elsif( scalar @sp_options == 1 ) {
-        $options = $sp_options[0];
-    }
+	elsif ( scalar @sp_options == 1 ) {
+		$options = $sp_options[0];
+	}
 
-    elsif ( scalar @sp_options > 1 ) {
-        # find service by trigger name
-        for my $s ( @sp_options ) {
-            $options = $s if ( $s->{trigger_name} eq $trigger_name );
-        }
-    }
+	elsif ( scalar @sp_options > 1 ) {
 
- 	# Load the service plugin code
- 	$self->_try_to_require( $class );
- 	# Jaipo::ClassLoader->new(base => $class)->require;
+		# find service by trigger name
+		for my $s (@sp_options) {
+			$options = $s if ( $s->{trigger_name} eq $trigger_name );
+		}
+	}
 
- 	my $plugin_obj = $class->new( %$options );
- 	$plugin_obj->init( $caller ) ;
+	# Load the service plugin code
+	$self->_try_to_require ($class);
 
-    # $self->set_plugin_trigger( $plugin_obj , $class );
+	# Jaipo::ClassLoader->new(base => $class)->require;
+
+	my $plugin_obj = $class->new (%$options);
+	$plugin_obj->init ($caller);
+
+	# $self->set_plugin_trigger( $plugin_obj , $class );
 
 	my @services = Jaipo->services;
- 	push @services, $plugin_obj;
- 	foreach my $name ($plugin_obj->prereq_plugins) {
-        # next if grep { $_ eq $name } @plugins_to_load;
-        #push @plugins_to_load, {$name => {}};
- 	}
+	push @services, $plugin_obj;
+	foreach my $name ( $plugin_obj->prereq_plugins ) {
+
+		# next if grep { $_ eq $name } @plugins_to_load;
+		#push @plugins_to_load, {$name => {}};
+	}
 	Jaipo->services (@services);
 
-	# call save configuration here
-	# TODO: this may overwrites other plugins afterload options
-    # make sure that user did config jaipo , or we don't need to rewrite config
+   # call save configuration here
+   # TODO: this may overwrites other plugins afterload options
+   # make sure that user did config jaipo , or we don't need to rewrite config
 	Jaipo->config->save;
 }
 

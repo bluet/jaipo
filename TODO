@@ -1,5 +1,6 @@
 TODO:
  - save/load configuration command
+ - make same services using different trigger  :twitter2 :twitter3 etc... or something
  - use Term::ReadLine 
  - img upload
  - setup chinese message column width for text::table

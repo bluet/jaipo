@@ -180,8 +180,14 @@ sub parse {
 
         when ( m/^:/ ) {
             # dispatch to service
-            my ($service,$rest_line) = ( $line =~ m/^:(\w+)\s+(.*)/i );
+            my ($service,$rest_line) = ( $line =~ m/^:(\w+)\s*(.*)/i );
             $jobj->dispatch_to_service( $service , $rest_line );
+        }
+
+        when ( m/^eval (.*)$/i ) {
+            # eval a code
+            my $code = $1;
+            eval $1;
         }
 
         when ( m/^conf\s+edit$/i ) { 
@@ -212,7 +218,8 @@ sub parse {
         # built-in commands
         when ( m/^(u|use)\s+(.+?);?$/i ) {
             # init service plugins
-            # XXX:
+            # TODO: 
+            # check if user specify trigger name
             my ($name) = ucfirst $2;
             print "Trying to load $name\n";
 			$jobj->runtime_load_service( $self, $name );

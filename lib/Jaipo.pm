@@ -139,6 +139,16 @@ sub init {
 		# Initialize the plugin and mark the prerequisites for loading too
 		my $plugin_obj = $class->new( %options );
 		$plugin_obj->init( $caller ) ;
+
+        # give a trigger to plugin obj , take a look.  :p
+        my ($trigger_name) = ( $class =~ m/(?<=Service::)(\w+)$/ );
+
+        # TODO: check if same trigger specified.
+
+        # set trigger name
+        $plugin_obj->trigger_name( $trigger_name );
+
+
 		push @services, $plugin_obj;
 		foreach my $name ($plugin_obj->prereq_plugins) {
 		    next if grep { $_ eq $name } @plugins_to_load;
@@ -162,6 +172,46 @@ sub init {
     Jaipo->config->save;
     Jaipo->logger->info('Configuration saved.' );
 }
+
+=head2 _find_trigger_by_service
+
+=cut
+
+sub _find_trigger_by_service {
+	my ( $self, $service ) = @_;
+
+}
+
+
+
+=head2 _list_trigger 
+
+=cut
+
+
+sub _list_trigger {
+    my @services = Jaipo->services;
+    for my $s ( @services ) {
+        print $s->trigger_name , " => " , ref($s) , "\n";
+    }
+}
+
+
+=head2 _find_service_by_trigger 
+
+=cut
+
+sub _find_service_by_trigger {
+	my ( $self, $tg ) = @_;
+	my @services = Jaipo->services;
+	foreach $service (@services) {
+		my $s_tg = $service->trigger_name;
+		return $service if $service->trigger_name eq $tg;
+	}
+}
+
+
+
 
 
 =head2 _require
@@ -277,7 +327,7 @@ sub runtime_load_service {
 
 
 
-=head2 dispatch_to_service SERVICE, MESSAGE
+=head2 dispatch_to_service SERVICE_TRIGGER , MESSAGE
 
 command start with C<:[service]> ( e.g. C<:twitter> or C<:plurk> ) something
 like that will call the servcie dispatch method,  service plugin will decide
@@ -286,7 +336,8 @@ what to do with.
 =cut
 
 sub dispatch_to_service {
-    my ( $service , $line ) = @_;
+    my ( $self ,  $servcie_tg , $line ) = @_;
+    $service = $self->_find_service_by_trigger( $service_tg );
 
 
 }

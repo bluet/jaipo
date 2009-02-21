@@ -2,7 +2,7 @@ package Jaipo::Service;
 use warnings;
 use strict;
 use base qw/Class::Accessor::Fast/;
-__PACKAGE__->mk_accessors (qw/core options/);
+__PACKAGE__->mk_accessors (qw/core options trigger_name/);
 
 
 =head1 FUNCTIONS

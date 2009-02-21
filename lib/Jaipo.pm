@@ -142,6 +142,7 @@ sub init {
 
         # give a trigger to plugin obj , take a look.  :p
         my ($trigger_name) = ( $class =~ m/(?<=Service::)(\w+)$/ );
+        $trigger_name = lc $trigger_name;
 
         # TODO: check if same trigger specified.
 
@@ -204,9 +205,9 @@ sub _list_trigger {
 sub _find_service_by_trigger {
 	my ( $self, $tg ) = @_;
 	my @services = Jaipo->services;
-	foreach $service (@services) {
-		my $s_tg = $service->trigger_name;
-		return $service if $service->trigger_name eq $tg;
+	foreach my $s (@services) {
+		my $s_tg = $s->trigger_name;
+		return $s if $s->trigger_name eq $tg;
 	}
 }
 
@@ -336,9 +337,8 @@ what to do with.
 =cut
 
 sub dispatch_to_service {
-    my ( $self ,  $servcie_tg , $line ) = @_;
-    $service = $self->_find_service_by_trigger( $service_tg );
-
+    my ( $self ,  $service_tg , $line ) = @_;
+    my $s = $self->_find_service_by_trigger( $service_tg );
 
 }
 

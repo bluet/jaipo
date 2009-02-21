@@ -180,10 +180,13 @@ sub parse {
 
         when ( m/^:/ ) {
             # dispatch to service
-            my ($service,$rest_line) = ( $line =~ m/^:(\w+)\s*(.*)/i );
-            $jobj->dispatch_to_service( $service , $rest_line );
+            my ($service_tg,$rest_line) = ( $line =~ m/^:(\w+)\s*(.*)/i );
+            $jobj->dispatch_to_service( $service_tg , $rest_line );
         }
 
+
+        # eval code
+        # such like:   eval $jobj->_list_trigger;
         when ( m/^eval (.*)$/i ) {
             # eval a code
             my $code = $1;

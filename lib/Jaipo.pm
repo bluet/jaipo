@@ -312,17 +312,26 @@ sub set_plugin_trigger {
     print "set trigger: ", $trigger_name , ' for ' , $class , "\n" ;
 }
 
-=head2 runtime_load_service 
 
+
+=head2 runtime_load_service  CALLER  SERVICE_NAME [TRIGGER_NAME]
+
+if trigger name is specified, and it doesn't exist in config.
+Jaipo will create a new service object, and assign the trigger name to it.
+
+if trigger name is specified, and Jaipo will try to search the service config
+by trigger name and load the service.
+
+if trigger name is not specified. Jaipo will try to find service configs
+by service name. if there are two or more same service, Jaipo will load the 
+default trigger name ( service name in lowcase )
 
 =cut
 
 sub runtime_load_service {
-	my $self = shift;
-	my $caller = shift;
-	my $service_name = shift;
-    my $trigger_name = shift;
+    my ( $self, $caller , $service_name , $trigger_name ) = @_;
 
+    $trigger_name ||= lc $service_name;
  	my $class = "Jaipo::Service::" . ucfirst $service_name;
 
     # TODO:
@@ -333,7 +342,7 @@ sub runtime_load_service {
 
     # can not find option , set default trigger name and sp_id
     if( ! @sp_options ) {
-        $options->{trigger_name} = $trigger_name || lc $service_name ;
+        $options->{trigger_name} = $trigger_name;
         my $num_rec = Number::RecordLocator->new;
         $options->{sp_id} = $num_rec->encode( Jaipo->config->last_sp_cnt );
     }
@@ -356,7 +365,7 @@ sub runtime_load_service {
  	my $plugin_obj = $class->new( %$options );
  	$plugin_obj->init( $caller ) ;
 
-    $self->set_plugin_trigger( $plugin_obj , $class );
+    # $self->set_plugin_trigger( $plugin_obj , $class );
 
 	my @services = Jaipo->services;
  	push @services, $plugin_obj;

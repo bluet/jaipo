@@ -210,13 +210,16 @@ sub parse {
 
 
         # built-in commands
-        when ( m/^(u|use)\s/i ) {
+        when ( m/^(u|use)\s+(.+?);?$/i ) {
             # init service plugins
             # XXX:
-            my ($name) = "$'";
+            my ($name) = ucfirst $2;
+            print "Trying to load $name\n";
 			$jobj->runtime_load_service( $self, $name );
+            print "Done\n";
 			# runtime_load_service $jobj , $self , $name;
         }
+
 
         when ( m/^(r|read)/i ) {  
             $jobj->action ( "read_user_timeline", $line );

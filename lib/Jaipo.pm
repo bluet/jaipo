@@ -13,7 +13,7 @@ use vars qw/$CONFIG $LOGGER $HANDLER $PUB_SUB @PLUGINS @SERVICES/;
 
 =head1 NAME
 
-Jaipo - Jaiku (and other micro-blogging sites) Client
+Jaipo - Micro-blogging Client
 
 =head1 VERSION
 
@@ -27,15 +27,16 @@ our $VERSION = '0.02';
 
 Jaipo ( 宅噗 )
 
-This project was starting for Jaiku.com, but now going to support as-much-as-we-can micro-blogging sites.
+This project started for Jaiku.com, but now is going to support
+as-much-as-we-can micro-blogging sites.
 
-"Jaiku" pronunced close to "宅窟" in Chinese, which means an area full of computer/internet users, and it really is one of the most popular sites recently. As jaiku is part of google and growing, there're still only few linux client.
+"Jaiku" pronunced close to "宅窟" in Chinese, which means an area full of
+computer/internet users, and it really is one of the most popular sites
+recently. As jaiku is part of google and growing, there're still only few linux
+client.
 
-Jaipo is a lightweight command line Jaiku Client base on RickMeasham's Net::Jaiku perl module.
-
-Bcoz it's writen in perl, so it can run on any OS and any machine with perl. I got the first feedback that somebody use it on ARM embedded system at May 2008.
-
-Now you can read feeds, send message, and set location with Jaipo.
+it's writen in perl, so it can run on any platform that you can get perl on it.
+we got the first feedback that somebody use it on ARM embedded system at May 2008.
 
 =cut
 

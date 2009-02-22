@@ -16,16 +16,20 @@ to enter Jaipo console:
 
     $ jaipo console
 
-    > :use Twitter           # enable Twitter service plugin
-    > :use Plurk             # enable Plurk service plugin
-    > :use RSS               # enable RSS plugin
-    > :use IRC               # enable IRC plugin
+    > use Twitter           # enable Twitter service plugin
+    > use Plurk             # enable Plurk service plugin
+    > use RSS               # enable RSS plugin
+    > use IRC               # enable IRC plugin
 
 Jaipo will automatically save your configuration, you only need to use 'use'
 at first time.
 
+to update status
+
+    > :突然下起大雨。
+
 to read all messeges
-    > :r
+    > r
 
     Service |   User   | Message
     twitter    c9s       oh hohoho !
@@ -36,59 +40,128 @@ to read all messeges
 
 to read messages on Jaiku.com
 
-    > :jaiku :r
+    > jaiku r
 
 to read someone's messages on Jaiku.com
 
-    > :jaiku :r UnitedNation
+    > jaiku r UnitedNation
 
 to read public timeline
 
-    > :p
+    > p
 
 to check user's profile
 
-    > :w|who IsYourDaddy
+    > w IsYourDaddy
 
 setup location on Jaiku
-    > :jaiku :l 我在墾丁，天氣情。
 
-to reply to someone's post on plurk.com
+    > jaiku l 我在墾丁，天氣情。
 
-    > :plurk #2630 呆丸朱煮好棒
+to update post to Twitter
+
+    > twitter :雨停了
+
+to reply to someone's post on Twiwter
+
+    > twitter reply Someone 呆丸朱煮好棒
 
 to send direct message to someone on twitter
 
-    > :twitter :d mama 媽，我阿雄啦！
+    > twitter send mama 媽，我阿雄啦！
+
+to follow someone on twitter
+
+    > twitter follow mama
 
 to send a message to a channel on Jaiku
 
-    > :jaiku #TVshow 媽，我上電視了！(揮手)
+    > jaiku #TVshow 媽，我上電視了！(揮手)
 
 create a regular expression filter for twitter timeline
 
-    > :filter /cor[a-z]*s/i  :twitter
+    > filter /cor[a-z]*s/i  :twitter
 
 
 =head1 Command Reference
 
 =head2 Global Commands
 
-r
-p
-...
+=item r  
+
+read user updates
+
+=item p  
+
+read friend updates
+
+=item g  
+
+read global updates
 
 =head2 Service Commands 
 
-:[service]  [message]
+[SERVICE] :[MESSAGE]
 
-:[service]  :[action] [arguments]
+[SERVICE] [ACTION] [ ARGUMENTS .. ]
 
-=head2 
+=head3 Jaiku
 
+=head3 Twitter
+
+=item ? 
+
+help message
+
+=item rd 
+
+read direct messages
+
+=item rr
+
+read reply messages
+
+=item rp
+
+read public messages
+
+=item rf
+
+read followed timeline messages
+
+=item sd [ID]  [MESSAGE]
+
+send direct message
+
+=item sr [ID]  [MESSAGE]
+
+send reply message
+
+=item w [ID]
+
+check someone's profile
+
+=item l [LOCATION]
+
+LOCATION is a string, which will be updated to your profile
+
+=item f [ID]
+
+follow someone
+
+=item show friends
+
+show friends
+
+=item show followers
+
+show followers
+
+=head1 Functions
+
+=head2 new
 
 =cut
-
 
 sub new {
 	my $class = shift;
@@ -101,6 +174,9 @@ sub new {
 	return $self;
 }
 
+=head2 _pre_init
+
+=cut
 
 sub _pre_init {
 	my $self = shift;
@@ -109,7 +185,10 @@ sub _pre_init {
 }
 
 
-# setup service
+=head2 setup service
+
+=cut 
+
 sub setup_service {
 	my ( $self , $args , $opt ) = @_;
 
@@ -126,6 +205,9 @@ sub setup_service {
 
 }
 
+=head2 init
+
+=cut
 
 sub init {
 	my $self = shift;
@@ -137,6 +219,10 @@ sub init {
 
 
 }
+
+=head2 print_help 
+
+=cut
 
 sub print_help {
     my $self = shift;
@@ -153,6 +239,11 @@ HELP
 
 }
 
+
+=head2 print_welcome
+
+=cut
+
 sub print_welcome {
 	print <<'END';
 _________________________________________
@@ -166,6 +257,10 @@ END
 
 }
 
+
+=head2 process_built_in_commands 
+
+=cut
 
 sub process_built_in_commands {
     my ($self ,$line ) = @_;
@@ -289,11 +384,12 @@ sub parse {
 	return unless $line;
 
     if( $line =~ m/^:/ ) {
-        $self->process_built_in_commands( $line );
+        # do update status message if string start with ":"
+        $line =~ s/^://;
+        $jobj->action ( "send_msg", $line );
     }
     else {
-        # do update status message if @_ is empty
-        $jobj->action ( "send_msg", $line );
+        $self->process_built_in_commands( $line );
     }
 
 }

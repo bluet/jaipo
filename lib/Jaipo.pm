@@ -84,7 +84,7 @@ sub logger {
 	return $LOGGER;
 }
 
-=head2 init 
+=head2 init CALLER_OBJECT
 
 =cut
 
@@ -119,7 +119,7 @@ sub init {
 		# Is the plugin name a fully-qualified class name?
 		if ( $service_name =~ /^Jaipo::Service::/ ) {
 
-   # app-specific plugins use fully qualified names, Jaipo service plugins may
+            # app-specific plugins use fully qualified names, Jaipo service plugins may
 			$class = $service_name;
 		}
 
@@ -188,7 +188,7 @@ sub list_triggers {
 	}
 }
 
-=head2 find_service_by_trigger 
+=head2 find_service_by_trigger  TRIGGER_NAME  [ SERVICES ]
 
 =cut
 
@@ -201,7 +201,7 @@ sub find_service_by_trigger {
 	}
 }
 
-=head2 _require
+=head2 _require ( module => MODULE , ... )
 
 =cut
 
@@ -234,7 +234,7 @@ sub _require {
 	}
 }
 
-=head2 _already_required
+=head2 _already_required CLASS_NAME
 
 =cut
 
@@ -246,7 +246,7 @@ sub _already_required {
 	return $INC{$path} ? 1 : 0;
 }
 
-=head2 _try_to_require 
+=head2 _try_to_require CLASS_NAME
 
 =cut
 

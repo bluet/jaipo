@@ -140,7 +140,7 @@ sub read_channel_timeline {
 
 sub set_user_location {
 	my ( $self , $location ) = @_;
-	warn "ERROR_E_ARG_CHANNEL" if not $channel;	# E for Exist
+	warn "ERROR_E_ARG_CHANNEL" if not $location;	# E for Exist
 	
 	my $lines = $self->core->setPresence(
 		"location" => "$location"

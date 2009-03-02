@@ -53,6 +53,13 @@ To install this module, run the following commands:
 	make test
 	make install
 
+
+DEVELOPMENT
+
+Start a New Branch on your Remote Git Repository
+http://www.zorched.net/2008/04/14/start-a-new-branch-on-your-remote-git-repository/
+
+
 SUPPORT AND DOCUMENTATION
 
 After installing, you can find documentation for this module with the

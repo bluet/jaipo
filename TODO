@@ -7,7 +7,8 @@ TODO:
  - data::page for showing text::table
  - auto-messaging (keep karam ?)
  - gui 
- - opmsg
+ - support opmsg service ?
+ - fix www::plurk api implementation
  - console.pm
  - Mac::iTunes binding
  - ShortUrl binding

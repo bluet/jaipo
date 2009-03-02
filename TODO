@@ -13,6 +13,7 @@ TODO:
  - ShortUrl binding
  - Image to ASCII Converter for showing user profile
  - use Cache module to remember what we've read
+ - command only
 
 BUGS:
  - zh table

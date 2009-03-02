@@ -82,6 +82,14 @@ create a regular expression filter for twitter timeline
 
     > filter /cor[a-z]*s/i  :twitter
 
+enter service-only mode
+
+    > only twitter
+    :twitter>
+
+    > only jaiku
+    :jaiku>
+
 
 =head1 Command Reference
 

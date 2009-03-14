@@ -170,10 +170,10 @@ sub init {
 =cut
 
 sub list_loaded_triggers {
-	my @services = Jaipo->services;
-	for my $s (@services) {
-		print $s->trigger_name, " => ", ref ($s), "\n";
-	}
+    my @services = Jaipo->services;
+    for my $s (@services) {
+        print $s->trigger_name, " => ", ref ($s), "\n";
+    }
 }
 
 =head2 list_triggers

@@ -238,10 +238,24 @@ sub print_help {
     print <<HELP ;
 
 r       to read all messages
+p       to read public messages (from friends,channels)
+g       to read global messages (from the whole world)
 
+:[message]       update a message
 
-:[service]  [message]
-:[service]  :[action]  [arguments]
+eval            eval a part of code.
+
+conf edit       edit configuration
+conf load       load configuration
+conf save       save configuration
+
+use [service trigger]
+
+f               filter
+?               print help
+
+[service]  [message]
+[service]  :[action]  [arguments]
 
 HELP
 
@@ -259,7 +273,8 @@ Jaipo Console
 
 version 0.1
 Type ? for help
-Type :[service] :? for service plugin help
+Type [service] ? for service plugin help
+Type :[message] to send a message
 
 END
 

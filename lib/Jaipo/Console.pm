@@ -237,11 +237,11 @@ sub print_help {
 
     print <<HELP ;
 
-r       to read all messages
-p       to read public messages (from friends,channels)
-g       to read global messages (from the whole world)
+r|read          to read user updates
+p|public        to read public messages (from friends,channels)
+g|global        to read global messages (from the whole world)
 
-:[message]       update a message
+:[message]      update a message to all services.
 
 eval            eval a part of code.
 
@@ -251,7 +251,7 @@ conf save       save configuration
 
 use [service trigger]
 
-f               filter
+f create        create a filter
 ?               print help
 
 [service]  [message]

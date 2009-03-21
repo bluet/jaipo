@@ -236,7 +236,7 @@ sub print_help {
 
     print <<HELP ;
 
-r|read          to read user updates
+m|mine          to read updates of your own
 p|public        to read public messages (from friends,channels)
 g|global        to read global messages (from the whole world)
 
@@ -351,7 +351,7 @@ sub process_built_in_commands {
 
         # Global Actions
         #
-        when ( m/^(r|read)/i ) {  
+        when ( m/^(m|mine)/i ) {  
             $jobj->action ( "read_user_timeline", $line );
 
         }

@@ -52,9 +52,10 @@ sub dispatch_sub_command {
 
     # if built-in command
     my $builtin_command = {
-        r => 'read_user_timeline',
+        m => 'read_user_timeline',
         p => 'read_public_timeline',
-        g => 'read_global_timeline'
+        g => 'read_global_timeline',
+        '?' => 'help',
     };
 
     if( defined $builtin_command->{ $sub_command } ) {

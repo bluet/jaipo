@@ -46,6 +46,28 @@ sub new_request {
 
 }
 
+
+sub dispatch_sub_command {
+    my ($self, $sub_command, $rest ) = @_;
+
+    # if built-in command
+    my $builtin_command = {
+        r => 'read_user_timeline',
+        p => 'read_public_timeline',
+        g => 'read_global_timeline'
+    };
+
+    if( defined $builtin_command->{ $sub_command } ) {
+        my $func =  $builtin_command->{ $sub_command };
+		$self->$func( $rest );
+    }
+
+    # todo: otherwise we dispatch to service specific command
+}
+
+
+
+
 =head2 prereq_plugins
 
 Returns an array of plugin module names that this plugin depends on.

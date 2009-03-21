@@ -91,7 +91,9 @@ sub find_service_option_by_name {
 
 =head2 find_service_option_by_trigger
 
-Returns a config hash
+in list context , returns an array of one or more service plugin
+config hash.
+in scalar contxt , returnes a config hash
 
 =cut
 

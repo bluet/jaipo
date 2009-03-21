@@ -53,6 +53,7 @@ sub init {
 		print "twitter init failed\n";
 	}
 
+    print "Twitter Service: " . $opt->{username} . ' => ' . $opt->{trigger_name} . "\n";
 	$self->core( $twitter );
 }
 

@@ -112,7 +112,7 @@ sub init {
 
 		# Prepare to learn the plugin class name
 		my ($service_name) = keys %{$service};
-		say "Jaipo: Loading " . $service_name;
+        say "Jaipo: Init " . $service_name;
 
 		my $class;
 
@@ -139,8 +139,8 @@ sub init {
 		# Load the service plugin code
 		$self->_try_to_require ($class);
 
-		# Jaipo::ClassLoader->new(base => $class)->require;
-
+        # XXX: if Service don't have trigger_name, we have to do something
+        # 
 		# Initialize the plugin and mark the prerequisites for loading too
 		my $plugin_obj = $class->new (%options);
 		$plugin_obj->init ($caller);
@@ -227,7 +227,6 @@ sub _require {
 			die $error;
 		}
 		else {
-
 		   #log->error(sprintf("$message at %s line %d\n", (caller(1))[1,2]));
 			return 0;
 		}
@@ -343,7 +342,6 @@ sub runtime_load_service {
 	# actually won't happen, config loader will canonicalize the config
 	# service plugin will get it's default trigger namd from service name.
 	else {
-
 	 # find by service name
 	 #       elsif ( scalar @sp_options > 1 ) {
 	 #           # find service by trigger name
@@ -388,7 +386,9 @@ what to do with.
 
 sub dispatch_to_service {
 	my ( $self, $service_tg, $line ) = @_;
-	my $s = $self->_find_service_by_trigger ($service_tg);
+	my $s = $self->find_service_by_trigger ($service_tg);
+    my ($sub_command) = ($line =~ m[^(\w+)] );
+    $s->dispatch_sub_command( $sub_command , $line );
 
 }
 

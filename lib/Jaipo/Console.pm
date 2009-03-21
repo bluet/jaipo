@@ -52,7 +52,7 @@ to read public timeline
 
 to check user's profile
 
-    > w IsYourDaddy
+    > jaiku w IsYourDaddy
 
 setup location on Jaiku
 
@@ -95,7 +95,7 @@ enter service-only mode
 
 =head2 Global Commands
 
-=item r  
+=item m
 
 read user updates
 
@@ -191,7 +191,6 @@ sub _pre_init {
     binmode STDOUT,":utf8";
 
 }
-
 
 =head2 setup service
 
@@ -290,7 +289,6 @@ sub process_built_in_commands {
 
     $line =~ s/^://;
 
-    # XXX: add trigger 
 	given ($line) {
 
         # eval code
@@ -351,6 +349,8 @@ sub process_built_in_commands {
 		}
 
 
+        # Global Actions
+        #
         when ( m/^(r|read)/i ) {  
             $jobj->action ( "read_user_timeline", $line );
 
@@ -380,17 +380,9 @@ sub process_built_in_commands {
         # try to find the trigger , if match then do it
         # or show up command not found
 		default {
-
             # dispatch to service
             my ($service_tg,$rest_line) = ( $line =~ m/^(\w+)\s*(.*)/i );
-            # $jobj->dispatch_to_service( $service_tg , $rest_line );
-
-            # find a servcie plugin by trigger 
-
-            # parse line 
-            # if find sub command , execute the sub command
-            # if not, we should posting text to service
-
+            $jobj->dispatch_to_service( $service_tg , $rest_line );
 		}
 	}
 
@@ -422,7 +414,7 @@ sub parse {
 sub run {
 	my $self = shift;
 
-
+    # XXX: we need Term::ReadLine module for .
 	# read command from STDIN
     binmode STDIN,":utf8";
 	while (1) {

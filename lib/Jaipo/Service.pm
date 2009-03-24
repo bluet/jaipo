@@ -50,7 +50,7 @@ sub new_request {
 sub dispatch_sub_command {
     my ($self, $sub_command, $rest ) = @_;
 
-    # if built-in command
+    # service 
     my $builtin_command = {
         m => 'read_user_timeline',
         p => 'read_public_timeline',
@@ -126,7 +126,6 @@ global timeline ( out of space !! )
 
 sub read_global_timeline {
 
-
 }
 
 
@@ -153,7 +152,6 @@ sub apply_filter {
 =cut 
 
 sub remove_filter {
-
 
 }
 

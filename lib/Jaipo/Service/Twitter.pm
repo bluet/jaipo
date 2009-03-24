@@ -7,6 +7,61 @@ use Text::Table;
 use Lingua::ZH::Wrap 'wrap';
 use utf8;
 
+
+=head3 Twitter
+
+=item ? 
+
+help message
+
+=item rd 
+
+read direct messages
+
+=item rr
+
+read reply messages
+
+=item rp
+
+read public messages
+
+=item rf
+
+read followed timeline messages
+
+=item sd [ID]  [MESSAGE]
+
+send direct message
+
+=item sr [ID]  [MESSAGE]
+
+send reply message
+
+=item w [ID]
+
+check someone's profile
+
+=item l [LOCATION]
+
+LOCATION is a string, which will be updated to your profile
+
+=item f [ID]
+
+follow someone
+
+=item show friends
+
+show friends
+
+=item show followers
+
+show followers
+
+=cut
+
+
+
 sub init {
 	my $self   = shift;
 	my $caller = shift;
@@ -72,8 +127,7 @@ sub get_table {
 
 
 sub layout_message {
-	my $self = shift;
-	my $lines = shift;
+    my ( $self , $lines ) = @_;
 	local $Lingua::ZH::Wrap::columns = 30;
 	local $Lingua::ZH::Wrap::overflow = 1;
 

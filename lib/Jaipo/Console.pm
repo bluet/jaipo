@@ -4,6 +4,7 @@ use strict;
 use Jaipo;
 use utf8;
 use feature qw(:5.10);
+use Term::ReadLine;
 
 my $jobj;
 
@@ -114,56 +115,6 @@ read global updates
 [SERVICE] [ACTION] [ ARGUMENTS .. ]
 
 =head3 Jaiku
-
-=head3 Twitter
-
-=item ? 
-
-help message
-
-=item rd 
-
-read direct messages
-
-=item rr
-
-read reply messages
-
-=item rp
-
-read public messages
-
-=item rf
-
-read followed timeline messages
-
-=item sd [ID]  [MESSAGE]
-
-send direct message
-
-=item sr [ID]  [MESSAGE]
-
-send reply message
-
-=item w [ID]
-
-check someone's profile
-
-=item l [LOCATION]
-
-LOCATION is a string, which will be updated to your profile
-
-=item f [ID]
-
-follow someone
-
-=item show friends
-
-show friends
-
-=item show followers
-
-show followers
 
 =head1 Functions
 
@@ -413,16 +364,19 @@ sub parse {
 
 sub run {
 	my $self = shift;
-
-    # XXX: we need Term::ReadLine module for .
-	# read command from STDIN
+    my $term = new Term::ReadLine 'Simple Perl calc';
+    my $prompt = "jaipo> ";
     binmode STDIN,":utf8";
-	while (1) {
-		print "jaipo> ";
-		my $line = <STDIN>;
-		chomp $line;
-		$self->parse ( $line );
-	}
+    my $OUT = $term->OUT || \*STDOUT;
+    while ( defined ($_ = $term->readline($prompt)) ) {
+        # my $res = eval( $_ );
+        my $res;
+		chomp;
+		$self->parse ( $_ );
+        # warn $@ if $@;
+        # print $OUT $res, "\n" unless $@;
+        $term->addhistory($_) if /\S/;
+    }
 }
 
 

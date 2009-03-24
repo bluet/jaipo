@@ -374,7 +374,7 @@ sub run {
     my $OUT = $term->OUT || \*STDOUT;
     while ( defined ($_ = $term->readline($prompt)) ) {
 		chomp;
-        my $res = eval( q{ $self->parse ( $_ ); } );
+        eval( q{ $self->parse ( $_ ); } );
         warn $@ if $@;
         # print $OUT $res, "\n" unless $@;
         $term->addhistory($_) if /\S/;

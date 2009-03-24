@@ -369,12 +369,10 @@ sub run {
     binmode STDIN,":utf8";
     my $OUT = $term->OUT || \*STDOUT;
     while ( defined ($_ = $term->readline($prompt)) ) {
-        # my $res = eval( $_ );
-        my $res;
 		chomp;
-		$self->parse ( $_ );
-        # warn $@ if $@;
-        # print $OUT $res, "\n" unless $@;
+        my $res = eval( q{ $self->parse ( $_ ); } );
+        warn $@ if $@;
+        print $OUT $res, "\n" unless $@;
         $term->addhistory($_) if /\S/;
     }
 }

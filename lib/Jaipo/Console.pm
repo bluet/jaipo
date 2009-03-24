@@ -274,6 +274,10 @@ sub process_built_in_commands {
 
         }
 
+        when ( m/^list$/i ) {
+            $jobj->list_triggers;
+        }
+
 
         # built-in commands
         # TODO:
@@ -372,11 +376,9 @@ sub run {
 		chomp;
         my $res = eval( q{ $self->parse ( $_ ); } );
         warn $@ if $@;
-        print $OUT $res, "\n" unless $@;
+        # print $OUT $res, "\n" unless $@;
         $term->addhistory($_) if /\S/;
     }
 }
-
-
 
 1;

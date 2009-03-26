@@ -102,11 +102,11 @@ sub init {
 
 	# we initialize service plugin class here
 	# Set up plugins
-	my @services;
-	my @services_to_load = @{ Jaipo->config->app ('Services') };
+    my @services;
+    my @services_to_load = @{ Jaipo->config->app ('Services') };
 
-	my @plugins;
-	my @plugins_to_load;
+    my @plugins;
+    my @plugins_to_load;
 
 	for ( my $i = 0; my $service = $services_to_load[$i]; $i++ ) {
 

@@ -7,8 +7,9 @@ use Text::Table;
 use Lingua::ZH::Wrap 'wrap';
 use utf8;
 
+=head2 Jaipo::Console
 
-=head3 Twitter
+=head3 Twitter Service Command
 
 =item ? 
 
@@ -60,56 +61,54 @@ show followers
 
 =cut
 
-
-
 sub init {
-	my $self   = shift;
-	my $caller = shift;
-	my $opt = $self->options;
+    my $self   = shift;
+    my $caller = shift;
+    my $opt = $self->options;
 
-	unless( $opt->{username} and $opt->{password} ) {
+    unless( $opt->{username} and $opt->{password} ) {
 
-		# request to setup parameter
-		# XXX TODO: simplify this, let it like jifty dbi schema  or
-		# something
-		$caller->setup_service ( {
-				package_name => __PACKAGE__,
-				require_args => [ {
-						username => {
-							label       => 'Username',
-							description => '',
-							type        => 'text'
-						}
-					},
-					{   password => {
-							label       => 'Password',
-							description => '',
-							type        => 'text'
-						} } ]
-			},
-			$opt
-		);
-	}
+        # request to setup parameter
+        # XXX TODO: simplify this, let it like jifty dbi schema  or
+        # something
+        $caller->setup_service ( {
+                package_name => __PACKAGE__,
+                require_args => [ {
+                        username => {
+                            label       => 'Username',
+                            description => '',
+                            type        => 'text'
+                        }
+                    },
+                    {   password => {
+                            label       => 'Password',
+                            description => '',
+                            type        => 'text'
+                        } } ]
+            },
+            $opt
+        );
+    }
 
-	Jaipo->config->set_service_option( 'Twitter' , $opt );
+    Jaipo->config->set_service_option( 'Twitter' , $opt );
     my %twitter_opt = %{ $opt };
 
-	# default options
- 	$twitter_opt{useragent} = 'jaipopm';
- 	$twitter_opt{source}    = 'jaipopm';
- 	$twitter_opt{clienturl} = 'http://jaipo.org/';
- 	$twitter_opt{clientver} = '0.001';
- 	$twitter_opt{clientname} = 'Jaipo.pm';
+    # default options
+    $twitter_opt{useragent} = 'jaipopm';
+    $twitter_opt{source}    = 'jaipopm';
+    $twitter_opt{clienturl} = 'http://jaipo.org/';
+    $twitter_opt{clientver} = '0.001';
+    $twitter_opt{clientname} = 'Jaipo.pm';
 
-	my $twitter = Net::Twitter->new( %twitter_opt );
+    my $twitter = Net::Twitter->new( %twitter_opt );
 
-	unless( $twitter ) {
-		# XXX: need to implement logger:  Jaipo->log->warn( );
-		print "twitter init failed\n";
-	}
+    unless( $twitter ) {
+        # XXX: need to implement logger:  Jaipo->log->warn( );
+        print "twitter init failed\n";
+    }
 
     print "Twitter Service: " . $opt->{username} . ' => ' . $opt->{trigger_name} . "\n";
-	$self->core( $twitter );
+    $self->core( $twitter );
 }
 
 
@@ -119,28 +118,57 @@ sub init {
 
 
 sub get_table {
-	my $self = shift;
-	my @cols = @_;
-	my $tb = Text::Table->new( @cols );
-	return $tb;
+    my $self = shift;
+    my @cols = @_;
+    my $tb = Text::Table->new( @cols );
+    return $tb;
 }
 
 
 sub layout_message {
     my ( $self , $lines ) = @_;
-	local $Lingua::ZH::Wrap::columns = 30;
-	local $Lingua::ZH::Wrap::overflow = 1;
+    local $Lingua::ZH::Wrap::columns = 60;
+    local $Lingua::ZH::Wrap::overflow = 0;
 
-	# force Message column to be 60 chars width or more.
-	my $tb = $self->get_table( qw|User Source Message| );
-
+    # XXX: lingua::zh::wrap url ... orz
+    my $out = "";
     for ( @$lines ) {
-		my $source = $_->{source};
-		# $source =~ s{<a href="(.*?)">(.*?)</a>}{$2 ($1)};
-		$source =~ s{<a href="(.*?)">(.*?)</a>}{$2};
-		$tb->add( $_->{user}->{name} , $source , wrap( $_->{text} )  );
+        my $source = $_->{source};
+        # $source =~ s{<a href="(.*?)">(.*?)</a>}{$2 ($1)};
+        $source =~ s{<a href="(.*?)">(.*?)</a>}{$2};
+
+        my $text = $_->{text} ;
+        $text =~ s|(http://\S*)|\n$1\n|g ;
+        my @text_lines = split /\n/,$text;
+
+		my $wrap_text = '';
+        for my $l ( @text_lines ) {
+            if( $l !~ m{http://} ) {
+                $wrap_text .= wrap( ' ' x 4 , ' ' x 4 , $l ) . "\n";
+            }
+            else {
+                $wrap_text .= ' ' x 4 . $l . "\n";
+            }
+        }
+
+        $out .= qq|
+@{[ $_->{user}->{name} ]} said:
+$wrap_text
+                    -- from $source 
+|;
     }
-	return $tb->table . "";
+    return $out;
+
+    # XXX: we disable text::table currently
+    # force Message column to be 60 chars width or more.
+#   my $tb = $self->get_table( qw|User Source Message| );
+#    for ( @$lines ) {
+#       my $source = $_->{source};
+#       # $source =~ s{<a href="(.*?)">(.*?)</a>}{$2 ($1)};
+#       $source =~ s{<a href="(.*?)">(.*?)</a>}{$2};
+#       $tb->add( $_->{user}->{name} , $source , wrap( $_->{text} )  );
+#    }
+#   return $tb->table . "";
 }
 
 
@@ -149,31 +177,31 @@ sub layout_message {
 =cut
 
 sub send_msg {
-	my ( $self , $message ) = @_;
-	print "Sending..." if( Jaipo->config->app('Verbose') );
-	my $result = $self->core->update({ status => $message });
-	print "Done\n"    if( Jaipo->config->app('Verbose') );
+    my ( $self , $message ) = @_;
+    print "Sending..." if( Jaipo->config->app('Verbose') );
+    my $result = $self->core->update({ status => $message });
+    print "Done\n"    if( Jaipo->config->app('Verbose') );
 }
 
 # updates from user himself
 sub read_user_timeline {
     my $self = shift;
     my $lines = $self->core->user_timeline;  # XXX: give args to this method
-	Jaipo->logger->info( $self->layout_message( $lines ) );
+    Jaipo->logger->info( $self->layout_message( $lines ) );
 }
 
 # updates from user's friends or channel
 sub read_public_timeline {
     my $self = shift;
     my $lines = $self->core->friends_timeline;  # XXX: give args to this method
-	Jaipo->logger->info( $self->layout_message( $lines ) );
+    Jaipo->logger->info( $self->layout_message( $lines ) );
 }
 
 
 sub read_global_timeline {
     my $self = shift;
     my $lines = $self->core->public_timeline;  # XXX: give args to this method
-	Jaipo->logger->info( $self->layout_message( $lines ) );
+    Jaipo->logger->info( $self->layout_message( $lines ) );
 }
 
 

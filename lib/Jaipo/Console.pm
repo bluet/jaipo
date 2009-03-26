@@ -345,14 +345,10 @@ sub process_built_in_commands {
 }
 
 sub parse {
-	my $self = shift;
-	my $line = shift;
-
+    my ($self,$line) = @_;
     $line =~ s/^\s*//g;
     $line =~ s/\s*$//g;
-
 	return unless $line;
-
     if( $line =~ m/^:/ ) {
         # do update status message if string start with ":"
         $line =~ s/^://;
@@ -361,7 +357,6 @@ sub parse {
     else {
         $self->process_built_in_commands( $line );
     }
-
 }
 
 

@@ -4,6 +4,7 @@ use strict;
 use Net::Twitter;
 use base qw/Jaipo::Service Class::Accessor::Fast/;
 use Text::Table;
+use App::Cache;
 use Lingua::ZH::Wrap 'wrap';
 use utf8;
 
@@ -171,6 +172,20 @@ $wrap_text
 #   return $tb->table . "";
 }
 
+sub filter_read_message {
+    my $lines = shift;
+    my $cache = App::Cache->new({ ttl => 60*60*3 });
+    my $new_lines = [];
+    for ( @$lines ) {
+        my $read = $cache->get('twitter_' . $_->{id} );
+        unless( $read ) {
+            push @$new_lines , $_;
+            $cache->set('twitter_' . $_->{id} , 1 );
+        }
+    }
+    return $new_lines;
+}
+
 
 =head2 SERVICE OVERRIDE FUNCTIONS
 
@@ -187,6 +202,7 @@ sub send_msg {
 sub read_user_timeline {
     my $self = shift;
     my $lines = $self->core->user_timeline;  # XXX: give args to this method
+    $lines = filter_read_message( $lines );
     Jaipo->logger->info( $self->layout_message( $lines ) );
 }
 
@@ -194,6 +210,7 @@ sub read_user_timeline {
 sub read_public_timeline {
     my $self = shift;
     my $lines = $self->core->friends_timeline;  # XXX: give args to this method
+    $lines = filter_read_message( $lines );
     Jaipo->logger->info( $self->layout_message( $lines ) );
 }
 
@@ -201,6 +218,7 @@ sub read_public_timeline {
 sub read_global_timeline {
     my $self = shift;
     my $lines = $self->core->public_timeline;  # XXX: give args to this method
+    $lines = filter_read_message( $lines );
     Jaipo->logger->info( $self->layout_message( $lines ) );
 }
 

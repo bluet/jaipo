@@ -321,7 +321,13 @@ sub process_built_in_commands {
 
         }
 
-        when ( m/^cache\s+clear/i ) {
+        # XXX: let -p , -m works
+        when ( m/^-$/ ) {
+            $jobj->cache_clear();
+            Jaipo->logger->info( "Cache Flushed" );
+        }
+
+        when ( m/^mark\s+as\s+read/i ) {
             $jobj->cache_clear();
             Jaipo->logger->info( "Cache Flushed" );
         }

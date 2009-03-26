@@ -14,9 +14,7 @@ lib/Jaipo/Service/Twitter/Command.pm
 lib/Jaipo/Service/Twitter.pm
 lib/Jaipo/Service.pm
 lib/Jaipo.pm
-Makefile
 Makefile.pl
-MANIFEST
 README
 t/00-load.t
 t/01-config.t

@@ -23,6 +23,7 @@ WriteMakefile(
 		'Text::Table' => 0,
         'Number::RecordLocator' => 0,
         'Term::ReadLine' => 0,
+        'App::Cache' => 0,
     },
     EXE_FILES => [<bin/jaipo>] ,
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },

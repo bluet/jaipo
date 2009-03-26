@@ -321,6 +321,11 @@ sub process_built_in_commands {
 
         }
 
+        when ( m/^cache\s+clear/i ) {
+            $jobj->cache_clear();
+            Jaipo->logger->info( "Cache Flushed" );
+        }
+
 
         # something like filter create /regexp/  :twitter:public
         when ( m/^(f|filter)\s/i ) { 

@@ -392,6 +392,16 @@ sub dispatch_to_service {
 
 }
 
+sub cache_clear {
+	my @services = Jaipo->services;
+	foreach my $service (@services) {
+        if( UNIVERSAL::can( $service , 'get_cache' ) ) {
+            my $c = $service->get_cache;
+            $c->clear;
+        }
+	}
+}
+
 =head2 action ACTION, PARAM
 
 =cut

@@ -172,9 +172,14 @@ $wrap_text
 #   return $tb->table . "";
 }
 
+sub get_cache {
+    my $cache = App::Cache->new({ ttl => 60*60*3 });
+    return $cache;
+}
+
 sub filter_read_message {
     my $lines = shift;
-    my $cache = App::Cache->new({ ttl => 60*60*3 });
+    my $cache = get_cache;
     my $new_lines = [];
     for ( @$lines ) {
         my $read = $cache->get('twitter_' . $_->{id} );

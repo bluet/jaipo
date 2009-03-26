@@ -1,31 +1,26 @@
 TODO:
- - save/load configuration command
  - make same services using different trigger  :twitter2 :twitter3 etc... or something
- - use Term::ReadLine 
  - img upload
- - setup chinese message column width for text::table
  - data::page for showing text::table
  - auto-messaging (keep karam ?)
  - gui 
- - support opmsg service ?
+ - support opmsg service 
  - fix www::plurk api implementation
- - console.pm
  - Mac::iTunes binding
  - ShortUrl binding
  - Image to ASCII Converter for showing user profile
- - use Cache module to remember what we've read
  - command only
+ x use Cache module to remember what we've read
+ x use Term::ReadLine 
+ x save/load configuration command
+ x setup chinese message column width for text::table
 
 BUGS:
  - zh table
- - logger 
-      jaipo> r
-      Invalid conversion in printf: "%\350" at lib/Jaipo/Logger.pm line 28, <STDIN> line 1.
-      Invalid conversion in printf: "%\345" at lib/
-
 
 plugins
  - sqlite logger ( also provide search functino )
  - post by feeds 
  - post to irc
  - Net::Hiveminder
+ - provide plugin to render a message as image ( via Pango or something else )

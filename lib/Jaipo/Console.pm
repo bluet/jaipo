@@ -139,7 +139,7 @@ sub new {
 
 sub _pre_init {
 	my $self = shift;
-    binmode STDOUT,":utf8";
+    # binmode STDOUT,":utf8";
 
 }
 
@@ -374,16 +374,22 @@ sub parse {
 
 sub run {
 	my $self = shift;
-    my $term = new Term::ReadLine 'Simple Perl calc';
-    my $prompt = "jaipo> ";
+    my $prompt = "jaipo>  ";
+    use utf8;
+    # my $term = new Term::ReadLine; # 'Simple Perl';
+    # my $OUT = $term->OUT || \*STDOUT;
+    # binmode $OUT,":utf8";
     binmode STDIN,":utf8";
-    my $OUT = $term->OUT || \*STDOUT;
-    while ( defined ($_ = $term->readline($prompt)) ) {
+    binmode STDOUT,":utf8";
+    # while ( defined ($_ = $term->readline($prompt)) ) {
+    while ( 1 ) {
+        print $prompt;
+        $_ = <STDIN>;
 		chomp;
         eval( q{ $self->parse ( $_ ); } );
         warn $@ if $@;
         # print $OUT $res, "\n" unless $@;
-        $term->addhistory($_) if /\S/;
+        # $term->addhistory($_) if /\S/;
     }
 }
 

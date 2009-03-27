@@ -6,10 +6,8 @@ lib/Jaipo/Config.pm
 lib/Jaipo/Console.pm
 lib/Jaipo/Filter.pm
 lib/Jaipo/Logger.pm
-lib/Jaipo/Service
 lib/Jaipo/Service/Jaiku.pm
 lib/Jaipo/Service/Plurk.pm
-lib/Jaipo/Service/Twitter
 lib/Jaipo/Service/Twitter/Command.pm
 lib/Jaipo/Service/Twitter.pm
 lib/Jaipo/Service.pm

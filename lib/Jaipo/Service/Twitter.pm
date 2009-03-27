@@ -198,9 +198,10 @@ sub filter_read_message {
 
 sub send_msg {
     my ( $self , $message ) = @_;
-    print "Sending..." if( Jaipo->config->app('Verbose') );
+    print "Sending to => " if( Jaipo->config->app('Verbose') );
+    print $self->options->{trigger_name};
     my $result = $self->core->update({ status => $message });
-    print "Done\n"    if( Jaipo->config->app('Verbose') );
+    print " [Done]\n"    if( Jaipo->config->app('Verbose') );
 }
 
 # updates from user himself

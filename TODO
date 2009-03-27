@@ -10,6 +10,11 @@ TODO:
  - ShortUrl binding
  - Image to ASCII Converter for showing user profile
  - command only
+
+ - fix text wrapping problems  (lingua-zh-wrap convert text into big5 then convert back ...)
+    - Unicode::EastAsianWidth 
+    - Text::Wrap
+
  x use Cache module to remember what we've read
  x use Term::ReadLine 
  x save/load configuration command

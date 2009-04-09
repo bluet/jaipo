@@ -30,6 +30,10 @@ GETTING STARTED WITH Jaipo Console
 
 	jaipo console
 
+or
+
+    perl -Ilib bin/jaipo console
+
     jaipo> use              # list service triggers
     twitter_c9s => Twitter
     twitter_other => Twitter

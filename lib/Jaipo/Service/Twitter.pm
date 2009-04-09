@@ -211,7 +211,8 @@ sub read_user_timeline {
     $lines = filter_read_message( $lines );
     Jaipo->logger->info( $self->layout_message( $lines ) );
     return { 
-        notification_msg => scalar @$lines .  ' Updates'
+        notification_msg => scalar @$lines .  ' Updates',
+        updates => scalar @$lines
     };
 }
 
@@ -222,7 +223,8 @@ sub read_public_timeline {
     $lines = filter_read_message( $lines );
     Jaipo->logger->info( $self->layout_message( $lines ) );
     return { 
-        notification_msg => scalar @$lines .  ' Updates'
+        notification_msg => scalar @$lines .  ' Updates',
+        updates => scalar @$lines
     };
 }
 
@@ -233,7 +235,8 @@ sub read_global_timeline {
     $lines = filter_read_message( $lines );
     Jaipo->logger->info( $self->layout_message( $lines ) );
     return { 
-        notification_msg => scalar @$lines .  ' Updates'
+        notification_msg => scalar @$lines .  ' Updates',
+        updates => scalar @$lines
     };
 }
 

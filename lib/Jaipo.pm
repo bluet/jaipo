@@ -409,17 +409,22 @@ sub cache_clear {
 sub action {
 	my ( $self, $action, $param ) = @_;
 	my @services = Jaipo->services;
-	foreach my $service (@services) {
-
-		if ( UNIVERSAL::can ( $service, $action ) ) {
-			$service->$action ($param);
-		}
-
-		else {
-
-			# service plugin doesn't support this kind of action
-		}
-	}
+    foreach my $service (@services) {
+        if ( UNIVERSAL::can( $service, $action ) ) {
+            my $ret = $service->$action($param);
+            if ( ref $ret and defined $ret->{notification_msg} ) {
+                if( $^O =~ m/linux/  ) {
+                    # XXX: make sure we have libnotify to use
+                    use Jaipo::Notify::LibNotify;
+                    my $notify       = Jaipo::Notify::LibNotify->new;
+                    my $notification = $notify->yell( $ret->{notification_msg} );
+                }
+            }
+        }
+        else {
+            # service plugin doesn't support this kind of action
+        }
+    }
 
 }
 

@@ -210,6 +210,9 @@ sub read_user_timeline {
     my $lines = $self->core->user_timeline;  # XXX: give args to this method
     $lines = filter_read_message( $lines );
     Jaipo->logger->info( $self->layout_message( $lines ) );
+    return { 
+        notification_msg => scalar @$lines .  ' Updates'
+    };
 }
 
 # updates from user's friends or channel
@@ -218,6 +221,9 @@ sub read_public_timeline {
     my $lines = $self->core->friends_timeline;  # XXX: give args to this method
     $lines = filter_read_message( $lines );
     Jaipo->logger->info( $self->layout_message( $lines ) );
+    return { 
+        notification_msg => scalar @$lines .  ' Updates'
+    };
 }
 
 
@@ -226,6 +232,9 @@ sub read_global_timeline {
     my $lines = $self->core->public_timeline;  # XXX: give args to this method
     $lines = filter_read_message( $lines );
     Jaipo->logger->info( $self->layout_message( $lines ) );
+    return { 
+        notification_msg => scalar @$lines .  ' Updates'
+    };
 }
 
 

@@ -376,6 +376,8 @@ sub auto_update {
     $SIG{ALRM} = sub { 
         print "Updating...\n";
         $jobj->action( "read_public_timeline" );
+
+
     };
     setitimer(ITIMER_REAL , 1 , 10);
 }

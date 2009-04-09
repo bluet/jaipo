@@ -413,7 +413,7 @@ sub action {
         if ( UNIVERSAL::can( $service, $action ) ) {
             my $ret = $service->$action($param);
             if ( ref $ret and defined $ret->{notification_msg} ) {
-                if( $^O =~ m/linux/  ) {
+                if( $^O =~ m/linux/i  ) {
                     # XXX: make sure we have libnotify to use
                     use Jaipo::Notify::LibNotify;
                     my $notify       = Jaipo::Notify::LibNotify->new;

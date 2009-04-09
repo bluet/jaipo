@@ -3,11 +3,12 @@ use warnings;
 use strict;
 use feature qw(:5.10);
 use Jaipo::Config;
+use Jaipo::Notify;
 use Jaipo::Logger;
 use base qw/Class::Accessor::Fast/;
 __PACKAGE__->mk_accessors(qw/config/);
 
-use vars qw/$CONFIG $LOGGER $HANDLER $PUB_SUB @PLUGINS @SERVICES/;
+use vars qw/$NOTIFY $CONFIG $LOGGER $HANDLER $PUB_SUB @PLUGINS @SERVICES/;
 
 =encoding utf8
 
@@ -68,6 +69,13 @@ sub config {
 	return $CONFIG;
 }
 
+sub notify {
+	my $class = shift;
+	$NOTIFY = shift if (@_);
+	$NOTIFY ||= Jaipo::Notify->new();
+	return $NOTIFY;
+}
+
 =head2 services
 
 =cut
@@ -99,6 +107,7 @@ sub init {
 	# my $args = {
 	#
 	# };
+    Jaipo->notify->init;
 
 	# we initialize service plugin class here
 	# Set up plugins
@@ -412,13 +421,14 @@ sub action {
     foreach my $service (@services) {
         if ( UNIVERSAL::can( $service, $action ) ) {
             my $ret = $service->$action($param);
-            if ( ref $ret and defined $ret->{notification_msg} and $ret->{updates} > 0 ) {
-                if( $^O =~ m/linux/i  ) {
-                    # XXX: make sure we have libnotify to use
-                    use Jaipo::Notify::LibNotify;
-                    my $notify       = Jaipo::Notify::LibNotify->new;
-                    my $notification = $notify->yell( $ret->{notification_msg} );
-                }
+            # XXX:
+            #  - we should check ret->{type} eq 'notification'
+            #  - and call Notify::init
+            if ( ref $ret 
+                    and defined $ret->{type} eq 'notification' 
+                    and $ret->{updates} > 0 ) {
+
+
             }
         }
         else {

@@ -5,10 +5,8 @@ use Jaipo;
 use utf8;
 use feature qw(:5.10);
 use Term::ReadLine;
+use Time::HiRes qw( setitimer ITIMER_REAL ITIMER_PROF time );
 
-my $jobj;
-
-$|=1;
 =encoding utf8
 
 =head1 SYNOPSIS
@@ -122,13 +120,16 @@ read global updates
 
 =cut
 
+my $jobj;
+
+$|=1;
+
 sub new {
 	my $class = shift;
 	my %args = @_;
 
 	my $self = {};
 	bless $self, $class;
-
 	$self->_pre_init;
 	return $self;
 }
@@ -307,49 +308,48 @@ sub process_built_in_commands {
         # Global Actions
         #
         when ( m/^(m|mine)/i ) {  
-            $jobj->action ( "read_user_timeline", $line );
+            $jobj->action( "read_user_timeline", $line );
 
         }
 
         when ( m/^(p|public)/i ) { 
-            $jobj->action ( "read_public_timeline", $line );
+            $jobj->action( "read_public_timeline", $line );
 
         }
 
         when ( m/^(g|global)/i ) { 
-            $jobj->action ( "read_global_timeline", $line );
+            $jobj->action( "read_global_timeline", $line );
 
         }
 
         # XXX: let -p , -m works
-        when ( m/^-$/ ) {
-            $jobj->cache_clear();
-            Jaipo->logger->info( "Cache Flushed" );
+        when (m/^-$/) {
+            $jobj->cache_clear;
+            Jaipo->logger->info("Cache Flushed");
         }
 
-        when ( m/^mark\s+as\s+read/i ) {
+        when (m/^mark\s+as\s+read/i) {
             $jobj->cache_clear();
-            Jaipo->logger->info( "Cache Flushed" );
+            Jaipo->logger->info("Cache Flushed");
         }
 
 
         # something like filter create /regexp/  :twitter:public
-        when ( m/^(f|filter)\s/i ) { 
-            my ($cmd,$action,@params) = split /\s+/ , $line;
-
+        when (m/^(f|filter)\s/i) {
+            my ( $cmd, $action, @params ) = split /\s+/, $line;
         }
 
-		when ( '?' ) { 
-            $self->print_help 
+        when ('?') {
+            $self->print_help;
         }
 
         # try to find the trigger , if match then do it
         # or show up command not found
-		default {
+        default {
             # dispatch to service
-            my ($service_tg,$rest_line) = ( $line =~ m/^(\w+)\s*(.*)/i );
-            $jobj->dispatch_to_service( $service_tg , $rest_line );
-		}
+            my ( $service_tg, $rest_line ) = ( $line =~ m/^(\w+)\s*(.*)/i );
+            $jobj->dispatch_to_service( $service_tg, $rest_line );
+        }
 	}
 
 
@@ -371,11 +371,20 @@ sub parse {
 }
 
 
+sub auto_update {
+    print "Auto-Update Mode\n";
+    $SIG{ALRM} = sub { 
+        print "Updating...\n";
+        $jobj->action( "read_public_timeline" );
+    };
+    setitimer(ITIMER_REAL , 1 , 10);
+}
 
 sub run {
 	my $self = shift;
     my $prompt = "jaipo>  ";
     use utf8;
+    # XXX: Term::ReadLine doesnt support UTF-8
     # my $term = new Term::ReadLine; # 'Simple Perl';
     # my $OUT = $term->OUT || \*STDOUT;
     # binmode $OUT,":utf8";
@@ -384,9 +393,16 @@ sub run {
     # while ( defined ($_ = $term->readline($prompt)) ) {
     while ( 1 ) {
         print $prompt;
-        $_ = <STDIN>;
-		chomp;
-        eval( q{ $self->parse ( $_ ); } );
+        my $line = <STDIN>;
+        chomp $line;
+        unless( $line ) {
+            $self->auto_update;
+            <STDIN>;
+            $SIG{ALRM} = undef;
+            setitimer(ITIMER_REAL , 0 );
+        }
+		chomp $line if( $line );
+        eval( q{ $self->parse ( $line ); } );
         warn $@ if $@;
         # print $OUT $res, "\n" unless $@;
         # $term->addhistory($_) if /\S/;

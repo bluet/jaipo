@@ -5,7 +5,7 @@ use feature qw(:5.10);
 use Jaipo::Config;
 use Jaipo::Logger;
 use base qw/Class::Accessor::Fast/;
-__PACKAGE__->mk_accessors (qw/config/);
+__PACKAGE__->mk_accessors(qw/config/);
 
 use vars qw/$CONFIG $LOGGER $HANDLER $PUB_SUB @PLUGINS @SERVICES/;
 
@@ -439,7 +439,6 @@ automatically be notified of progress on your bug as I make changes.
 You can find documentation for this module with the perldoc command.
 
 	perldoc Jaipo
-
 
 You can also look for information at:
 

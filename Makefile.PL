@@ -1,31 +1,35 @@
 use strict;
 use warnings;
-use ExtUtils::MakeMaker;
+use inc::Module::Install;
 
-WriteMakefile (
-    NAME   => 'Jaipo',
-    AUTHOR => 'BlueT <bluet@blue.org>, Cornelius <cornelius.howl@gmail.com>',
-    VERSION_FROM  => 'lib/Jaipo.pm',
-    ABSTRACT_FROM => 'lib/Jaipo.pm',
-    ( $ExtUtils::MakeMaker::VERSION >= 6.3002
-        ? ( 'LICENSE' => 'GPL' )
-        : () ),
-    PL_FILES  => {},
-    PREREQ_PM => {
-        'Test::More'            => 0,
-        'Hash::Merge'           => 0,
-        'YAML::Syck'            => 0,
-        'Class::Accessor::Fast' => 0,
-#       'WWW::Plurk'            => 0,
-#       'Net::Jaiku'            => 0,
-        'Net::Twitter'          => 0,
-        'Class::Accessor::Fast' => 0,
-        'Text::Table'           => 0,
-        'Number::RecordLocator' => 0,
-        'Term::ReadLine'        => 0,
-        'App::Cache'            => 0,
-    },
-    EXE_FILES => [<bin/jaipo>],
-    dist      => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => {  FILES => 'Jaipo-*' },
-);
+# Define metadata
+name           'Jaipo';
+all_from       'lib/Jaipo.pm';
+
+# Specific dependencies
+requires 'Test::More'            => 0;
+requires 'Hash::Merge'           => 0;
+requires 'YAML::Syck'            => 0;
+requires 'Class::Accessor::Fast' => 0;
+# requires       'WWW::Plurk'            => 0,
+# requires       'Net::Jaiku'            => 0,
+requires 'Net::Twitter'          => 0;
+requires 'Class::Accessor::Fast' => 0;
+requires 'Text::Table'           => 0;
+requires 'Number::RecordLocator' => 0;
+requires 'Term::ReadLine'        => 0;
+requires 'App::Cache'            => 0;
+
+if( $^O =~ m/darwin/i ) {
+    recommends 'Mac::Glue'  => '1.30';
+    recommends 'Mac::Growl' => '0.67';
+}
+elsif( $^O =~ m/linux/i )  {
+    recommends 'Desktop::Notify' => '0';
+}
+
+# test_requires  'Test::More'  => '0.42';
+# recommends     'Text::CSV_XS'=> '0.50';
+# no_index       'directory'   => 'demos';
+install_script 'bin/jaipo';
+WriteAll;

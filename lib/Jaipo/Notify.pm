@@ -6,7 +6,10 @@ __PACKAGE__->mk_accessors (qw/notifier/);
 
 sub new {
     my $class = shift;
-    return bless { } , $class;
+    my $self = {};
+    bless $self , $class;
+    $self->init;
+    return $self;
 }
 
 sub init {
@@ -22,14 +25,14 @@ sub init {
 
 sub _init_linux {
     my $class = shift;
-    require Jaipo::Notify::LibNotify;
+    use Jaipo::Notify::LibNotify;
     my $notify = Jaipo::Notify::LibNotify->new;
     $class->notifier( $notify );
     print "Desktop::Notify Notifier Initialized\n";
 }
 
 sub _init_osx {
-    require Mac::Growl;
+    use Mac::Growl;
     Mac::Growl::RegisterNotifications( 'Jaipo', ['Updates' ] , [ 'Updates' ] );
     print "Mac::Growl Notifier Initialized\n";
 }
@@ -40,13 +43,13 @@ sub create {
         $class->_create_linux($args);
     }
     elsif ( $^O =~ m/darwin/i ) {
-        $class->_init_osx($args);
+        $class->_create_osx($args);
     }
 }
 
 sub _create_osx {
     my ($class,$args) = @_;
-    Mac::Growl::PostNotification( 'Jaipo', [ 'Updates' ] , 'Jaipo', $args->{message} );
+    Mac::Growl::PostNotification( 'Jaipo',  'Updates'  , 'Jaipo', $args->{message} );
 }
 
 sub _create_linux {

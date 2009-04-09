@@ -236,9 +236,9 @@ sub read_global_timeline {
     my $lines = $self->core->public_timeline;  # XXX: give args to this method
     $lines = filter_read_message( $lines );
     Jaipo->logger->info( $self->layout_message( $lines ) );
-    return { 
-        type => 'notification',
-        message => scalar @$lines .  ' Updates',
+    return {
+        type    => 'notification',
+        message => scalar @$lines . ' Updates',
         updates => scalar @$lines
     };
 }

@@ -374,10 +374,9 @@ sub parse {
 sub auto_update {
     print "Auto-Update Mode\n";
     $SIG{ALRM} = sub { 
-        print "Updating...\n";
+        print "Updating ... \r";
         $jobj->action( "read_public_timeline" );
-
-
+        print "Done" . ' ' x 10 . "\r";
     };
     setitimer(ITIMER_REAL , 1 , 10);
 }

@@ -71,8 +71,7 @@ sub config {
 
 sub notify {
 	my $class = shift;
-	$NOTIFY = shift if (@_);
-	$NOTIFY ||= Jaipo::Notify->new();
+	$NOTIFY ||= Jaipo::Notify->new;
 	return $NOTIFY;
 }
 
@@ -107,7 +106,7 @@ sub init {
 	# my $args = {
 	#
 	# };
-    Jaipo->notify->init;
+    Jaipo->notify;
 
 	# we initialize service plugin class here
 	# Set up plugins
@@ -421,14 +420,17 @@ sub action {
     foreach my $service (@services) {
         if ( UNIVERSAL::can( $service, $action ) ) {
             my $ret = $service->$action($param);
+            use Data::Dumper::Simple;
+            warn Dumper( $ret );
+
             # XXX:
             #  - we should check ret->{type} eq 'notification'
             #  - and call Notify::init
             if ( ref $ret 
-                    and defined $ret->{type} eq 'notification' 
-                    and $ret->{updates} > 0 ) {
-
-
+                and $ret->{type} eq 'notification' 
+                and $ret->{updates} > 0 ) 
+            {
+                Jaipo->notify->create($ret);
             }
         }
         else {

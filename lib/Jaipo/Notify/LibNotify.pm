@@ -55,9 +55,7 @@ sub new {
 	my $class = ref($this) || $this;
 	print "$class\n";
 	#~ my %args = @_;
-	#~ $args{'xyz'} .= ".+?";
 	my $self = $class->SUPER::new(@_); 
-	#~ $self->SUPER::new(%args);
 	$self->{timeout_yell} = 5000;
 	$self->{timeout_display} = 3000;
 	return $self;

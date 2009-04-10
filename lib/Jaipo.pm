@@ -10,6 +10,8 @@ __PACKAGE__->mk_accessors(qw/config/);
 
 use vars qw/$NOTIFY $CONFIG $LOGGER $HANDLER $PUB_SUB @PLUGINS @SERVICES/;
 
+my $debug = 0;
+
 =encoding utf8
 
 =head1 NAME
@@ -420,8 +422,10 @@ sub action {
     foreach my $service (@services) {
         if ( UNIVERSAL::can( $service, $action ) ) {
             my $ret = $service->$action($param);
-            use Data::Dumper::Simple;
-            warn Dumper( $ret );
+            if ($debug) {
+				use Data::Dumper::Simple;
+            	warn Dumper( $ret );
+			}
 
             # XXX:
             #  - we should check ret->{type} eq 'notification'

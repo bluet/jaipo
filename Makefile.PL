@@ -19,6 +19,7 @@ requires 'Text::Table'           => 0;
 requires 'Number::RecordLocator' => 0;
 requires 'Term::ReadLine'        => 0;
 requires 'App::Cache'            => 0;
+requires 'Data::Dumper::Simple'	=> 0;
 
 if( $^O =~ m/darwin/i ) {
     recommends 'Mac::Glue'  => '1.30';

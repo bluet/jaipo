@@ -5,6 +5,8 @@ use strict;
 #~ use Smart::Comments;
 use base qw(Desktop::Notify);
 
+=encoding utf8
+
 =head1 NAME
 
 Jaipo::Notify::LibNotify - A easy-to-use interface to show desktop notifications with libnotify.
@@ -15,7 +17,7 @@ Version 0.01
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 
 =head1 SYNOPSIS

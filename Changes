@@ -1,3 +1,7 @@
 
+0.2     09 Apr 10 04/10/2009
+        Add auto-update mode.  and support desktop::notify for linux and
+        mac::growl for Mac OS.
+
 0.01    09 Feb 03 02/03/2009
         First version, released on an unsuspecting world.

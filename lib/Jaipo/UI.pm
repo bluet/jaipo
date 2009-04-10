@@ -10,7 +10,7 @@ __PACKAGE__->mk_accessors (qw/core options trigger_name sp_id/);
 
 =head1 NAME
 
-Jaipo::Notify::LibNotify - A easy-to-use interface to show desktop notifications with libnotify.
+Jaipo::UI - UI dispacher
 
 =head1 VERSION
 
@@ -18,36 +18,21 @@ Version 0.01
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.01';
 
 
 =head1 SYNOPSIS
 
-Jaipo::Notify::LibNotify is a easy-to-use interface to show desktop notifications with libnotify.
-It doesn't use libnotify directly, but talking to libnotify via dbus.
 
-
-	use Jaipo::Notify::LibNotify;
-
-	my $notify = Jaipo::Notify::LibNotify->new();
+	use Jaipo::UI;
 	
-	# yell for Service Notify.
-	$notify->yell('Cannot connect to M$-Mi$roBlo$: $!');
-	# display for message displaying.
-	$notify->display("From Mr.Right: Hello Darling. How are you today?");
-	
-	# get current timeout setting
-	print Data::Dumper $notify->timeout;
-	# set yell timeout to 10 seconds. default is 5.
-	$notify->timeout("yell" => 10);
-	# set display timeout to 5 seconds.  default is 3.
-	$notify->timeout("yell" => 5);
+	my $ui = Jaipo::UI->new("console");
 
 =head1 FUNCTIONS
 
 =head2 new
 
-Return a object which talks to libnotify via dbus.
+Return a UI object.
 
 =cut
 
@@ -59,72 +44,50 @@ sub new {
 	return $self;
 }
 
-#~ sub new {
-	#~ my $this = shift;
-	#~ my $class = ref($this) || $this;
-	#~ print "$class\n";
-	my %args = @_;
-	#~ my $self = $class->SUPER::new(@_); 
-	#~ $self->{timeout_yell} = 5000;
-	#~ $self->{timeout_display} = 3000;
-	#~ return $self;
-#~ }
 
-=head2 yell
-
-yell for Service Notify.
-Pops a notification with title "Jaipo Service Notify" and the given message content from you.
-
-=cut
-
-sub yell {
-	my ($self, $msg) = @_;
-	$self->create(
-		"summary" => 'Jaipo Service Notify',
-		"body" => $msg,
-		"timeout" => $self->{timeout_yell},
-	)->show();
+sub init {
+    my $class = shift;
+    $class->notifier( {} );
+    if( $^O =~ m/linux/i  ) {
+        $class->_init_linux;
+    }
+    elsif( $^O =~ m/darwin/i ) {
+        $class->_init_osx;
+    }
 }
 
-=head2 display
-
-display for message displaying.
-Pops a notification with title "You've Got Message!" and the given message content from you.
-
-=cut
-
-sub display { 
-        my ($self, $msg) = @_;
-        #~ $self->SUPER::display("Name", @args);
-	$self->create(
-		"summary" => "Jaipo: You've Got Message!",
-		"body" => $msg,
-		"timeout" => $self->{timeout_display},
-	)->show();
+sub _init_linux {
+    my $class = shift;
+    use Jaipo::Notify::LibNotify;
+    my $notify = Jaipo::Notify::LibNotify->new;
+    $class->notifier( $notify );
+    print "Desktop::Notify Notifier Initialized\n";
 }
 
-=head2 timeout
+sub _init_osx {
+    use Mac::Growl;
+    Mac::Growl::RegisterNotifications( 'Jaipo', ['Updates' ] , [ 'Updates' ] );
+    print "Mac::Growl Notifier Initialized\n";
+}
 
-timeout for changing/getting the current timeout value.
+sub create {
+    my ( $class, $args ) = @_;
+    if ( $^O =~ m/linux/i ) {
+        $class->_create_linux($args);
+    }
+    elsif ( $^O =~ m/darwin/i ) {
+        $class->_create_osx($args);
+    }
+}
 
+sub _create_osx {
+    my ($class,$args) = @_;
+    Mac::Growl::PostNotification( 'Jaipo',  'Updates'  , 'Jaipo', $args->{message} );
+}
 
-=cut
-
-sub timeout {
-	my $self = shift;
-	my %timeout = (
-		"timeout_yell" => $self->{timeout_yell} / 1000,
-		"timeout_display" => $self->{timeout_display} / 1000,
-	);
-	
-	if (not @_) {
-		# do nothing
-	}elsif ( $_[0] eq "yell" ) {
-		$self->{timeout_yell} = $_[1] * 1000;
-	} elsif ( $_[0] eq "display" ) {
-		$self->{timeout_display} = $_[1] * 1000;
-	}
-	return \%timeout;
+sub _create_linux {
+    my ($class,$args) = @_;
+    $class->notifier->yell( $args->{message} );
 }
 
 =head1 AUTHOR
@@ -133,8 +96,8 @@ BlueT - Matthew Lien - 練喆明, C<< <BlueT at BlueT.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-jaipo-notify-libnotify at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Jaipo-Notify-LibNotify>.  I will be notified, and then you'll
+Please report any bugs or feature requests to C<bug-jaipo-ui at rt.cpan.org>, or through
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Jaipo-UI>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
 
@@ -144,7 +107,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Jaipo::Notify::LibNotify
+    perldoc Jaipo::UI
 
 
 You can also look for information at:
@@ -153,19 +116,19 @@ You can also look for information at:
 
 =item * RT: CPAN's request tracker
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Jaipo-Notify-LibNotify>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Jaipo-UI>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/Jaipo-Notify-LibNotify>
+L<http://annocpan.org/dist/Jaipo-UI>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/Jaipo-Notify-LibNotify>
+L<http://cpanratings.perl.org/d/Jaipo-UI>
 
 =item * Search CPAN
 
-L<http://search.cpan.org/dist/Jaipo-Notify-LibNotify>
+L<http://search.cpan.org/dist/Jaipo-UI>
 
 =back
 
@@ -183,4 +146,4 @@ under the same terms as Perl itself.
 
 =cut
 
-1; # End of Jaipo::Notify::LibNotify
+1; # End of Jaipo::UI

@@ -8,6 +8,7 @@ use Jaipo;
 my $jaipo = Jaipo->new(
 	"ui"			=> "console",
 	"service"	=> "all",
+	"notify"		=> 1,
 );
 $jaipo->init;
 $jaipo->run;

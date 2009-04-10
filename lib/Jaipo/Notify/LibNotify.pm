@@ -13,7 +13,7 @@ Jaipo::Notify::LibNotify - A easy-to-use interface to show desktop notifications
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
@@ -58,7 +58,7 @@ sub new {
 	my $self = $class->SUPER::new(@_); 
 	$self->{timeout_yell} = 5000;
 	$self->{timeout_display} = 3000;
-	return $self;
+	wantarray? return ["Jaipo::Notify::LibNotify",$self] : return $self;
 }
 
 =head2 yell

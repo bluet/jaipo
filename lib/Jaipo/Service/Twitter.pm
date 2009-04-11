@@ -139,7 +139,7 @@ sub layout_message {
         $source =~ s{<a href="(.*?)">(.*?)</a>}{$2};
 
         my $text = $_->{text} ;
-        $text =~ s|(http://\S*)|\n$1\n|g ;
+        $text =~ s|(http://\S*)|\n$1|g ;
         my @text_lines = split /\n/,$text;
 
 		my $wrap_text = '';

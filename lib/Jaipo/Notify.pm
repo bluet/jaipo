@@ -13,50 +13,34 @@ sub new {
 }
 
 sub init {
-    my $class = shift;
-    $class->notifier( {} );
+    my $self = shift;
+    $self->notifier( {} );
     if( $^O =~ m/linux/i  ) {
-        $class->_init_linux;
+        $self->_init_linux;
     }
     elsif( $^O =~ m/darwin/i ) {
-        $class->_init_osx;
+        $self->_init_osx;
     }
 }
 
 sub _init_linux {
-    my $class = shift;
-    use Jaipo::Notify::LibNotify;
+    my $self = shift;
+    require Jaipo::Notify::LibNotify;
     my $notify = Jaipo::Notify::LibNotify->new;
-    $class->notifier( $notify );
-    print "Desktop::Notify Notifier Initialized\n";
+    $self->notifier( $notify );
 }
 
 sub _init_osx {
-    use Mac::Growl;
-    Mac::Growl::RegisterNotifications( 'Jaipo', ['Updates' ] , [ 'Updates' ] );
-    print "Mac::Growl Notifier Initialized\n";
+    my $self = shift;
+    require Jaipo::Notify::MacGrowl;
+    my $notify = Jaipo::Notify::MacGrowl->new;
+    $self->notifier( $notify );
 }
 
 sub create {
-    my ( $class, $args ) = @_;
-    if ( $^O =~ m/linux/i ) {
-        $class->_create_linux($args);
-    }
-    elsif ( $^O =~ m/darwin/i ) {
-        $class->_create_osx($args);
-    }
+    my ( $self, $args ) = @_;
+    $self->notifier->yell( $args->{message} );
 }
-
-sub _create_osx {
-    my ($class,$args) = @_;
-    Mac::Growl::PostNotification( 'Jaipo',  'Updates'  , 'Jaipo', $args->{message} );
-}
-
-sub _create_linux {
-    my ($class,$args) = @_;
-    $class->notifier->yell( $args->{message} );
-}
-
 
 1;
 

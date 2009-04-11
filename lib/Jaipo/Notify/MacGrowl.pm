@@ -2,8 +2,7 @@ package Jaipo::Notify::MacGrowl;
 
 use warnings;
 use strict;
-#~ use Smart::Comments;
-use base qw(Mac::Growl);
+use base 'Mac::Growl';
 
 =encoding utf8
 
@@ -50,16 +49,13 @@ Return a object which talks to Growl.
 =cut
 
 sub new {
-	my $this = shift;
-	my $class = ref($this) || $this;
-	my %args = @_;
-	my $self = {};
-	
-	RegisterNotifications( 'Jaipo', ['Updates' ] , [ 'Updates' ] , "" );
-	print "Mac::Growl Notifier Initialized\n";
-	
-	bless $self , $class;
-	wantarray? return ["Jaipo::Notify::MacGrowl",""] : return "Jaipo::Notify::MacGrowl";
+    my $class = shift;
+    my %args  = @_;
+    print "Mac::Growl Notifier Initialized\n";
+    my $self = {};
+    bless $self, $class;
+    Mac::Growl::RegisterNotifications( 'Jaipo', [ 'Updates' ], [ 'Updates' ], "" );
+    return $self;
 }
 
 =head2 yell
@@ -71,7 +67,7 @@ Pops a notification with title "Jaipo Service Notify" and the given message cont
 
 sub yell {
 	my ($self, $msg) = @_;
-	PostNotification( 'Jaipo',  'Updates'  , 'Jaipo', $msg );
+    Mac::Growl::PostNotification( 'Jaipo',  'Updates'  , 'Jaipo', $msg );
 }
 
 =head2 display
@@ -82,8 +78,8 @@ Pops a notification with title "You've Got Message!" and the given message conte
 =cut
 
 sub display { 
-        my ($self, $msg) = @_;
-	PostNotification( 'Jaipo',  'Updates'  , 'Jaipo', $msg );
+    my ($self, $msg) = @_;
+    Mac::Growl::PostNotification( 'Jaipo',  'Updates'  , 'Jaipo', $msg );
 }
 
 =head2 timeout

@@ -32,13 +32,16 @@ It doesn't use libnotify directly, but talking to libnotify via dbus.
 	
 	# yell for Service Notify.
 	$notify->yell('Cannot connect to M$-Mi$roBlo$: $!');
+
 	# display for message displaying.
 	$notify->display("From Mr.Right: Hello Darling. How are you today?");
 	
 	# get current timeout setting
 	print Data::Dumper $notify->timeout;
+
 	# set yell timeout to 10 seconds. default is 5.
 	$notify->timeout("yell" => 10);
+
 	# set display timeout to 5 seconds.  default is 3.
 	$notify->timeout("yell" => 5);
 
@@ -51,14 +54,13 @@ Return a object which talks to libnotify via dbus.
 =cut
 
 sub new {
-	my $this = shift;
-	my $class = ref($this) || $this;
-	print "$class\n";
-	#~ my %args = @_;
-	my $self = $class->SUPER::new(@_); 
+	my $class = shift;
+    my $self = {};
+    bless $self, $class;
+    $self->SUPER::new(@_); 
 	$self->{timeout_yell} = 5000;
 	$self->{timeout_display} = 3000;
-	wantarray? return ["Jaipo::Notify::LibNotify",$self] : return $self;
+    return $self;
 }
 
 =head2 yell

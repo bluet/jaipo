@@ -5,36 +5,30 @@ use base qw/Class::Accessor::Fast/;
 __PACKAGE__->mk_accessors (qw/notifier/);
 
 sub new {
-    my $class = shift;
-    my $self = {};
-    bless $self , $class;
-    $self->init;
-    return $self;
+	my $class = shift;
+	my $arg = shift;	# should be "1" or the module name "Jaipo::Notify::SomeNotify::Module"
+	my $self = {};
+	bless $self , $class;
+    $self->init($arg);
+	return $self;
 }
 
 sub init {
-    my $self = shift;
-    $self->notifier( {} );
+	my $self = shift;
+	$self->notifier( {} );
+
     if( $^O =~ m/linux/i  ) {
-        $self->_init_linux;
+        $notify_module = "Jaipo::Notify::LibNotify";
+    } elsif ( $^O =~ m/darwin/i ) {
+        $notify_module = "Jaipo::Notify::MacGrwol";
     }
-    elsif( $^O =~ m/darwin/i ) {
-        $self->_init_osx;
-    }
-}
 
-sub _init_linux {
-    my $self = shift;
-    require Jaipo::Notify::LibNotify;
-    my $notify = Jaipo::Notify::LibNotify->new;
-    $self->notifier( $notify );
-}
+	require $notify_module;
+	my $notify = $notify_module->new;	
 
-sub _init_osx {
-    my $self = shift;
-    require Jaipo::Notify::MacGrowl;
-    my $notify = Jaipo::Notify::MacGrowl->new;
-    $self->notifier( $notify );
+    # save notify object to accessor
+	$self->notifier( $notify );
+	print "$notify_module Notifier Initialized\n";
 }
 
 sub create {

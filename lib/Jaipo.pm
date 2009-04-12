@@ -53,7 +53,12 @@ sub new {
 	my $class = shift;
 	my %args  = @_;
 	my $self  = {};
-
+	
+	Jaipo::$_->new($args{$_}) for keys %args;
+	#~ $self{"UI"}		= Jaipo::UI->new( $args{"ui"} );
+	#~ $self{"Notify"}	= Jaipo::Notify->new ( $args{"notify"} );
+	#~ $self{"Service"}	= Jaipo::Service->new ( $args{"service"} );
+	
 	bless $self, $class;
 	return $self;
 }

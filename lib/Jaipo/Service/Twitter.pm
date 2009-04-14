@@ -8,7 +8,7 @@ use App::Cache;
 use Lingua::ZH::Wrap 'wrap';
 use utf8;
 
-=head2 Jaipo::Console
+=head2 Jaipo::UI::Console
 
 =head3 Twitter Service Command
 

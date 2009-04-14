@@ -5,8 +5,8 @@ use utf8;
 
 my $cmd = shift;
 if( $cmd eq 'console' ) {
-  use Jaipo::Console;
-  my $jc = Jaipo::Console->new;
+  use Jaipo::UI::Console;
+  my $jc = Jaipo::UI::Console->new;
   $jc->init;
   $jc->run;
 } 

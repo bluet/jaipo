@@ -1,4 +1,4 @@
-package Jaipo::Console;
+package Jaipo::UI::Console;
 use warnings;
 use strict;
 use Jaipo;

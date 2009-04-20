@@ -54,7 +54,7 @@ sub new {
 	my %args  = @_;
 	my $self  = {};
 	
-	Jaipo::$_->new($args{$_}) for keys %args;
+    # Jaipo::$_->new($args{$_}) for keys %args;
 	#~ $self{"UI"}		= Jaipo::UI->new( $args{"ui"} );
 	#~ $self{"Notify"}	= Jaipo::Notify->new ( $args{"notify"} );
 	#~ $self{"Service"}	= Jaipo::Service->new ( $args{"service"} );

@@ -14,5 +14,3 @@ $jaipo->run;
 
 # or..
 __END__
-
-

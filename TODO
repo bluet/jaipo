@@ -15,6 +15,8 @@ TODO:
     - Unicode::EastAsianWidth 
     - Text::Wrap
 
+ - net::github support
+
  x use Cache module to remember what we've read
  x use Term::ReadLine 
  x save/load configuration command

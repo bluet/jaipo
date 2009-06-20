@@ -3,6 +3,7 @@ package Jaipo::Notify::LibNotify;
 use warnings;
 use strict;
 #~ use Smart::Comments;
+use Data::Dumper;
 use base qw(Desktop::Notify);
 
 =encoding utf8
@@ -17,7 +18,7 @@ Version 0.02
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.22';
 
 
 =head1 SYNOPSIS
@@ -35,6 +36,9 @@ It doesn't use libnotify directly, but talking to libnotify via dbus.
 
 	# display for message displaying.
 	$notify->display("From Mr.Right: Hello Darling. How are you today?");
+	
+	# pop_box for message displaying.
+	$notify->pop_box("Are you using M$ windows without buying license?");
 	
 	# get current timeout setting
 	print Data::Dumper $notify->timeout;
@@ -55,12 +59,12 @@ Return a object which talks to libnotify via dbus.
 
 sub new {
 	my $class = shift;
-    my $self = {};
-    bless $self, $class;
-    $self->SUPER::new(@_); 
+	print Dumper $class;
+	my $self = Desktop::Notify->new(@_); 
+	bless $self, $class;
 	$self->{timeout_yell} = 5000;
 	$self->{timeout_display} = 3000;
-    return $self;
+	return $self;
 }
 
 =head2 yell
@@ -93,6 +97,23 @@ sub display {
 		"summary" => "Jaipo: You've Got Message!",
 		"body" => $msg,
 		"timeout" => $self->{timeout_display},
+	)->show();
+}
+
+=head2 pop_box
+
+pop_box for special message displaying.
+Pops a window box with title "Pop!" and the given message content from you.
+
+=cut
+
+sub pop_box { 
+        my ($self, $msg) = @_;
+        #~ $self->SUPER::display("Name", @args);
+	$self->create(
+		"summary" => "Jaipo: Pop!",
+		"body" => $msg,
+		#~ "timeout" => $self->{timeout_display},
 	)->show();
 }
 

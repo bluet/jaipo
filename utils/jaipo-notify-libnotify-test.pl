@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+use lib ".";
 use Jaipo::Notify::LibNotify;
 use Data::Dumper;
 
@@ -9,3 +10,4 @@ $notify->timeout(10);
 $notify->display("display");
 #print Dumper $notification;
 #sleep 10;
+$notify->pop_box("pop up!");

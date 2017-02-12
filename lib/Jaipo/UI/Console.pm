@@ -307,6 +307,12 @@ sub process_built_in_commands {
 
         # Global Actions
         #
+        
+        when ( m/^(s|send)/i ) {  
+            $jobj->action( "send_msg", $line );
+
+        }
+        
         when ( m/^(m|mine)/i ) {  
             $jobj->action( "read_user_timeline", $line );
 

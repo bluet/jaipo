@@ -5,6 +5,7 @@ use feature qw(:5.10);
 use Jaipo::Config;
 use Jaipo::Notify;
 use Jaipo::Logger;
+use Data::Dumper;
 use base qw/Class::Accessor::Fast/;
 __PACKAGE__->mk_accessors(qw/config/);
 
@@ -212,6 +213,7 @@ sub find_service_by_trigger {
 	$services ||= [ Jaipo->services ];
 	for my $s (@$services) {
 		my $s_tg = $s->trigger_name;
+		print "Service: $s_tg\n";
 		return $s if $s->trigger_name eq $tg;
 	}
 }
@@ -400,8 +402,10 @@ what to do with.
 =cut
 
 sub dispatch_to_service {
+	print "going to dispatch\n";
 	my ( $self, $service_tg, $line ) = @_;
 	my $s = $self->find_service_by_trigger ($service_tg);
+	print "choosen: $s\n";
     my ($sub_command) = ($line =~ m[^(\w+)] );
     $s->dispatch_sub_command( $sub_command , $line );
 
@@ -424,6 +428,7 @@ sub cache_clear {
 sub action {
 	my ( $self, $action, $param ) = @_;
 	my @services = Jaipo->services;
+	print "Services: @services \n" if $debug;
     foreach my $service (@services) {
         if ( UNIVERSAL::can( $service, $action ) ) {
             my $ret = $service->$action($param);
@@ -443,6 +448,7 @@ sub action {
             }
         }
         else {
+		warn "Not a supported action.\n";
             # service plugin doesn't support this kind of action
         }
     }

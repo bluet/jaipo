@@ -67,25 +67,34 @@ sub init {
     my $caller = shift;
     my $opt = $self->options;
 
-    unless( $opt->{username} and $opt->{password} ) {
+    unless( $opt->{username} and $opt->{access_token} and $opt->{access_token_secret} ) {
 
         # request to setup parameter
         # XXX TODO: simplify this, let it like jifty dbi schema  or
         # something
         $caller->setup_service ( {
                 package_name => __PACKAGE__,
-                require_args => [ {
+                require_args => [
+                	{
                         username => {
                             label       => 'Username',
                             description => '',
                             type        => 'text'
                         }
                     },
-                    {   password => {
-                            label       => 'Password',
+                    {   	access_token => {
+                            label       => 'OAuth_Token',
                             description => '',
                             type        => 'text'
-                        } } ]
+                        }
+                    },
+                    {   	access_token_secret => {
+                            label       => 'OAuth_Token_Secret',
+                            description => '',
+                            type        => 'text'
+                        }
+                    },
+                ]
             },
             $opt
         );
@@ -100,6 +109,11 @@ sub init {
     $twitter_opt{clienturl} = 'http://jaipo.org/';
     $twitter_opt{clientver} = '0.001';
     $twitter_opt{clientname} = 'Jaipo.pm';
+    $twitter_opt{consumer_key} = 'C5ruz1vl9H5iUYgM9ptbpg';
+    $twitter_opt{consumer_secret} = 'qEUKQJWq0OwCcXgEcu6ZC9bCbOAyPeR0pNeUihyc';
+    $twitter_opt{traits} = [qw/API::RESTv1_1/];
+    
+    delete $twitter_opt{username};  # FIXME: with this, Net::Twitter will use Basic Auth
 
     my $twitter = Net::Twitter->new( %twitter_opt );
 
@@ -139,7 +153,7 @@ sub layout_message {
         $source =~ s{<a href="(.*?)">(.*?)</a>}{$2};
 
         my $text = $_->{text} ;
-        $text =~ s|(http://\S*)|\n$1|g ;
+        $text =~ s|(http://\S*)|\n$1\n|g ;
         my @text_lines = split /\n/,$text;
 
 		my $wrap_text = '';
@@ -198,6 +212,7 @@ sub filter_read_message {
 
 sub send_msg {
     my ( $self , $message ) = @_;
+    $message =~ s/^s(end)? //;
     print "Sending to => " if( Jaipo->config->app('Verbose') );
     print $self->options->{trigger_name};
     my $result = $self->core->update({ status => $message });
@@ -208,6 +223,7 @@ sub send_msg {
 sub read_user_timeline {
     my $self = shift;
     my $lines = $self->core->user_timeline;  # XXX: give args to this method
+    
     $lines = filter_read_message( $lines );
     Jaipo->logger->info( $self->layout_message( $lines ) );
     return { 
@@ -220,7 +236,7 @@ sub read_user_timeline {
 # updates from user's friends or channel
 sub read_public_timeline {
     my $self = shift;
-    my $lines = $self->core->friends_timeline;  # XXX: give args to this method
+    my $lines = $self->core->home_timeline;  # XXX: give args to this method
     $lines = filter_read_message( $lines );
     Jaipo->logger->info( $self->layout_message( $lines ) );
     return { 
@@ -233,14 +249,18 @@ sub read_public_timeline {
 
 sub read_global_timeline {
     my $self = shift;
-    my $lines = $self->core->public_timeline;  # XXX: give args to this method
-    $lines = filter_read_message( $lines );
-    Jaipo->logger->info( $self->layout_message( $lines ) );
-    return {
-        type    => 'notification',
-        message => scalar @$lines . ' Updates',
-        updates => scalar @$lines
-    };
+    
+    print "Twitter stopped supporting public_timeline since 2012\n";
+    
+    #~ my $lines = $self->core->public_timeline;  # XXX: give args to this method
+    
+    #~ $lines = filter_read_message( $lines );
+    #~ Jaipo->logger->info( $self->layout_message( $lines ) );
+    #~ return {
+        #~ type    => 'notification',
+        #~ message => scalar @$lines . ' Updates',
+        #~ updates => scalar @$lines
+    #~ };
 }
 
 

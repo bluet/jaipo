@@ -2,9 +2,13 @@ utils/jaipo-notify-libnotify-test.pl
 bin/jaipo-jaiku.pl
 bin/jaipo
 bin/jaipo.pl
-t/01-config.t
-t/02-console.t
 t/00-load.t
+t/manifest.t
+t/pod-coverage.t
+t/pod.t
+t/01-config.t
+t/00-load.t
+t/02-console.t
 AUTHORS
 MANIFEST
 Changes

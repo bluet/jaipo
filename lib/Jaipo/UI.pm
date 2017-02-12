@@ -12,15 +12,6 @@ __PACKAGE__->mk_accessors (qw/core options trigger_name sp_id/);
 
 Jaipo::UI - UI dispacher
 
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
-our $VERSION = '0.01';
-
-
 =head1 SYNOPSIS
 
 

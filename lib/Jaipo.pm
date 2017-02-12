@@ -19,13 +19,9 @@ my $debug = 0;
 
 Jaipo - Micro-blogging Client
 
-=head1 VERSION
-
-Version 0.02
-
 =cut
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 =head1 DESCRIPTION
 

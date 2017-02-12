@@ -10,14 +10,6 @@ use base 'Mac::Growl';
 
 Jaipo::Notify::MacGrowl - A easy-to-use interface to show desktop notifications with Growl on Mac OSX.
 
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
-our $VERSION = '0.01';
-
 
 =head1 SYNOPSIS
 

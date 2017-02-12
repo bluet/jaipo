@@ -12,14 +12,6 @@ use base qw(Desktop::Notify);
 
 Jaipo::Notify::LibNotify - A easy-to-use interface to show desktop notifications with libnotify.
 
-=head1 VERSION
-
-Version 0.02
-
-=cut
-
-our $VERSION = '0.22';
-
 
 =head1 SYNOPSIS
 

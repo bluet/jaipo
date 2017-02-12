@@ -222,7 +222,7 @@ sub print_welcome {
 _________________________________________
 Jaipo Console
 
-version 0.1
+version 0.22
 Type ? for help
 Type [service] ? for service plugin help
 Type :[message] to send a message

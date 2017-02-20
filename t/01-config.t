@@ -1,13 +1,15 @@
-#!perl
-use Test::More tests => 7;
+#!perl -T
+use 5.006;
+use strict;
+use warnings;
+use Test::More tests => 8;
 
 BEGIN {
-	use_ok( 'Jaipo::Config' );
+	use_ok( 'Jaipo' ) || print "Bail out!\n";
+	use_ok( 'Jaipo::Config' ) || print "Bail out!\n";
 }
 
 diag( "Testing Jaipo $Jaipo::VERSION, Perl $], $^X" );
-
-use Jaipo::Config;
 
 my $config = Jaipo::Config->new();
 ok( $config ) ;

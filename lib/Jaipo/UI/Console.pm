@@ -214,11 +214,9 @@ HELP
 =cut
 
 sub print_welcome {
+	print "Jaipo Console (version ". $Jaipo::VERSION .")\n";
 	print <<'END';
 _________________________________________
-Jaipo Console
-
-version 0.22
 Type ? for help
 Type [service] ? for service plugin help
 Type :[message] to send a message

@@ -51,7 +51,7 @@ Return a object which talks to libnotify via dbus.
 
 sub new {
 	my $class = shift;
-	print Dumper $class;
+	#~ print Dumper $class;
 	my $self = Desktop::Notify->new(@_); 
 	bless $self, $class;
 	$self->{timeout_yell} = 5000;

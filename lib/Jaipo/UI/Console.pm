@@ -140,8 +140,7 @@ sub new {
 
 sub _pre_init {
 	my $self = shift;
-    # binmode STDOUT,":utf8";
-
+	# binmode STDOUT,":utf8";
 }
 
 =head2 setup service
@@ -161,7 +160,6 @@ sub setup_service {
 
 		$opt->{$column_name} = $val;
 	}
-
 }
 
 =head2 init
@@ -175,8 +173,6 @@ sub init {
 	# init Jaipo here
 	$jobj = Jaipo->new;
 	$jobj->init( $self );
-
-
 }
 
 =head2 print_help 
@@ -184,9 +180,9 @@ sub init {
 =cut
 
 sub print_help {
-    my $self = shift;
+	my $self = shift;
 
-    print <<HELP ;
+	print <<HELP ;
 
 m|mine          to read updates of your own
 p|public        to read public messages (from friends,channels)
@@ -237,183 +233,174 @@ END
 =cut
 
 sub process_built_in_commands {
-    my ($self ,$line ) = @_;
+	my ($self ,$line ) = @_;
 
-    $line =~ s/^://;
+	$line =~ s/^://;
 
 	given ($line) {
 
-        # eval code
-        # such like:   eval $jobj->_list_trigger;
-        when ( m/^eval (.*)$/i ) {
-            # eval a code
-            my $code = $1;
-            eval $1;
-        }
-
-        when ( m/^conf\s+edit$/i ) { 
+		# eval code
+		# such like:   eval $jobj->_list_trigger;
+		when ( m/^eval (.*)$/i ) {
+			# eval a code
+			my $code = $1;
+			eval $1;
+		}
+	
+		when ( m/^conf\s+edit$/i ) { 
 			my $editor = $ENV{EDITOR} || 'nano' ;
 			my $file = Jaipo->config->app_config_path;
-
+	
 			print "Launching editor .. $editor\n";
 			qx{$editor $file};
-
-        }
-
-        when ( m/^conf\s+save$/i ) {
-            # TODO
-            # save configuration 
-
-        }
-
-        when ( m/^conf\s+load$/i ) {
-            # TODO
-            # load configuration
-            # when user modify configuration by self, user can reload
-            # configuration
-
-
-        }
-
-        when ( m/^list$/i ) {
-            $jobj->list_triggers;
-        }
-
-
-        # built-in commands
-        # TODO:
-        #
+	        }
+	
+		when ( m/^conf\s+save$/i ) {
+			# TODO
+			# save configuration 
+		}
+	
+		when ( m/^conf\s+load$/i ) {
+			# TODO
+			# load configuration
+			# when user modify configuration by self, user can reload
+			# configuration
+		}
+	
+		when ( m/^list$/i ) {
+			$jobj->list_triggers;
+		}
+	
+	
+		# built-in commands
+		# TODO:
+		#
 		when (m/^(?:u|use)\s*/i) {
-            $line =~ s/;$//;
-            my @ops = split /\s+/,$line;
-            shift @ops; # shift out use command
-            my ( $service_name , $trigger_name ) = @ops;
-
+			$line =~ s/;$//;
+			my @ops = split /\s+/,$line;
+			shift @ops; # shift out use command
+			my ( $service_name , $trigger_name ) = @ops;
+	
 			# init service plugins
 			# TODO:
 			# check if user specify trigger name
 			if ( !$service_name ) {
 				$jobj->list_triggers;
+			} else {
+				$service_name = ucfirst $service_name;
+				$trigger_name ||= lc $service_name;
+				print "Trying to load $service_name => $trigger_name\n";
+				$jobj->runtime_load_service ( $self, $service_name, $trigger_name );
+				print "Done\n";
 			}
-            else {
-                $service_name = ucfirst $service_name;
-                $trigger_name ||= lc $service_name;
-                print "Trying to load $service_name => $trigger_name\n";
-                $jobj->runtime_load_service ( $self, $service_name, $trigger_name );
-                print "Done\n";
-            }
 		}
-
-
-        # Global Actions
-        #
-        
-        when ( m/^(s|send)/i ) {  
-            $jobj->action( "send_msg", $line );
-
-        }
-        
-        when ( m/^(m|mine)/i ) {  
-            $jobj->action( "read_user_timeline", $line );
-
-        }
-
-        when ( m/^(p|public)/i ) { 
-            $jobj->action( "read_public_timeline", $line );
-
-        }
-
-        when ( m/^(g|global)/i ) { 
-            $jobj->action( "read_global_timeline", $line );
-
-        }
-
-        # XXX: let -p , -m works
-        when (m/^-$/) {
-            $jobj->cache_clear;
-            Jaipo->logger->info("Cache Flushed");
-        }
-
-        when (m/^mark\s+as\s+read/i) {
-            $jobj->cache_clear();
-            Jaipo->logger->info("Cache Flushed");
-        }
-
-
-        # something like filter create /regexp/  :twitter:public
-        when (m/^(f|filter)\s/i) {
-            my ( $cmd, $action, @params ) = split /\s+/, $line;
-        }
-
-        when ('?') {
-            $self->print_help;
-        }
-
-        # try to find the trigger , if match then do it
-        # or show up command not found
-        default {
-            # dispatch to service
-            my ( $service_tg, $rest_line ) = ( $line =~ m/^(\w+)\s*(.*)/i );
-            $jobj->dispatch_to_service( $service_tg, $rest_line );
-        }
+	
+	
+		# Global Actions
+		#
+	
+		when ( m/^(s|send)/i ) {  
+			$jobj->action( "send_msg", $line );
+		}
+	
+		when ( m/^(m|mine)/i ) {  
+			$jobj->action( "read_user_timeline", $line );
+		}
+	
+		when ( m/^(p|public)/i ) { 
+			$jobj->action( "read_public_timeline", $line );
+		}
+	
+		when ( m/^(g|global)/i ) { 
+			$jobj->action( "read_global_timeline", $line );
+		}
+	
+		# XXX: let -p , -m works
+		when (m/^-$/) {
+			$jobj->cache_clear;
+			Jaipo->logger->info("Cache Flushed");
+		}
+	
+		when (m/^mark\s+as\s+read/i) {
+			$jobj->cache_clear();
+			Jaipo->logger->info("Cache Flushed");
+		}
+	
+	
+		# something like filter create /regexp/  :twitter:public
+		when (m/^(f|filter)\s/i) {
+			my ( $cmd, $action, @params ) = split /\s+/, $line;
+		}
+	
+		when ('?') {
+			$self->print_help;
+		}
+	
+		# try to find the trigger , if match then do it
+		# or show up command not found
+		default {
+			# dispatch to service
+			my ( $service_tg, $rest_line ) = ( $line =~ m/^(\w+)\s*(.*)/i );
+			$jobj->dispatch_to_service( $service_tg, $rest_line );
+		}
 	}
-
-
 }
 
 sub parse {
-    my ($self,$line) = @_;
-    $line =~ s/^\s*//g;
-    $line =~ s/\s*$//g;
+	my ($self,$line) = @_;
+	
+	$line =~ s/^\s*//g;
+	$line =~ s/\s*$//g;
+	
 	return unless $line;
-    if( $line =~ m/^:/ ) {
-        # do update status message if string start with ":"
-        $line =~ s/^://;
-        $jobj->action ( "send_msg", $line );
-    }
-    else {
-        $self->process_built_in_commands( $line );
-    }
+	
+	if( $line =~ m/^:/ ) {
+		# do update status message if string start with ":"
+		$line =~ s/^://;
+		$jobj->action ( "send_msg", $line );
+	} else {
+		$self->process_built_in_commands( $line );
+	}
 }
 
 
 sub auto_update {
-    print "Auto-Update Mode\n";
-    $SIG{ALRM} = sub { 
-        print "Updating ... \r";
-        $jobj->action( "read_public_timeline" );
-        print "Done" . ' ' x 10 . "\r";
-    };
-    setitimer(ITIMER_REAL , 1 , 10);
+	print "Auto-Update Mode\n";
+	$SIG{ALRM} = sub { 
+		print "Updating ... \r";
+		$jobj->action( "read_public_timeline" );
+		print "Done" . ' ' x 10 . "\r";
+	};
+	setitimer(ITIMER_REAL , 1 , 10);
 }
 
 sub run {
 	my $self = shift;
-    my $prompt = "jaipo>  ";
-    use utf8;
-    # XXX: Term::ReadLine doesnt support UTF-8
-    # my $term = new Term::ReadLine; # 'Simple Perl';
-    # my $OUT = $term->OUT || \*STDOUT;
-    # binmode $OUT,":utf8";
-    binmode STDIN,":utf8";
-    binmode STDOUT,":utf8";
-    # while ( defined ($_ = $term->readline($prompt)) ) {
-    while ( 1 ) {
-        print $prompt;
-        my $line = <STDIN>;
-        chomp $line;
-        unless( $line ) {
-            $self->auto_update;
-            <STDIN>;
-            $SIG{ALRM} = undef;
-            setitimer(ITIMER_REAL , 0 );
-        }
+	my $prompt = "jaipo>  ";
+	use utf8;
+	# XXX: Term::ReadLine doesnt support UTF-8
+	# my $term = new Term::ReadLine; # 'Simple Perl';
+	# my $OUT = $term->OUT || \*STDOUT;
+	# binmode $OUT,":utf8";
+	binmode STDIN,":utf8";
+	binmode STDOUT,":utf8";
+	# while ( defined ($_ = $term->readline($prompt)) ) {
+	while ( 1 ) {
+		print $prompt;
+		my $line = <STDIN>;
+		chomp $line;
+		unless( $line ) {
+			$self->auto_update;
+			<STDIN>;
+			$SIG{ALRM} = undef;
+			setitimer(ITIMER_REAL , 0 );
+		}
 		chomp $line if( $line );
-        eval( q{ $self->parse ( $line ); } );
-        warn $@ if $@;
-        # print $OUT $res, "\n" unless $@;
-        # $term->addhistory($_) if /\S/;
-    }
+		eval( q{ $self->parse ( $line ); } );
+		warn $@ if $@;
+		# print $OUT $res, "\n" unless $@;
+		# $term->addhistory($_) if /\S/;
+	}
 }
 
 1;

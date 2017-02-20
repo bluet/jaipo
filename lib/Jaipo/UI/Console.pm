@@ -7,6 +7,8 @@ use feature qw(:5.10);
 use Term::ReadLine;
 use Time::HiRes qw( setitimer ITIMER_REAL ITIMER_PROF time );
 
+no if $] >= 5.017011, warnings => 'experimental::smartmatch';
+
 =encoding utf8
 
 =head1 SYNOPSIS
